@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
 
@@ -38,8 +38,9 @@ fun MovieItem(
 ) {
     ElevatedCard(
         modifier = modifier,
-        onClick = { onClick(id) }) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        onClick = { onClick(id) }
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
             AnimatedAsyncImage(modifier = Modifier.fillMaxSize(), imageUrl = imageUrl)
             Column(
                 modifier = Modifier
@@ -49,13 +50,16 @@ fun MovieItem(
             ) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.White
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = buildString { append(categories.joinToString(", ")) },
-                    color = Color.White
+                    color = Color.White,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
