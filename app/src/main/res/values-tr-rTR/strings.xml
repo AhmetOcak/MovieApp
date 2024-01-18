@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_welcome_message">Merhaba, Film Dünyasına Hoş Geldiniz!</string>
+    <string name="password_label">Şifre</string>
+    <string name="password_confirm_label">Şifreyi doğrula</string>
+    <string name="login_button_text">Giriş</string>
+    <string name="forgot_password_text">Şifremi Unuttum</string>
+    <string name="no_account_text">Hesabın yok mu ?</string>
+    <string name="sign_up_now_text">Şimdi hesap oluştur</string>
+    <string name="remember_me_text">Beni hatırla</string>
+</resources>

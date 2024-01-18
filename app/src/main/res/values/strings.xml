@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">MovieApp</string>
+    <string name="app_name" translatable="false">MovieApp</string>
+    <string name="login_welcome_message">Hello, Welcome to the Movie World!</string>
+    <string name="email_label" translatable="false">Email</string>
+    <string name="password_label">Password</string>
+    <string name="password_confirm_label">Confirm Password</string>
+    <string name="login_button_text">Login</string>
+    <string name="forgot_password_text">Forgot Password ?</string>
+    <string name="no_account_text">Don\'t have an account ?</string>
+    <string name="sign_up_now_text">Sign Up Now</string>
+    <string name="remember_me_text">Remember me</string>
 </resources>
