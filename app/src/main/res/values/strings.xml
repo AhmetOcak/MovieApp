@@ -11,4 +11,7 @@
     <string name="remember_me_text">Remember me</string>
     <string name="sign_up_welcome_message">Join Our Movie World, Enjoy the Experience!</string>
     <string name="sign_up_button_text">Sign Up</string>
+    <string name="see_all_text">See All</string>
+    <string name="now_playing_text">Now Playing</string>
+    <string name="popular_movies_text">Popular Movies</string>
 </resources>
