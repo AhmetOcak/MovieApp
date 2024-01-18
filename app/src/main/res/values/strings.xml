@@ -9,4 +9,6 @@
     <string name="no_account_text">Don\'t have an account ?</string>
     <string name="sign_up_now_text">Sign Up Now</string>
     <string name="remember_me_text">Remember me</string>
+    <string name="sign_up_welcome_message">Join Our Movie World, Enjoy the Experience!</string>
+    <string name="sign_up_button_text">Sign Up</string>
 </resources>

@@ -8,4 +8,6 @@
     <string name="no_account_text">Hesabın yok mu ?</string>
     <string name="sign_up_now_text">Şimdi hesap oluştur</string>
     <string name="remember_me_text">Beni hatırla</string>
+    <string name="sign_up_welcome_message">Film Dünyamıza Katıl, Keyfini Çıkar!</string>
+    <string name="sign_up_button_text">Hesap Oluştur</string>
 </resources>
