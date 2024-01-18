@@ -14,4 +14,5 @@
     <string name="see_all_text">See All</string>
     <string name="now_playing_text">Now Playing</string>
     <string name="popular_movies_text">Popular Movies</string>
+    <string name="search_label_text">Search</string>
 </resources>

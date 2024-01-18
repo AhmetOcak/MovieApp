@@ -13,4 +13,5 @@
     <string name="see_all_text">Hepsini Gör</string>
     <string name="now_playing_text">Şu Anda Yayında</string>
     <string name="popular_movies_text">Popüler Filmler</string>
+    <string name="search_label_text">Ara</string>
 </resources>
