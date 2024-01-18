@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.presentation.designsystem.theme
+package com.ahmetocak.movieapp.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
