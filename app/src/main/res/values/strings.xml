@@ -15,4 +15,8 @@
     <string name="now_playing_text">Now Playing</string>
     <string name="popular_movies_text">Popular Movies</string>
     <string name="search_label_text">Search</string>
+    <string name="actors_text">Actors</string>
+    <string name="hour_text">h</string>
+    <string name="min_tex">m</string>
+    <string name="review_text">reviews</string>
 </resources>
