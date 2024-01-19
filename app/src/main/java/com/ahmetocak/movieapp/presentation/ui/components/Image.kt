@@ -70,7 +70,7 @@ fun AnimatedAsyncImage(
                 modifier = modifier,
                 painter = painterResource(id = R.drawable.no_image_available),
                 contentDescription = null,
-                contentScale = ContentScale.Fit
+                contentScale = contentScale
             )
         }
     }
