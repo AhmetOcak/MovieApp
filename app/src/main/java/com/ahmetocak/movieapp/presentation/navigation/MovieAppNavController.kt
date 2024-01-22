@@ -17,6 +17,7 @@ object MainDestinations {
     const val MOVIE_DETAILS_ROUTE = "movieDetails"
     const val MOVIE_DETAILS_ID_KEY = "movieId"
     const val SEE_ALL_ROUTE = "seeAll"
+    const val SEE_ALL_TYPE_KEY = "seeAllType"
     const val HOME_ROUTE = "home"
 }
 

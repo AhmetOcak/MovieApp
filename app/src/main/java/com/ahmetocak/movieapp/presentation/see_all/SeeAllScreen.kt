@@ -41,12 +41,12 @@ fun SeeAllScreen(modifier: Modifier = Modifier, upPress: () -> Unit, onMovieClic
             )
         }
     ) { paddingValues ->
-        SeeAllScreenContent(modifier = Modifier.padding(paddingValues))
+        SeeAllScreenContent(modifier = Modifier.padding(paddingValues), onMovieClick = onMovieClick)
     }
 }
 
 @Composable
-private fun SeeAllScreenContent(modifier: Modifier) {
+private fun SeeAllScreenContent(modifier: Modifier, onMovieClick: (Int) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -66,7 +66,7 @@ private fun SeeAllScreenContent(modifier: Modifier) {
                     imageUrl = "${TMDB.IMAGE_URL}/cwJrBL09kZAl7P2DQUttkPa6rob.jpg",
                     voteAverage = 8.7,
                     voteCount = 423,
-                    onClick = { }
+                    onClick = onMovieClick
                 )
             }
         }

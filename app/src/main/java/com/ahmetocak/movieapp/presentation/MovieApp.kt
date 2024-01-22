@@ -81,7 +81,12 @@ private fun NavGraphBuilder.movieAppNavGraph(
     ) {
         MovieDetailsScreen(upPress = upPress)
     }
-    composable(route = MainDestinations.SEE_ALL_ROUTE) { from ->
+    composable(
+        route = "${MainDestinations.SEE_ALL_ROUTE}/{${MainDestinations.SEE_ALL_TYPE_KEY}}",
+        arguments = listOf(
+            navArgument(MainDestinations.SEE_ALL_TYPE_KEY) { NavType.EnumType(SeeAllType::class.java) }
+        )
+    ) { from ->
         SeeAllScreen(
             upPress = upPress,
             onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } }
