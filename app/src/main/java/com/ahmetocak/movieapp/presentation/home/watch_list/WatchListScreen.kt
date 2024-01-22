@@ -63,7 +63,10 @@ fun WatchListScreen(
             )
         }
     ) { paddingValues ->
-        WatchListScreenContent(modifier = Modifier.padding(paddingValues), onMovieClick = onMovieClick)
+        WatchListScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            onMovieClick = onMovieClick
+        )
     }
 }
 
@@ -132,7 +135,11 @@ private fun WatchListItem(
                     onClick = { onRemoveFromWatchListClick(movieId) },
                     colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
                 ) {
-                    Icon(imageVector = Icons.Filled.BookmarkRemove, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Filled.BookmarkRemove,
+                        contentDescription = null,
+                        tint = Color.Black
+                    )
                 }
             }
             Column(

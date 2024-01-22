@@ -289,7 +289,8 @@ private fun TopAppBar(
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
-                contentDescription = null
+                contentDescription = null,
+                tint = Color.Black
             )
         }
         IconButton(
@@ -298,7 +299,8 @@ private fun TopAppBar(
         ) {
             Icon(
                 imageVector = if (isMovieInWatchList) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                contentDescription = null
+                contentDescription = null,
+                tint = Color.Black
             )
         }
     }

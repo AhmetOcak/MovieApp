@@ -258,10 +258,10 @@ private fun AppIcon(modifier: Modifier) {
 private fun TopAppBar(onLogOutClick: () -> Unit, onDeleteAccountClick: () -> Unit) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         IconButton(onClick = onDeleteAccountClick) {
-            Icon(imageVector = Icons.Filled.Delete, contentDescription = null)
+            Icon(imageVector = Icons.Filled.Delete, contentDescription = null, tint = Color.Black)
         }
         IconButton(onClick = onLogOutClick) {
-            Icon(imageVector = Icons.Filled.Logout, contentDescription = null)
+            Icon(imageVector = Icons.Filled.Logout, contentDescription = null, tint = Color.Black)
         }
     }
 }
