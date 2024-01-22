@@ -18,11 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.utils.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +44,7 @@ fun MovieItem(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(dimensionResource(id = R.dimen.two_level_padding)),
+                    .padding(Dimens.twoLevelPadding),
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
@@ -63,7 +62,7 @@ fun MovieItem(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.one_level_padding)),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(

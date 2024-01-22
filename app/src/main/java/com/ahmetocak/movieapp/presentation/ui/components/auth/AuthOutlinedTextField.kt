@@ -17,11 +17,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.utils.Dimens
 
 @Composable
 fun AuthEmailOutlinedTextField(
@@ -33,7 +32,7 @@ fun AuthEmailOutlinedTextField(
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = dimensionResource(id = R.dimen.one_level_padding)),
+            .padding(vertical = Dimens.oneLevelPadding),
         value = value,
         onValueChange = onValueChange,
         label = {
@@ -60,7 +59,7 @@ fun AuthPasswordOutlinedTextField(
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = dimensionResource(id = R.dimen.one_level_padding)),
+            .padding(vertical = Dimens.oneLevelPadding),
         value = value,
         onValueChange = onValueChange,
         label = {

@@ -13,13 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.utils.Dimens
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
@@ -46,8 +46,8 @@ private fun SearchScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_padding))
-            .padding(top = dimensionResource(id = R.dimen.two_level_padding))
+            .padding(horizontal = Dimens.twoLevelPadding)
+            .padding(top = Dimens.twoLevelPadding)
     ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -80,8 +80,8 @@ private fun SearchResultEmptyView(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = dimensionResource(id = R.dimen.two_level_padding))
-                .padding(horizontal = dimensionResource(id = R.dimen.four_level_padding)),
+                .padding(top = Dimens.twoLevelPadding)
+                .padding(horizontal = Dimens.fourLevelPadding),
             text = stringResource(id = messageId),
             textAlign = TextAlign.Center
         )

@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
@@ -90,7 +90,7 @@ private fun MovieDetailsScreenContent(
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
-            .padding(bottom = dimensionResource(id = R.dimen.two_level_padding))
+            .padding(bottom = Dimens.twoLevelPadding)
     ) {
         Box {
             AnimatedAsyncImage(
@@ -105,10 +105,10 @@ private fun MovieDetailsScreenContent(
                 onWatchListClick = onWatchListClick
             )
         }
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.two_level_padding)))
-        Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding))) {
+        Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
+        Column(verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
             Text(
-                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+                modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
                 text = movieName
             )
             MovieDetails(
@@ -120,7 +120,7 @@ private fun MovieDetailsScreenContent(
                 directing = directing
             )
             Text(
-                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+                modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
                 text = movieOverview
             )
             ActorList()
@@ -130,14 +130,14 @@ private fun MovieDetailsScreenContent(
 
 @Composable
 private fun ActorList() {
-    Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.one_level_padding))) {
+    Column(verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
         Text(
-            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+            modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
             text = stringResource(id = R.string.actors_text)
         )
         LazyRow(
-            contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding))
+            contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
         ) {
             items(5) {
                 ActorItem(
@@ -162,12 +162,12 @@ private fun MovieDetails(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+            .padding(horizontal = Dimens.twoLevelPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.one_level_padding))) {
+        Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.one_level_padding)),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 RatingBar(
@@ -182,7 +182,7 @@ private fun MovieDetails(
             }
             Text(text = buildString { append(categories.joinToString(", ")) })
             Text(text = releaseDate)
-            Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.one_level_padding))) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
                 Icon(imageVector = Icons.Outlined.AccessTime, contentDescription = null)
                 Text(text = movieDuration)
             }
@@ -207,10 +207,8 @@ private fun ActorItem(imageUrl: String, actorName: String, characterName: String
                 modifier = Modifier.fillMaxHeight(), imageUrl = imageUrl
             )
             Column(
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.one_level_padding)),
-                verticalArrangement = Arrangement.spacedBy(
-                    dimensionResource(id = R.dimen.one_level_padding)
-                )
+                modifier = Modifier.padding(Dimens.oneLevelPadding),
+                verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)
             ) {
                 Text(text = actorName, fontWeight = FontWeight.Bold)
                 Text(text = characterName)
@@ -228,7 +226,7 @@ private fun TopAppBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.two_level_padding)),
+            .padding(Dimens.twoLevelPadding),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

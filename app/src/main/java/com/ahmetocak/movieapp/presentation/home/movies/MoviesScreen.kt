@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,6 +25,7 @@ import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
+import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
 import com.ahmetocak.movieapp.utils.TMDB
 
@@ -46,12 +46,12 @@ private fun MoviesScreenContent(modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(vertical = dimensionResource(id = R.dimen.two_level_padding)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding))
+            .padding(vertical = Dimens.twoLevelPadding),
+        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding))
+            verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
         ) {
             ContentTitleSection(
                 text = stringResource(id = R.string.now_playing_text),
@@ -63,7 +63,7 @@ private fun MoviesScreenContent(modifier: Modifier) {
                         modifier = Modifier
                             .width(LocalConfiguration.current.screenWidthDp.dp)
                             .fillMaxHeight()
-                            .padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+                            .padding(horizontal = Dimens.twoLevelPadding),
                         id = 0,
                         name = "The Movie Name",
                         categories = listOf("Drama", "Fear", "Sport"),
@@ -77,15 +77,15 @@ private fun MoviesScreenContent(modifier: Modifier) {
         }
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding))
+            verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
         ) {
             ContentTitleSection(
                 text = stringResource(id = R.string.popular_movies_text),
                 onSeeAllClicked = {}
             )
             LazyRow(
-                contentPadding = PaddingValues(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.one_level_padding))
+                contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)
             ) {
                 items(6) {
                     MovieItem(
@@ -108,7 +108,7 @@ private fun ContentTitleSection(text: String, onSeeAllClicked: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+            .padding(horizontal = Dimens.twoLevelPadding),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

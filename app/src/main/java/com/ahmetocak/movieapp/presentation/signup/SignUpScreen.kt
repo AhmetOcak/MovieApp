@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
@@ -19,6 +18,7 @@ import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedT
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
+import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
 
 @Composable
@@ -65,8 +65,8 @@ private fun SignUpScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(bottom = dimensionResource(id = R.dimen.eight_level_padding))
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+            .padding(bottom = Dimens.eightLevelPadding)
+            .padding(horizontal = Dimens.twoLevelPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -92,7 +92,7 @@ private fun SignUpScreenContent(
         MovieButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = dimensionResource(id = R.dimen.one_level_padding)),
+                .padding(top = Dimens.oneLevelPadding),
             text = stringResource(id = R.string.sign_up_button_text),
             onClick = onSignUpClick
         )

@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,6 +30,7 @@ import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedT
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
+import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
 
 @Composable
@@ -81,8 +81,8 @@ private fun LoginScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(bottom = dimensionResource(id = R.dimen.eight_level_padding))
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_padding)),
+            .padding(bottom = Dimens.eightLevelPadding)
+            .padding(horizontal = Dimens.twoLevelPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
@@ -142,7 +142,7 @@ private fun RememberMeBox(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = dimensionResource(id = R.dimen.two_level_padding)),
+            .padding(bottom = Dimens.twoLevelPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {

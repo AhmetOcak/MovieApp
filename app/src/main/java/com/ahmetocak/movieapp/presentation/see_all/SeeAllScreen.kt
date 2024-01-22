@@ -14,13 +14,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
 import com.ahmetocak.movieapp.utils.TMDB
 
@@ -52,13 +50,13 @@ private fun SeeAllScreenContent(modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.two_level_padding))
+            .padding(horizontal = Dimens.twoLevelPadding)
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.two_level_padding)),
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding))
+            contentPadding = PaddingValues(vertical = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+            verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
         ) {
             items(8) {
                 MovieItem(
