@@ -51,7 +51,11 @@ enum class Languages {
 }
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    onNavigateToRoute: (String) -> Unit,
+    onLogOutClick: () -> Unit
+) {
 
     MovieScaffold(modifier = modifier) { paddingValues ->
         ProfileScreenContent(

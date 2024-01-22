@@ -24,7 +24,7 @@ import com.ahmetocak.movieapp.utils.TMDB
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SeeAllScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
+fun SeeAllScreen(modifier: Modifier = Modifier, upPress: () -> Unit, onMovieClick: (Int) -> Unit) {
 
     MovieScaffold(
         modifier = modifier,
@@ -76,5 +76,5 @@ private fun SeeAllScreenContent(modifier: Modifier) {
 @ScreenPreview
 @Composable
 private fun SeeAllScreenPreview() {
-    SeeAllScreen(upPress = {})
+    SeeAllScreen(upPress = {}, onMovieClick = {})
 }

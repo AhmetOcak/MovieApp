@@ -25,4 +25,9 @@
     <string name="english_text">İngilizce</string>
     <string name="turkish_text">Türkçe</string>
     <string name="my_watch_list_text">İzleme Listem</string>
+
+    <string name="movies_text">Filmler</string>
+    <string name="search_text">Ara</string>
+    <string name="watch_list_text">İzleme Listesi</string>
+    <string name="profile_text">Profil</string>
 </resources>

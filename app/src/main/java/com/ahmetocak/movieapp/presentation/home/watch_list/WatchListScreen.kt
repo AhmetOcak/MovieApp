@@ -38,7 +38,11 @@ import com.ahmetocak.movieapp.utils.TMDB
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WatchListScreen(modifier: Modifier = Modifier) {
+fun WatchListScreen(
+    modifier: Modifier = Modifier,
+    onMovieClick: (Int) -> Unit,
+    onNavigateToRoute: (String) -> Unit
+) {
 
     MovieScaffold(
         modifier = modifier,

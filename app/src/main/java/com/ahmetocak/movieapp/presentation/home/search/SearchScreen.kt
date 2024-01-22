@@ -22,7 +22,7 @@ import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.utils.Dimens
 
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
+fun SearchScreen(modifier: Modifier = Modifier, onNavigateToRoute: (String) -> Unit) {
 
     MovieScaffold(modifier = modifier) { paddingValues ->
         SearchScreenContent(

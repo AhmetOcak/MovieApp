@@ -26,4 +26,9 @@
     <string name="english_text">English</string>
     <string name="turkish_text">Turkish</string>
     <string name="my_watch_list_text">My Watch List</string>
+    
+    <string name="movies_text">Movies</string>
+    <string name="search_text">Search</string>
+    <string name="watch_list_text">Watch List</string>
+    <string name="profile_text">Profile</string>
 </resources>

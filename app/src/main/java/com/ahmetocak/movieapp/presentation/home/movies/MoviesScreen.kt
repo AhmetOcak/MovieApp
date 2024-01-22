@@ -27,13 +27,15 @@ import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
+import com.ahmetocak.movieapp.utils.SeeAllType
 import com.ahmetocak.movieapp.utils.TMDB
 
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
     onMovieClick: (Int) -> Unit,
-    onSeeAllClick: () -> Unit
+    onSeeAllClick: (SeeAllType) -> Unit,
+    onNavigateToRoute: (String) -> Unit
 ) {
 
     MovieScaffold(modifier = modifier) { paddingValues ->
@@ -127,7 +129,7 @@ private fun ContentTitleSection(text: String, onSeeAllClicked: () -> Unit) {
 private fun MoviesScreenPreview() {
     MovieAppTheme {
         Surface {
-            MoviesScreen(onMovieClick = {}, onSeeAllClick = {})
+            MoviesScreen(onMovieClick = {}, onSeeAllClick = {}, onNavigateToRoute = {})
         }
     }
 }
