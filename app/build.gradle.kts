@@ -116,4 +116,7 @@ dependencies {
 
     // Rating Bar
     implementation(libs.compose.ratingbar)
+
+    // Youtube View Player
+    implementation(libs.core)
 }
