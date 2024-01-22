@@ -19,4 +19,9 @@
     <string name="min_tex">d</string>
     <string name="review_text">incelemeler</string>
     <string name="trailers_text">Fragmanlar</string>
+    <string name="settings_text">Ayarlar</string>
+    <string name="dark_theme_text">Karanlık Tema</string>
+    <string name="languages_text">Diller</string>
+    <string name="english_text">İngilizce</string>
+    <string name="turkish_text">Türkçe</string>
 </resources>

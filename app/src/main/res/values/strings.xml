@@ -20,4 +20,9 @@
     <string name="min_tex">m</string>
     <string name="review_text">reviews</string>
     <string name="trailers_text">Trailers</string>
+    <string name="settings_text">Settings</string>
+    <string name="dark_theme_text">Dark Theme</string>
+    <string name="languages_text">Languages</string>
+    <string name="english_text">English</string>
+    <string name="turkish_text">Turkish</string>
 </resources>
