@@ -43,6 +43,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.ui.theme.TransparentWhite
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
 import com.gowtham.ratingbar.RatingBar
@@ -282,11 +283,9 @@ private fun TopAppBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val buttonContainerColor = Color.White.copy(alpha = 0.7f)
-
         IconButton(
             onClick = upPress,
-            colors = IconButtonDefaults.iconButtonColors(containerColor = buttonContainerColor)
+            colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
@@ -295,7 +294,7 @@ private fun TopAppBar(
         }
         IconButton(
             onClick = onWatchListClick,
-            colors = IconButtonDefaults.iconButtonColors(containerColor = buttonContainerColor)
+            colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
         ) {
             Icon(
                 imageVector = if (isMovieInWatchList) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
