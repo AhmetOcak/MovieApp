@@ -25,4 +25,5 @@
     <string name="languages_text">Languages</string>
     <string name="english_text">English</string>
     <string name="turkish_text">Turkish</string>
+    <string name="my_watch_list_text">My Watch List</string>
 </resources>
