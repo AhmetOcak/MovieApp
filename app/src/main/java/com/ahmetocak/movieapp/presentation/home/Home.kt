@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Movie
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -69,7 +69,7 @@ enum class HomeSections(
     WATCH_LIST(
         R.string.watch_list_text,
         Icons.Filled.Bookmark,
-        Icons.Outlined.Bookmark,
+        Icons.Outlined.BookmarkBorder,
         "home/watch_list"
     ),
     PROFILE(
