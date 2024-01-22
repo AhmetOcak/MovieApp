@@ -5,8 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.addHomeGraph
@@ -71,7 +73,12 @@ private fun NavGraphBuilder.movieAppNavGraph(
     composable(route = MainDestinations.SIGN_UP_ROUTE) {
         SignUpScreen(upPress = upPress)
     }
-    composable(route = MainDestinations.MOVIE_DETAILS_ROUTE) {
+    composable(
+        route = "${MainDestinations.MOVIE_DETAILS_ROUTE}/{${MainDestinations.MOVIE_DETAILS_ID_KEY}}",
+        arguments = listOf(
+            navArgument(MainDestinations.MOVIE_DETAILS_ID_KEY) { NavType.IntType }
+        )
+    ) {
         MovieDetailsScreen(upPress = upPress)
     }
     composable(route = MainDestinations.SEE_ALL_ROUTE) { from ->

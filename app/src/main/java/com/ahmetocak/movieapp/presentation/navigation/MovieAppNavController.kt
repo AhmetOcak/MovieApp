@@ -15,6 +15,7 @@ object MainDestinations {
     const val LOGIN_ROUTE = "login"
     const val SIGN_UP_ROUTE = "signUp"
     const val MOVIE_DETAILS_ROUTE = "movieDetails"
+    const val MOVIE_DETAILS_ID_KEY = "movieId"
     const val SEE_ALL_ROUTE = "seeAll"
     const val HOME_ROUTE = "home"
 }
