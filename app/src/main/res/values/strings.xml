@@ -19,4 +19,5 @@
     <string name="hour_text">h</string>
     <string name="min_tex">m</string>
     <string name="review_text">reviews</string>
+    <string name="trailers_text">Trailers</string>
 </resources>

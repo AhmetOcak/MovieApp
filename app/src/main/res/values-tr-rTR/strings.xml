@@ -18,4 +18,5 @@
     <string name="hour_text">s</string>
     <string name="min_tex">d</string>
     <string name="review_text">incelemeler</string>
+    <string name="trailers_text">Fragmanlar</string>
 </resources>

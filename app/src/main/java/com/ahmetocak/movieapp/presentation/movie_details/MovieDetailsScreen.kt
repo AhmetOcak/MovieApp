@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -34,8 +36,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
@@ -43,6 +47,9 @@ import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 @Composable
 fun MovieDetailsScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
@@ -87,11 +94,7 @@ private fun MovieDetailsScreenContent(
     val movieImageHeight: Dp =
         (LocalConfiguration.current.screenHeightDp.dp / 2) + LocalConfiguration.current.screenHeightDp.dp / 8
 
-    Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = Dimens.twoLevelPadding)
-    ) {
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
         Box {
             AnimatedAsyncImage(
                 modifier = Modifier
@@ -125,12 +128,13 @@ private fun MovieDetailsScreenContent(
             )
             ActorList()
         }
+        TrailerList()
     }
 }
 
 @Composable
 private fun ActorList() {
-    Column(verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
+    Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
         Text(
             modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
             text = stringResource(id = R.string.actors_text)
@@ -146,6 +150,22 @@ private fun ActorList() {
                     characterName = "Napoleon Bonaparte"
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun TrailerList() {
+    LazyColumn(
+        modifier = Modifier.height(512.dp),
+        contentPadding = PaddingValues(Dimens.twoLevelPadding),
+        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+    ) {
+        item {
+            Text(text = stringResource(id = R.string.trailers_text))
+        }
+        items(2) {
+            TrailerItem(videoId = "8H2qXJz3mdM", "Napolyon | TR Altyazılı Fragman | 24 Kasım 2023")
         }
     }
 }
@@ -213,6 +233,38 @@ private fun ActorItem(imageUrl: String, actorName: String, characterName: String
                 Text(text = actorName, fontWeight = FontWeight.Bold)
                 Text(text = characterName)
             }
+        }
+    }
+}
+
+@Composable
+private fun TrailerItem(videoId: String, title: String) {
+    ElevatedCard(
+        modifier = Modifier
+            .width(LocalConfiguration.current.screenWidthDp.dp)
+            .height(256.dp)
+    ) {
+        Column {
+            AndroidView(
+                factory = {
+                    val view = YouTubePlayerView(it)
+                    view.addYouTubePlayerListener(
+                        object : AbstractYouTubePlayerListener() {
+                            override fun onReady(youTubePlayer: YouTubePlayer) {
+                                super.onReady(youTubePlayer)
+                                youTubePlayer.cueVideo(videoId, 0f)
+                            }
+                        }
+                    )
+                    view
+                }
+            )
+            Text(
+                modifier = Modifier.padding(Dimens.oneLevelPadding),
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
