@@ -32,8 +32,8 @@ import com.ahmetocak.movieapp.utils.TMDB
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
-    onMovieSelected: (Int) -> Unit,
-    onSeeAllSelected: () -> Unit
+    onMovieClick: (Int) -> Unit,
+    onSeeAllClick: () -> Unit
 ) {
 
     MovieScaffold(modifier = modifier) { paddingValues ->
@@ -127,7 +127,7 @@ private fun ContentTitleSection(text: String, onSeeAllClicked: () -> Unit) {
 private fun MoviesScreenPreview() {
     MovieAppTheme {
         Surface {
-            MoviesScreen(onMovieSelected = {}, onSeeAllSelected = {})
+            MoviesScreen(onMovieClick = {}, onSeeAllClick = {})
         }
     }
 }
