@@ -30,6 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.presentation.home.HomeSections
+import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.presentation.ui.theme.TransparentWhite
@@ -52,14 +54,21 @@ fun WatchListScreen(
                     Text(text = stringResource(id = R.string.my_watch_list_text))
                 }
             )
+        },
+        bottomBar = {
+            MovieNavigationBar(
+                tabs = HomeSections.entries.toTypedArray(),
+                currentRoute = HomeSections.WATCH_LIST.route,
+                navigateToRoute = onNavigateToRoute
+            )
         }
     ) { paddingValues ->
-        WatchListScreenContent(modifier = Modifier.padding(paddingValues))
+        WatchListScreenContent(modifier = Modifier.padding(paddingValues), onMovieClick = onMovieClick)
     }
 }
 
 @Composable
-private fun WatchListScreenContent(modifier: Modifier) {
+private fun WatchListScreenContent(modifier: Modifier, onMovieClick: (Int) -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -80,7 +89,7 @@ private fun WatchListScreenContent(modifier: Modifier) {
                     voteAverage = 9.3,
                     voteCount = 3241,
                     movieId = 1,
-                    onClick = {},
+                    onClick = onMovieClick,
                     onRemoveFromWatchListClick = {}
                 )
             }

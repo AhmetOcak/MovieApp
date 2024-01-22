@@ -39,6 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.presentation.home.HomeSections
+import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.utils.Dimens
@@ -57,10 +59,19 @@ fun ProfileScreen(
     onLogOutClick: () -> Unit
 ) {
 
-    MovieScaffold(modifier = modifier) { paddingValues ->
+    MovieScaffold(
+        modifier = modifier,
+        bottomBar = {
+            MovieNavigationBar(
+                tabs = HomeSections.entries.toTypedArray(),
+                currentRoute = HomeSections.PROFILE.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        }
+    ) { paddingValues ->
         ProfileScreenContent(
             modifier = Modifier.padding(paddingValues),
-            onLogOutClick = {},
+            onLogOutClick = onLogOutClick,
             profileImageUrl = "https://picsum.photos/200/300",
             userEmail = "ahmetocak754@gmail.com",
             onDeleteAccountClick = {},
@@ -97,7 +108,7 @@ private fun ProfileScreenContent(
             isAppThemeDark = isAppThemeDark
         )
     }
-    AppIcon()
+    AppIcon(modifier = modifier.fillMaxSize())
 }
 
 @Composable
@@ -231,8 +242,8 @@ private fun SettingItem(height: Dp = 48.dp, content: @Composable RowScope.() -> 
 }
 
 @Composable
-private fun AppIcon() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+private fun AppIcon(modifier: Modifier) {
+    Box(modifier = modifier, contentAlignment = Alignment.BottomCenter) {
         Image(
             modifier = Modifier
                 .padding(Dimens.twoLevelPadding)

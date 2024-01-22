@@ -22,6 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.presentation.home.HomeSections
+import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
@@ -38,13 +40,30 @@ fun MoviesScreen(
     onNavigateToRoute: (String) -> Unit
 ) {
 
-    MovieScaffold(modifier = modifier) { paddingValues ->
-        MoviesScreenContent(modifier = Modifier.padding(paddingValues))
+    MovieScaffold(
+        modifier = modifier,
+        bottomBar = {
+            MovieNavigationBar(
+                tabs = HomeSections.entries.toTypedArray(),
+                currentRoute = HomeSections.MOVIES.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        }
+    ) { paddingValues ->
+        MoviesScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            onMovieClick = onMovieClick,
+            onSeeAllClick = onSeeAllClick
+        )
     }
 }
 
 @Composable
-private fun MoviesScreenContent(modifier: Modifier) {
+private fun MoviesScreenContent(
+    modifier: Modifier,
+    onMovieClick: (Int) -> Unit,
+    onSeeAllClick: (SeeAllType) -> Unit
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -57,7 +76,8 @@ private fun MoviesScreenContent(modifier: Modifier) {
         ) {
             ContentTitleSection(
                 text = stringResource(id = R.string.now_playing_text),
-                onSeeAllClicked = {}
+                onSeeAllClick = onSeeAllClick,
+                type = SeeAllType.UPCOMING
             )
             LazyRow {
                 items(5) {
@@ -72,7 +92,7 @@ private fun MoviesScreenContent(modifier: Modifier) {
                         imageUrl = "${TMDB.IMAGE_URL}/f1AQhx6ZfGhPZFTVKgxG91PhEYc.jpg",
                         voteAverage = 8.7,
                         voteCount = 123,
-                        onClick = {}
+                        onClick = onMovieClick
                     )
                 }
             }
@@ -83,7 +103,8 @@ private fun MoviesScreenContent(modifier: Modifier) {
         ) {
             ContentTitleSection(
                 text = stringResource(id = R.string.popular_movies_text),
-                onSeeAllClicked = {}
+                onSeeAllClick = onSeeAllClick,
+                type = SeeAllType.POPULAR
             )
             LazyRow(
                 contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
@@ -97,7 +118,7 @@ private fun MoviesScreenContent(modifier: Modifier) {
                         imageUrl = "${TMDB.IMAGE_URL}/cwJrBL09kZAl7P2DQUttkPa6rob.jpg",
                         voteAverage = 8.7,
                         voteCount = 213,
-                        onClick = {}
+                        onClick = onMovieClick
                     )
                 }
             }
@@ -106,7 +127,11 @@ private fun MoviesScreenContent(modifier: Modifier) {
 }
 
 @Composable
-private fun ContentTitleSection(text: String, onSeeAllClicked: () -> Unit) {
+private fun ContentTitleSection(
+    text: String,
+    onSeeAllClick: (SeeAllType) -> Unit,
+    type: SeeAllType
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -118,7 +143,7 @@ private fun ContentTitleSection(text: String, onSeeAllClicked: () -> Unit) {
             text = text,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
-        Button(onClick = onSeeAllClicked) {
+        Button(onClick = { onSeeAllClick(type) }) {
             Text(text = stringResource(id = R.string.see_all_text))
         }
     }

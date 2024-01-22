@@ -18,13 +18,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.presentation.home.HomeSections
+import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.utils.Dimens
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier, onNavigateToRoute: (String) -> Unit) {
 
-    MovieScaffold(modifier = modifier) { paddingValues ->
+    MovieScaffold(
+        modifier = modifier,
+        bottomBar = {
+            MovieNavigationBar(
+                tabs = HomeSections.entries.toTypedArray(),
+                currentRoute = HomeSections.SEARCH.route,
+                navigateToRoute = onNavigateToRoute
+            )
+        }
+    ) { paddingValues ->
         SearchScreenContent(
             modifier = Modifier.padding(paddingValues),
             searchValue = "",
