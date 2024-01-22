@@ -15,15 +15,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.outlined.AccessTime
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,8 +59,11 @@ fun MovieDetailsScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
             releaseDate = "2023-11-22",
             movieOverview = "An epic that details the checkered rise and fall of French Emperor Napoleon Bonaparte and his relentless journey to power through the prism of his addictive, volatile relationship with his wife, Josephine.",
             movieDuration = "${158 / 60}${stringResource(id = R.string.hour_text)} ${158 % 60}${
-                stringResource(id = R.string.min_tex)}",
-            directing = "Ridley Scott"
+                stringResource(id = R.string.min_tex)
+            }",
+            directing = "Ridley Scott",
+            isMovieInWatchList = false,
+            onWatchListClick = {}
         )
     }
 }
@@ -76,7 +80,9 @@ private fun MovieDetailsScreenContent(
     releaseDate: String,
     movieOverview: String,
     movieDuration: String,
-    directing: String
+    directing: String,
+    isMovieInWatchList: Boolean,
+    onWatchListClick: () -> Unit
 ) {
     val movieImageHeight: Dp =
         (LocalConfiguration.current.screenHeightDp.dp / 2) + LocalConfiguration.current.screenHeightDp.dp / 8
@@ -93,7 +99,11 @@ private fun MovieDetailsScreenContent(
                     .height(movieImageHeight),
                 imageUrl = movieImageUrl
             )
-            TopAppBar(upPress = upPress)
+            TopAppBar(
+                upPress = upPress,
+                isMovieInWatchList = isMovieInWatchList,
+                onWatchListClick = onWatchListClick
+            )
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.two_level_padding)))
         Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.two_level_padding))) {
@@ -160,7 +170,8 @@ private fun MovieDetails(
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.one_level_padding)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                RatingBar(value = voteAverage / 2f,
+                RatingBar(
+                    value = voteAverage / 2f,
                     style = RatingBarStyle.Default,
                     onValueChange = {},
                     onRatingChanged = {},
@@ -209,22 +220,36 @@ private fun ActorItem(imageUrl: String, actorName: String, characterName: String
 }
 
 @Composable
-private fun TopAppBar(upPress: () -> Unit) {
+private fun TopAppBar(
+    upPress: () -> Unit,
+    isMovieInWatchList: Boolean,
+    onWatchListClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(dimensionResource(id = R.dimen.two_level_padding)),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(
-            modifier = Modifier.size(36.dp),
-            shape = CircleShape,
+        val buttonContainerColor = Color.White.copy(alpha = 0.7f)
+
+        IconButton(
             onClick = upPress,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.7f)),
-            contentPadding = PaddingValues(0.dp)
+            colors = IconButtonDefaults.iconButtonColors(containerColor = buttonContainerColor)
         ) {
             Icon(
-                imageVector = Icons.Filled.ArrowBack, contentDescription = null, tint = Color.Black
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = null
+            )
+        }
+        IconButton(
+            onClick = onWatchListClick,
+            colors = IconButtonDefaults.iconButtonColors(containerColor = buttonContainerColor)
+        ) {
+            Icon(
+                imageVector = if (isMovieInWatchList) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                contentDescription = null
             )
         }
     }
