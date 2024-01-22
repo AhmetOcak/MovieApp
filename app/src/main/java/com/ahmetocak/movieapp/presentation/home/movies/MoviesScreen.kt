@@ -70,57 +70,83 @@ private fun MoviesScreenContent(
             .padding(vertical = Dimens.twoLevelPadding),
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
-        Column(
+        NowPlayingMoviesSection(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+            onSeeAllClick = onSeeAllClick,
+            onMovieClick = onMovieClick
+        )
+        PopularMoviesSection(
+            modifier = Modifier.weight(1f),
+            onSeeAllClick = onSeeAllClick,
+            onMovieClick = onMovieClick
+        )
+    }
+}
+
+@Composable
+private fun PopularMoviesSection(
+    modifier: Modifier,
+    onSeeAllClick: (SeeAllType) -> Unit,
+    onMovieClick: (Int) -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+    ) {
+        ContentTitleSection(
+            text = stringResource(id = R.string.popular_movies_text),
+            onSeeAllClick = onSeeAllClick,
+            type = SeeAllType.POPULAR
+        )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
         ) {
-            ContentTitleSection(
-                text = stringResource(id = R.string.now_playing_text),
-                onSeeAllClick = onSeeAllClick,
-                type = SeeAllType.UPCOMING
-            )
-            LazyRow {
-                items(5) {
-                    MovieItem(
-                        modifier = Modifier
-                            .width(LocalConfiguration.current.screenWidthDp.dp)
-                            .fillMaxHeight()
-                            .padding(horizontal = Dimens.twoLevelPadding),
-                        id = 0,
-                        name = "The Movie Name",
-                        categories = listOf("Drama", "Fear", "Sport"),
-                        imageUrl = "${TMDB.IMAGE_URL}/f1AQhx6ZfGhPZFTVKgxG91PhEYc.jpg",
-                        voteAverage = 8.7,
-                        voteCount = 123,
-                        onClick = onMovieClick
-                    )
-                }
+            items(6) {
+                MovieItem(
+                    id = 0,
+                    name = "The Movie Name",
+                    categories = listOf("Drama", "Fear", "Sport"),
+                    imageUrl = "${TMDB.IMAGE_URL}/cwJrBL09kZAl7P2DQUttkPa6rob.jpg",
+                    voteAverage = 8.7,
+                    voteCount = 213,
+                    onClick = onMovieClick
+                )
             }
         }
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-        ) {
-            ContentTitleSection(
-                text = stringResource(id = R.string.popular_movies_text),
-                onSeeAllClick = onSeeAllClick,
-                type = SeeAllType.POPULAR
-            )
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)
-            ) {
-                items(6) {
-                    MovieItem(
-                        id = 0,
-                        name = "The Movie Name",
-                        categories = listOf("Drama", "Fear", "Sport"),
-                        imageUrl = "${TMDB.IMAGE_URL}/cwJrBL09kZAl7P2DQUttkPa6rob.jpg",
-                        voteAverage = 8.7,
-                        voteCount = 213,
-                        onClick = onMovieClick
-                    )
-                }
+    }
+}
+
+@Composable
+private fun NowPlayingMoviesSection(
+    modifier: Modifier,
+    onSeeAllClick: (SeeAllType) -> Unit,
+    onMovieClick: (Int) -> Unit
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+    ) {
+        ContentTitleSection(
+            text = stringResource(id = R.string.now_playing_text),
+            onSeeAllClick = onSeeAllClick,
+            type = SeeAllType.UPCOMING
+        )
+        LazyRow {
+            items(5) {
+                MovieItem(
+                    modifier = Modifier
+                        .width(LocalConfiguration.current.screenWidthDp.dp)
+                        .fillMaxHeight()
+                        .padding(horizontal = Dimens.twoLevelPadding),
+                    id = 0,
+                    name = "The Movie Name",
+                    categories = listOf("Drama", "Fear", "Sport"),
+                    imageUrl = "${TMDB.IMAGE_URL}/f1AQhx6ZfGhPZFTVKgxG91PhEYc.jpg",
+                    voteAverage = 8.7,
+                    voteCount = 123,
+                    onClick = onMovieClick
+                )
             }
         }
     }
