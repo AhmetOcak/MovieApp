@@ -35,4 +35,6 @@
     <string name="password_reset_text">Şifre Sıfırlama</string>
     <string name="password_reset_description_text">Şifrenizi sıfırlamak için uygulamada oturum açarken kullandığınız e-posta adresini girin.</string>
     <string name="email_address_text">E-mail Adresi</string>
+    <string name="send_text">Gönder</string>
+    <string name="cancel_text">İptal</string>
 </resources>
