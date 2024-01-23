@@ -162,7 +162,7 @@ private fun RememberMeBox(
 private fun ForgotPasswordDialog(
     onDismissRequest: () -> Unit,
     onCancelClick: () -> Unit,
-    onConfirmClick: () -> Unit
+    onSendClick: () -> Unit
 ) {
     MovieDialog(onDismissRequest = onDismissRequest) {
         Column(
@@ -188,7 +188,7 @@ private fun ForgotPasswordDialog(
                     Text(text = stringResource(id = R.string.cancel_text))
                 }
                 Spacer(modifier = Modifier.width(Dimens.twoLevelPadding))
-                ElevatedButton(onClick = onConfirmClick) {
+                ElevatedButton(onClick = onSendClick) {
                     Text(text = stringResource(id = R.string.send_text))
                 }
             }
