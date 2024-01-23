@@ -32,4 +32,7 @@
     <string name="profile_text">Profil</string>
 
     <string name="director_text">Yönetmen</string>
+    <string name="password_reset_text">Şifre Sıfırlama</string>
+    <string name="password_reset_description_text">Şifrenizi sıfırlamak için uygulamada oturum açarken kullandığınız e-posta adresini girin.</string>
+    <string name="email_address_text">E-mail Adresi</string>
 </resources>
