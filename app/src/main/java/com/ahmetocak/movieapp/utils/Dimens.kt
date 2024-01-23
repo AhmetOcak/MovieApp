@@ -12,3 +12,7 @@ object Dimens {
     val sevenLevelPadding = 56.dp
     val eightLevelPadding = 64.dp
 }
+
+object ComponentDimens {
+    val buttonHeight = 56.dp
+}

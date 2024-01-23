@@ -10,7 +10,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MovieApp(startDestination = MainDestinations.LOGIN_ROUTE)
+            MovieApp(startDestination = MainDestinations.HOME_ROUTE)
         }
     }
 }

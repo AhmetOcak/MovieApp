@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,9 +20,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
+import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
 import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
@@ -169,9 +170,11 @@ private fun ContentTitleSection(
             text = text,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
-        Button(onClick = { onSeeAllClick(type) }) {
-            Text(text = stringResource(id = R.string.see_all_text))
-        }
+        MovieButton(
+            text = stringResource(id = R.string.see_all_text),
+            onClick = { onSeeAllClick(type) },
+            fontSize = 16.sp
+        )
     }
 }
 

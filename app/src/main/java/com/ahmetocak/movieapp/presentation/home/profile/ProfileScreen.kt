@@ -2,6 +2,7 @@ package com.ahmetocak.movieapp.presentation.home.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,11 +22,15 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +41,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
@@ -43,11 +49,17 @@ import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.ui.theme.backgroundDark
+import com.ahmetocak.movieapp.presentation.ui.theme.backgroundLight
+import com.ahmetocak.movieapp.presentation.ui.theme.primaryContainerDark
+import com.ahmetocak.movieapp.presentation.ui.theme.primaryContainerLight
+import com.ahmetocak.movieapp.presentation.ui.theme.primaryDark
+import com.ahmetocak.movieapp.presentation.ui.theme.primaryLight
 import com.ahmetocak.movieapp.utils.Dimens
 
 private val PROFILE_IMG_SIZE = 128.dp
 
-enum class Languages {
+private enum class Languages {
     ENGLISH,
     TURKISH
 }
@@ -77,7 +89,7 @@ fun ProfileScreen(
             onDeleteAccountClick = {},
             onDarkThemeSwitchChange = {},
             onLanguageSelect = {},
-            isAppThemeDark = false
+            isAppThemeDark = isSystemInDarkTheme()
         )
     }
 }
@@ -99,7 +111,8 @@ private fun ProfileScreenContent(
             onLogOutClick = onLogOutClick,
             profileImageUrl = profileImageUrl,
             userEmail = userEmail,
-            onDeleteAccountClick = onDeleteAccountClick
+            onDeleteAccountClick = onDeleteAccountClick,
+            isAppThemeDark = isAppThemeDark
         )
         SettingsSection(
             modifier = Modifier.weight(3f),
@@ -117,14 +130,19 @@ private fun ProfileSection(
     onLogOutClick: () -> Unit,
     profileImageUrl: String,
     userEmail: String,
-    onDeleteAccountClick: () -> Unit
+    onDeleteAccountClick: () -> Unit,
+    isAppThemeDark: Boolean
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(
-                brush = Brush.linearGradient(
-                    listOf(Color(0xFFff1b6b), Color(0xFF45caff))
+                brush = Brush.verticalGradient(
+                    if (isAppThemeDark) {
+                        listOf(primaryDark, primaryContainerDark, backgroundDark)
+                    } else {
+                        listOf(primaryLight, primaryContainerLight, backgroundLight)
+                    }
                 )
             )
     ) {
@@ -139,7 +157,11 @@ private fun ProfileSection(
                     modifier = Modifier.fillMaxSize(), imageUrl = profileImageUrl
                 )
             }
-            Text(modifier = Modifier.padding(top = Dimens.twoLevelPadding), text = userEmail)
+            Text(
+                modifier = Modifier.padding(top = Dimens.twoLevelPadding),
+                text = userEmail,
+                style = MaterialTheme.typography.titleLarge
+            )
         }
     }
 }
@@ -156,7 +178,10 @@ private fun SettingsSection(
             .fillMaxSize()
             .padding(Dimens.twoLevelPadding),
     ) {
-        Text(text = stringResource(id = R.string.settings_text))
+        Text(
+            text = stringResource(id = R.string.settings_text),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
@@ -186,6 +211,7 @@ private fun DarkThemePicker(onDarkThemeSwitchChange: (Boolean) -> Unit, isAppThe
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LanguagePicker(onLanguageSelect: (Languages) -> Unit) {
     SettingItem(height = 64.dp) {
@@ -198,11 +224,13 @@ private fun LanguagePicker(onLanguageSelect: (Languages) -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "English")
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        contentDescription = null
-                    )
+                CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+                    IconButton(modifier = Modifier.size(24.dp), onClick = { expanded = !expanded }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowDropDown,
+                            contentDescription = null
+                        )
+                    }
                 }
             }
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {

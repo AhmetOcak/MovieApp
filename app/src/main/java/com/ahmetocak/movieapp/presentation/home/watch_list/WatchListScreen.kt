@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
@@ -34,6 +35,7 @@ import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.ui.theme.RatingStarColor
 import com.ahmetocak.movieapp.presentation.ui.theme.TransparentWhite
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
@@ -149,7 +151,7 @@ private fun WatchListItem(
                     .padding(horizontal = Dimens.oneLevelPadding),
                 verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)
             ) {
-                Text(text = movieName)
+                Text(text = movieName, fontWeight = FontWeight.Bold)
                 Text(
                     text = "$releaseYear ${buildString { append(categories.joinToString(", ")) }}",
                     maxLines = 1,
@@ -162,7 +164,7 @@ private fun WatchListItem(
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = null,
-                        tint = Color.Yellow
+                        tint = RatingStarColor
                     )
                     Text(text = "$voteAverage ($voteCount)")
                 }

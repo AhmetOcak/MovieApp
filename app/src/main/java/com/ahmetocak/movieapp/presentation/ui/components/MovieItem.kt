@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.ahmetocak.movieapp.presentation.ui.theme.RatingStarColor
 import com.ahmetocak.movieapp.utils.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,14 +51,17 @@ fun MovieItem(
             ) {
                 Text(
                     text = name,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    ),
+                    overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = buildString { append(categories.joinToString(", ")) },
-                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium.copy(color = Color.White),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
                 )
@@ -68,9 +73,12 @@ fun MovieItem(
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = null,
-                        tint = Color.Yellow
+                        tint = RatingStarColor
                     )
-                    Text(text = "$voteAverage ($voteCount)", color = Color.White)
+                    Text(
+                        text = "$voteAverage ($voteCount)",
+                        style = MaterialTheme.typography.titleMedium.copy(color = Color.White),
+                    )
                 }
             }
         }

@@ -30,4 +30,6 @@
     <string name="search_text">Ara</string>
     <string name="watch_list_text">İzleme Listesi</string>
     <string name="profile_text">Profil</string>
+
+    <string name="director_text">Yönetmen</string>
 </resources>

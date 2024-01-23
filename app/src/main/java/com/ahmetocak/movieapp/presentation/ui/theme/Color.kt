@@ -60,4 +60,6 @@ val inverseSurfaceDark = Color(0xFFEBDFE6)
 val inverseOnSurfaceDark = Color(0xFF352E33)
 val inversePrimaryDark = Color(0xFF7E4E7C)
 
-val TransparentWhite = Color.White.copy(alpha = 0.7f)
+val TransparentWhite = Color(0xB3FFFFFF)
+val TmdbBlue = Color(0xFF0d253f)
+val RatingStarColor = Color(0xFFFFD740)

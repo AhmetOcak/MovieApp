@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,15 +37,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.ui.theme.TmdbBlue
 import com.ahmetocak.movieapp.presentation.ui.theme.TransparentWhite
+import com.ahmetocak.movieapp.presentation.ui.theme.errorDark
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
 import com.gowtham.ratingbar.RatingBar
@@ -51,6 +58,10 @@ import com.gowtham.ratingbar.RatingBarStyle
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+
+private val TRAILER_LIST_HEIGHT = 512.dp
+private val TMDB_LOGO_SIZE = 96.dp
+private val ACTOR_ITEM_HEIGHT = 128.dp
 
 @Composable
 fun MovieDetailsScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
@@ -69,7 +80,7 @@ fun MovieDetailsScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
             movieDuration = "${158 / 60}${stringResource(id = R.string.hour_text)} ${158 % 60}${
                 stringResource(id = R.string.min_tex)
             }",
-            directing = "Ridley Scott",
+            director = "Ridley Scott",
             isMovieInWatchList = false,
             onWatchListClick = {}
         )
@@ -88,7 +99,7 @@ private fun MovieDetailsScreenContent(
     releaseDate: String,
     movieOverview: String,
     movieDuration: String,
-    directing: String,
+    director: String,
     isMovieInWatchList: Boolean,
     onWatchListClick: () -> Unit
 ) {
@@ -113,7 +124,8 @@ private fun MovieDetailsScreenContent(
         Column(verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
             Text(
                 modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
-                text = movieName
+                text = movieName,
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
             )
             MovieDetails(
                 voteAverage = voteAverage,
@@ -121,7 +133,7 @@ private fun MovieDetailsScreenContent(
                 categories = categories,
                 releaseDate = releaseDate,
                 movieDuration = movieDuration,
-                directing = directing
+                director = director
             )
             Text(
                 modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
@@ -138,7 +150,8 @@ private fun ActorList() {
     Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
         Text(
             modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
-            text = stringResource(id = R.string.actors_text)
+            text = stringResource(id = R.string.actors_text),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
         LazyRow(
             contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
@@ -158,12 +171,15 @@ private fun ActorList() {
 @Composable
 private fun TrailerList() {
     LazyColumn(
-        modifier = Modifier.height(512.dp),
+        modifier = Modifier.height(TRAILER_LIST_HEIGHT),
         contentPadding = PaddingValues(Dimens.twoLevelPadding),
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
         item {
-            Text(text = stringResource(id = R.string.trailers_text))
+            Text(
+                text = stringResource(id = R.string.trailers_text),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
         }
         items(2) {
             TrailerItem(videoId = "8H2qXJz3mdM", "Napolyon | TR Altyazılı Fragman | 24 Kasım 2023")
@@ -178,7 +194,7 @@ private fun MovieDetails(
     categories: List<String>,
     releaseDate: String,
     movieDuration: String,
-    directing: String
+    director: String
 ) {
     Row(
         modifier = Modifier
@@ -204,15 +220,24 @@ private fun MovieDetails(
             Text(text = buildString { append(categories.joinToString(", ")) })
             Text(text = releaseDate)
             Row(horizontalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
-                Icon(imageVector = Icons.Outlined.AccessTime, contentDescription = null)
-                Text(text = movieDuration)
+                Icon(
+                    imageVector = Icons.Outlined.AccessTime,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+                Text(text = movieDuration, color = MaterialTheme.colorScheme.error)
             }
-            Text(text = "Directing $directing")
+            Text(text = buildAnnotatedString {
+                append("${stringResource(id = R.string.director_text)}: ")
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(director)
+                }
+            })
         }
         Image(
             modifier = Modifier
-                .size(96.dp)
-                .background(Color(0xFF0d253f))
+                .size(TMDB_LOGO_SIZE)
+                .background(TmdbBlue)
                 .padding(4.dp),
             painter = painterResource(id = R.drawable.tmdb_logo),
             contentDescription = null
@@ -222,16 +247,19 @@ private fun MovieDetails(
 
 @Composable
 private fun ActorItem(imageUrl: String, actorName: String, characterName: String) {
-    ElevatedCard(modifier = Modifier.height(96.dp)) {
+    ElevatedCard(modifier = Modifier.height(ACTOR_ITEM_HEIGHT)) {
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             AnimatedAsyncImage(
                 modifier = Modifier.fillMaxHeight(), imageUrl = imageUrl
             )
             Column(
-                modifier = Modifier.padding(Dimens.oneLevelPadding),
-                verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(Dimens.oneLevelPadding),
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(text = actorName, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(Dimens.oneLevelPadding))
                 Text(text = characterName)
             }
         }

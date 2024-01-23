@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -40,10 +41,14 @@ fun AuthBackground() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(LocalConfiguration.current.screenHeightDp.dp / 2)
-                .onGloballyPositioned { sizeImage = it.size },
+                .onGloballyPositioned { sizeImage = it.size }
+                .blur(
+                    radiusX = 10.dp,
+                    radiusY = 10.dp
+                ),
             painter = painterResource(id = R.drawable.auth_background_image),
             contentDescription = null,
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.FillBounds
         )
         Box(
             modifier = Modifier

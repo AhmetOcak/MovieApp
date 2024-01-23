@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedT
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
+import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
 
@@ -91,8 +93,9 @@ private fun SignUpScreenContent(
         )
         MovieButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = Dimens.oneLevelPadding),
+                .padding(top = Dimens.twoLevelPadding)
+                .height(ComponentDimens.buttonHeight)
+                .fillMaxWidth(),
             text = stringResource(id = R.string.sign_up_button_text),
             onClick = onSignUpClick
         )

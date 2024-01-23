@@ -14,6 +14,6 @@ fun AuthWelcomeMessage(text: String) {
         modifier = Modifier.fillMaxWidth(),
         text = text,
         textAlign = TextAlign.Start,
-        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.W500),
+        style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.W500),
     )
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
@@ -14,7 +15,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -25,11 +25,13 @@ import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.ui.components.MovieTextButton
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthBackground
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
 import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
+import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
 
@@ -101,13 +103,14 @@ private fun LoginScreenContent(
         )
         RememberMeBox(checked = rememberMeValue, onCheckedChange = onCheckedChange)
         MovieButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.height(ComponentDimens.buttonHeight).fillMaxWidth(),
             text = stringResource(id = R.string.login_button_text),
             onClick = onLoginClick
         )
-        TextButton(onClick = onForgotPasswordClick) {
-            Text(text = stringResource(id = R.string.forgot_password_text))
-        }
+        MovieTextButton(
+            text = stringResource(id = R.string.forgot_password_text),
+            onClick = onForgotPasswordClick
+        )
         SignUpNow(onCreateAccountClick = onCreateAccountClick)
     }
 }
@@ -121,15 +124,12 @@ private fun SignUpNow(onCreateAccountClick: () -> Unit) {
     ) {
         Text(text = stringResource(id = R.string.no_account_text))
         Spacer(modifier = Modifier.width(4.dp))
-        TextButton(
+        MovieTextButton(
+            text= stringResource(id = R.string.sign_up_button_text),
             onClick = onCreateAccountClick,
+            fontWeight = FontWeight.Bold,
             contentPadding = PaddingValues(0.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.sign_up_now_text),
-                fontWeight = FontWeight.Bold
-            )
-        }
+        )
     }
 }
 
@@ -142,7 +142,7 @@ private fun RememberMeBox(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Dimens.twoLevelPadding),
+            .padding(vertical = Dimens.twoLevelPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
