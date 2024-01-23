@@ -8,19 +8,24 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,6 +53,7 @@ import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
+import com.ahmetocak.movieapp.presentation.ui.components.MovieDialog
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.presentation.ui.theme.backgroundDark
 import com.ahmetocak.movieapp.presentation.ui.theme.backgroundLight
@@ -225,7 +231,9 @@ private fun LanguagePicker(onLanguageSelect: (Languages) -> Unit) {
             ) {
                 Text(text = "English")
                 CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-                    IconButton(modifier = Modifier.size(24.dp), onClick = { expanded = !expanded }) {
+                    IconButton(
+                        modifier = Modifier.size(24.dp),
+                        onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowDropDown,
                             contentDescription = null
@@ -290,6 +298,40 @@ private fun TopAppBar(onLogOutClick: () -> Unit, onDeleteAccountClick: () -> Uni
         }
         IconButton(onClick = onLogOutClick) {
             Icon(imageVector = Icons.Filled.Logout, contentDescription = null, tint = Color.Black)
+        }
+    }
+}
+
+@Composable
+private fun DeleteAccountDialog(
+    onDismissRequest: () -> Unit,
+    onCancelClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    MovieDialog(onDismissRequest = onDismissRequest) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Dimens.threeLevelPadding),
+            verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+        ) {
+            Text(
+                text = stringResource(id = R.string.delete_account_text),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Text(text = stringResource(id = R.string.delete_account_description_text))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                ElevatedButton(onClick = onCancelClick) {
+                    Text(text = stringResource(id = R.string.cancel_text))
+                }
+                Spacer(modifier = Modifier.width(Dimens.twoLevelPadding))
+                Button(
+                    onClick = onDeleteClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(text = stringResource(id = R.string.delete_text))
+                }
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">MovieApp</string>
+
+    <!-- App Strings -->
     <string name="login_welcome_message">Hello, Welcome to the Movie World!</string>
     <string name="email_label" translatable="false">Email</string>
     <string name="password_label">Password</string>
@@ -26,16 +28,21 @@
     <string name="english_text">English</string>
     <string name="turkish_text">Turkish</string>
     <string name="my_watch_list_text">My Watch List</string>
+    <string name="director_text">Director</string>
 
+    <!-- Navigation Bar Strings-->
     <string name="movies_text">Movies</string>
     <string name="search_text">Search</string>
     <string name="watch_list_text">Watch List</string>
     <string name="profile_text">Profile</string>
 
-    <string name="director_text">Director</string>
+    <!-- Dialog Strings-->
     <string name="password_reset_text">Password Reset</string>
     <string name="password_reset_description_text">To reset your password, enter the email address you use to sign in to app.</string>
     <string name="email_address_text">E-mail Address</string>
     <string name="send_text">Send</string>
     <string name="cancel_text">Cancel</string>
+    <string name="delete_account_text">Delete Account</string>
+    <string name="delete_account_description_text">Are you sure you want to delete your account ? When you delete your account, all your user information is also deleted. This process is irreversible.</string>
+    <string name="delete_text">Delete</string>
 </resources>

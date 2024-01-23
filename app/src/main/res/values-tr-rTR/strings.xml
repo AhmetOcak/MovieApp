@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="login_welcome_message">Merhaba, Film Dünyasına Hoş Geldiniz!</string>
+
+    <!-- App Strings -->
     <string name="password_label">Şifre</string>
     <string name="password_confirm_label">Şifreyi doğrula</string>
     <string name="login_button_text">Giriş</string>
@@ -25,16 +27,21 @@
     <string name="english_text">İngilizce</string>
     <string name="turkish_text">Türkçe</string>
     <string name="my_watch_list_text">İzleme Listem</string>
+    <string name="director_text">Yönetmen</string>
 
+    <!-- Navigation Bar Strings -->
     <string name="movies_text">Filmler</string>
     <string name="search_text">Ara</string>
     <string name="watch_list_text">İzleme Listesi</string>
     <string name="profile_text">Profil</string>
 
-    <string name="director_text">Yönetmen</string>
+    <!-- Dialog Strings -->
     <string name="password_reset_text">Şifre Sıfırlama</string>
     <string name="password_reset_description_text">Şifrenizi sıfırlamak için uygulamada oturum açarken kullandığınız e-posta adresini girin.</string>
     <string name="email_address_text">E-mail Adresi</string>
     <string name="send_text">Gönder</string>
     <string name="cancel_text">İptal</string>
+    <string name="delete_account_text">Hesabı Sil</string>
+    <string name="delete_account_description_text">Hesabınızı silmek istediğinizden emin misiniz ? Hesabınızı sildiğinizde tüm kullanıcı bilgileriniz de silinir. Bu süreç geri döndürülemez.</string>
+    <string name="delete_text">Sil</string>
 </resources>
