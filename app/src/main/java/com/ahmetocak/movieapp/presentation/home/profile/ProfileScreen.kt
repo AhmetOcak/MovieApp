@@ -1,6 +1,7 @@
 package com.ahmetocak.movieapp.presentation.home.profile
 
 import android.os.Build
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,10 +29,10 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -43,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -66,7 +69,8 @@ import com.ahmetocak.movieapp.presentation.ui.theme.primaryDark
 import com.ahmetocak.movieapp.presentation.ui.theme.primaryLight
 import com.ahmetocak.movieapp.utils.Dimens
 
-private val PROFILE_IMG_SIZE = 128.dp
+private val PROFILE_IMG_SIZE = 144.dp
+private val APP_ICON_SIZE = 96.dp
 
 private enum class Languages {
     ENGLISH,
@@ -100,7 +104,8 @@ fun ProfileScreen(
             onLanguageSelect = {},
             isAppThemeDark = isSystemInDarkTheme(),
             onDynamicColorSwitchChange = {},
-            isDynamicColorActive = false
+            isDynamicColorActive = false,
+            onPickUpFromGalleryClick = {}
         )
     }
 }
@@ -116,7 +121,8 @@ private fun ProfileScreenContent(
     onLanguageSelect: (Languages) -> Unit,
     isAppThemeDark: Boolean,
     onDynamicColorSwitchChange: (Boolean) -> Unit,
-    isDynamicColorActive: Boolean
+    isDynamicColorActive: Boolean,
+    onPickUpFromGalleryClick: () -> Unit
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ProfileSection(
@@ -125,7 +131,8 @@ private fun ProfileScreenContent(
             profileImageUrl = profileImageUrl,
             userEmail = userEmail,
             onDeleteAccountClick = onDeleteAccountClick,
-            isAppThemeDark = isAppThemeDark
+            isAppThemeDark = isAppThemeDark,
+            onPickUpFromGalleryClick = onPickUpFromGalleryClick
         )
         SettingsSection(
             modifier = Modifier.weight(3f),
@@ -146,7 +153,8 @@ private fun ProfileSection(
     profileImageUrl: String,
     userEmail: String,
     onDeleteAccountClick: () -> Unit,
-    isAppThemeDark: Boolean
+    isAppThemeDark: Boolean,
+    onPickUpFromGalleryClick: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -167,10 +175,30 @@ private fun ProfileSection(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            ElevatedCard(modifier = Modifier.size(PROFILE_IMG_SIZE), shape = CircleShape) {
+            Box(
+                modifier = Modifier.size(PROFILE_IMG_SIZE),
+                contentAlignment = Alignment.BottomEnd
+            ) {
                 AnimatedAsyncImage(
-                    modifier = Modifier.fillMaxSize(), imageUrl = profileImageUrl
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape),
+                    imageUrl = profileImageUrl,
+                    borderShape = CircleShape,
+                    borderStroke = BorderStroke(
+                        width = 2.dp,
+                        brush = Brush.linearGradient(
+                            listOf(Color(0xFF00C3FF), Color(0xFFFFFF1C))
+                        )
+                    )
                 )
+                IconButton(
+                    modifier = Modifier.size(48.dp),
+                    onClick = onPickUpFromGalleryClick,
+                    colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
+                ) {
+                    Icon(imageVector = Icons.Filled.Image, contentDescription = null)
+                }
             }
             Text(
                 modifier = Modifier.padding(top = Dimens.twoLevelPadding),
@@ -315,15 +343,24 @@ private fun SettingItem(height: Dp = 48.dp, content: @Composable RowScope.() -> 
 
 @Composable
 private fun AppIcon(modifier: Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.BottomCenter) {
-        Image(
-            modifier = Modifier
-                .padding(Dimens.twoLevelPadding)
-                .size(128.dp),
-            bitmap = LocalContext.current.packageManager.getApplicationIcon("com.ahmetocak.movieapp")
-                .toBitmap().asImageBitmap(),
-            contentDescription = null
-        )
+    Box(
+        modifier = modifier.padding(bottom = Dimens.oneLevelPadding),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Image(
+                modifier = Modifier
+                    .padding(Dimens.twoLevelPadding)
+                    .size(APP_ICON_SIZE),
+                bitmap = LocalContext.current.packageManager.getApplicationIcon("com.ahmetocak.movieapp")
+                    .toBitmap().asImageBitmap(),
+                contentDescription = null
+            )
+            Text(
+                text = "Ahmet Ocak - ${stringResource(id = R.string.app_name)}",
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
     }
 }
 
