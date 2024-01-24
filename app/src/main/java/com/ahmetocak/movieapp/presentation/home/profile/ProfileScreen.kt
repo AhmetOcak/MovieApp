@@ -44,11 +44,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
@@ -284,7 +286,8 @@ private fun AppIcon(modifier: Modifier) {
             modifier = Modifier
                 .padding(Dimens.twoLevelPadding)
                 .size(128.dp),
-            painter = painterResource(id = R.drawable.auth_background_image),
+            bitmap = LocalContext.current.packageManager.getApplicationIcon("com.ahmetocak.movieapp")
+                .toBitmap().asImageBitmap(),
             contentDescription = null
         )
     }
