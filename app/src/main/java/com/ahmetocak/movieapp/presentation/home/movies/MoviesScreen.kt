@@ -33,6 +33,8 @@ import com.ahmetocak.movieapp.utils.ScreenPreview
 import com.ahmetocak.movieapp.utils.SeeAllType
 import com.ahmetocak.movieapp.utils.TMDB
 
+private val POPULAR_MOVIE_ITEM_WIDTH = 196.dp
+
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
@@ -105,6 +107,7 @@ private fun PopularMoviesSection(
         ) {
             items(6) {
                 MovieItem(
+                    modifier = Modifier.width(POPULAR_MOVIE_ITEM_WIDTH),
                     id = 0,
                     name = "The Movie Name",
                     categories = listOf("Drama", "Fear", "Sport"),
