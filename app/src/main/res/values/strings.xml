@@ -29,6 +29,7 @@
     <string name="turkish_text">Turkish</string>
     <string name="my_watch_list_text">My Watch List</string>
     <string name="director_text">Director</string>
+    <string name="dynamic_color_text">Dynamic Color</string>
 
     <!-- Navigation Bar Strings-->
     <string name="movies_text">Movies</string>

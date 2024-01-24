@@ -1,5 +1,6 @@
 package com.ahmetocak.movieapp.presentation.home.profile
 
+import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -97,7 +98,9 @@ fun ProfileScreen(
             onDeleteAccountClick = {},
             onDarkThemeSwitchChange = {},
             onLanguageSelect = {},
-            isAppThemeDark = isSystemInDarkTheme()
+            isAppThemeDark = isSystemInDarkTheme(),
+            onDynamicColorSwitchChange = {},
+            isDynamicColorActive = false
         )
     }
 }
@@ -111,7 +114,9 @@ private fun ProfileScreenContent(
     onDeleteAccountClick: () -> Unit,
     onDarkThemeSwitchChange: (Boolean) -> Unit,
     onLanguageSelect: (Languages) -> Unit,
-    isAppThemeDark: Boolean
+    isAppThemeDark: Boolean,
+    onDynamicColorSwitchChange: (Boolean) -> Unit,
+    isDynamicColorActive: Boolean
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ProfileSection(
@@ -126,7 +131,9 @@ private fun ProfileScreenContent(
             modifier = Modifier.weight(3f),
             onDarkThemeSwitchChange = onDarkThemeSwitchChange,
             onLanguageSelect = onLanguageSelect,
-            isAppThemeDark = isAppThemeDark
+            isAppThemeDark = isAppThemeDark,
+            onDynamicColorSwitchChange = onDynamicColorSwitchChange,
+            isDynamicColorActive = isDynamicColorActive
         )
     }
     AppIcon(modifier = modifier.fillMaxSize())
@@ -179,7 +186,9 @@ private fun SettingsSection(
     modifier: Modifier,
     onDarkThemeSwitchChange: (Boolean) -> Unit,
     onLanguageSelect: (Languages) -> Unit,
-    isAppThemeDark: Boolean
+    isAppThemeDark: Boolean,
+    onDynamicColorSwitchChange: (Boolean) -> Unit,
+    isDynamicColorActive: Boolean
 ) {
     Column(
         modifier = modifier
@@ -200,6 +209,12 @@ private fun SettingsSection(
             isAppThemeDark = isAppThemeDark
         )
         LanguagePicker(onLanguageSelect = onLanguageSelect)
+        if (Build.VERSION.SDK_INT >= 31) {
+            DynamicColorPicker(
+                onDynamicColorSwitchChange = onDynamicColorSwitchChange,
+                isDynamicColorActive = isDynamicColorActive
+            )
+        }
     }
 }
 
@@ -264,6 +279,25 @@ private fun LanguagePicker(onLanguageSelect: (Languages) -> Unit) {
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun DynamicColorPicker(
+    onDynamicColorSwitchChange: (Boolean) -> Unit,
+    isDynamicColorActive: Boolean
+) {
+    var checked by remember { mutableStateOf(isDynamicColorActive) }
+
+    SettingItem {
+        Text(text = stringResource(id = R.string.dynamic_color_text))
+        Switch(
+            checked = checked,
+            onCheckedChange = {
+                onDynamicColorSwitchChange(it)
+                checked = !checked
+            }
+        )
     }
 }
 

@@ -28,6 +28,7 @@
     <string name="turkish_text">Türkçe</string>
     <string name="my_watch_list_text">İzleme Listem</string>
     <string name="director_text">Yönetmen</string>
+    <string name="dynamic_color_text">Dinamik Renk</string>
 
     <!-- Navigation Bar Strings -->
     <string name="movies_text">Filmler</string>
