@@ -30,6 +30,8 @@
     <string name="my_watch_list_text">My Watch List</string>
     <string name="director_text">Director</string>
     <string name="dynamic_color_text">Dynamic Color</string>
+    <string name="search_result_empty_text">The movie you are looking for could not be found.</string>
+    <string name="search_something_text">Hey! Is there a movie that interests you? Search and discover now! 🎬</string>
 
     <!-- Navigation Bar Strings-->
     <string name="movies_text">Movies</string>

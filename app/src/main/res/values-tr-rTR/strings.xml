@@ -29,6 +29,8 @@
     <string name="my_watch_list_text">İzleme Listem</string>
     <string name="director_text">Yönetmen</string>
     <string name="dynamic_color_text">Dinamik Renk</string>
+    <string name="search_result_empty_text">Aradığınız film bulunamadı.</string>
+    <string name="search_something_text">"Hey! İlgini çeken bir film mi var? Hemen ara ve keşfet! 🎬"</string>
 
     <!-- Navigation Bar Strings -->
     <string name="movies_text">Filmler</string>

@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +25,8 @@ import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.utils.Dimens
+
+private val ViewIconsSize = 112.dp
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier, onNavigateToRoute: (String) -> Unit) {
@@ -69,22 +74,20 @@ private fun SearchScreenContent(
                 Text(text = searchLabelText)
             }
         )
+        SearchSomethingView()
     }
 }
 
 @Composable
-private fun SearchResultEmptyView(
-    imageId: Int,
-    messageId: Int
-) {
+private fun SearchResultEmptyView() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            modifier = Modifier.size(112.dp),
-            painter = painterResource(id = imageId),
+            modifier = Modifier.size(ViewIconsSize),
+            painter = painterResource(id = R.drawable.search_result_empty),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
@@ -93,7 +96,30 @@ private fun SearchResultEmptyView(
                 .fillMaxWidth()
                 .padding(top = Dimens.twoLevelPadding)
                 .padding(horizontal = Dimens.fourLevelPadding),
-            text = stringResource(id = messageId),
+            text = stringResource(id = R.string.search_result_empty_text),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun SearchSomethingView() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            modifier = Modifier.size(ViewIconsSize),
+            imageVector = Icons.Filled.Search,
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Dimens.twoLevelPadding)
+                .padding(horizontal = Dimens.fourLevelPadding),
+            text = stringResource(id = R.string.search_something_text),
             textAlign = TextAlign.Center
         )
     }
