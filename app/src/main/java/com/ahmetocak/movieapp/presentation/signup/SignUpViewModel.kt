@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.R
-import com.ahmetocak.movieapp.common.helpers.AuthInputChecker
+import com.ahmetocak.movieapp.common.helpers.SignUpInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.model.auth.Auth
@@ -49,7 +49,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun signUp(upPress: () -> Unit) {
-        val isEmailOk = AuthInputChecker.checkEmailField(
+        val isEmailOk = SignUpInputChecker.checkEmailField(
             email = emailValue,
             onBlank = {
                 _uiState.update {
@@ -68,7 +68,7 @@ class SignUpViewModel @Inject constructor(
             }
         )
 
-        val isPasswordOk = AuthInputChecker.checkPasswordField(
+        val isPasswordOk = SignUpInputChecker.checkPasswordField(
             password = passwordValue,
             onBlank = {
                 _uiState.update {
@@ -87,7 +87,7 @@ class SignUpViewModel @Inject constructor(
             }
         )
 
-        val isConfirmPasswordOk = AuthInputChecker.checkConfirmPasswordField(
+        val isConfirmPasswordOk = SignUpInputChecker.checkConfirmPasswordField(
             confirmPassword = confirmPasswordValue,
             password = passwordValue,
             onBlank = {

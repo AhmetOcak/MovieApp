@@ -2,7 +2,7 @@ package com.ahmetocak.movieapp.common.helpers
 
 import android.util.Patterns.EMAIL_ADDRESS
 
-object AuthInputChecker {
+object SignUpInputChecker {
 
     fun checkEmailField(
         email: String,
@@ -52,6 +52,36 @@ object AuthInputChecker {
             false
         } else if (confirmPassword != password) {
             onUnValid()
+            false
+        } else {
+            onSuccess()
+            true
+        }
+    }
+}
+
+object LoginInputChecker {
+    fun checkEmailField(
+        email: String,
+        onBlank: () -> Unit,
+        onSuccess: () -> Unit
+    ): Boolean {
+        return if (email.isBlank()) {
+            onBlank()
+            false
+        } else {
+            onSuccess()
+            true
+        }
+    }
+
+    fun checkPasswordField(
+        password: String,
+        onBlank: () -> Unit,
+        onSuccess: () -> Unit
+    ): Boolean {
+        return if (password.isBlank()) {
+            onBlank()
             false
         } else {
             onSuccess()
