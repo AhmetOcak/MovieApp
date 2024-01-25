@@ -1,5 +1,9 @@
 package com.ahmetocak.movieapp.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSource
+import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSourceImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -17,5 +21,11 @@ object DataSourceModule {
     @Provides
     fun provideFirebaseAuthDataSource(firebaseAuth: FirebaseAuth): FirebaseAuthDataSource {
         return FirebaseAuthDataSourceImpl(firebaseAuth)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStoreDataSource(datastore: DataStore<Preferences>): DataStoreDataSource {
+        return DataStoreDataSourceImpl(datastore)
     }
 }
