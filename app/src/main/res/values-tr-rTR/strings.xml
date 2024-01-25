@@ -47,4 +47,13 @@
     <string name="delete_account_text">Hesabı Sil</string>
     <string name="delete_account_description_text">Hesabınızı silmek istediğinizden emin misiniz ? Hesabınızı sildiğinizde tüm kullanıcı bilgileriniz de silinir. Bu süreç geri döndürülemez.</string>
     <string name="delete_text">Sil</string>
+
+    <!-- Input Error Messages -->
+    <string name="blank_field">Lütfen bu alanı doldurunuz</string>
+    <string name="passwords_dont_match">Şifreler uyuşmuyor</string>
+    <string name="password_length">Şifre minimum 6 karakterden oluşmalı</string>
+    <string name="unvalid_email">Lütfen geçerli bir email adresi giriniz</string>
+
+    <!-- Error Messages -->
+    <string name="unknown_error">Lütfen daha sonra tekrar deneyin</string>
 </resources>

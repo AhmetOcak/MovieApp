@@ -1,16 +1,23 @@
 package com.ahmetocak.movieapp.presentation.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Surface
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
@@ -18,32 +25,53 @@ import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthBackground
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
-import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
 import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
-import com.ahmetocak.movieapp.utils.ScreenPreview
 
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier, upPress: () -> Unit) {
+fun SignUpScreen(
+    modifier: Modifier = Modifier,
+    upPress: () -> Unit,
+    viewModel: SignUpViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    if (uiState.errorMessages.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.errorMessages.first().asString(),
+            Toast.LENGTH_LONG
+        ).show()
+        viewModel.consumedErrorMessage()
+    }
 
     MovieScaffold(modifier = modifier) { paddingValues ->
         AuthBackground()
-        SignUpScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            emailValue = "",
-            onEmailValueChange = {},
-            emailFieldError = false,
-            emailFieldLabel = stringResource(id = R.string.email_label),
-            passwordValue = "",
-            onPasswordValueChange = {},
-            passwordFieldError = false,
-            passwordFieldLabel = stringResource(id = R.string.password_label),
-            confirmPasswordValue = "",
-            onConfirmPasswordValueChange = {},
-            confirmPasswordFieldError = false,
-            confirmPasswordLabel = stringResource(id = R.string.password_confirm_label),
-            onSignUpClick = { upPress() }
-        )
+        if (uiState.isLoading) {
+            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            SignUpScreenContent(
+                modifier = Modifier.padding(paddingValues),
+                emailValue = viewModel.emailValue,
+                onEmailValueChange = remember(viewModel) { viewModel::updateEmailValue },
+                emailFieldError = uiState.emailFieldErrorMessage != null,
+                emailFieldLabel = uiState.emailFieldErrorMessage?.asString()
+                    ?: stringResource(id = R.string.email_label),
+                passwordValue = viewModel.passwordValue,
+                onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
+                passwordFieldError = uiState.passwordFieldErrorMessage != null,
+                passwordFieldLabel = uiState.passwordFieldErrorMessage?.asString()
+                    ?: stringResource(id = R.string.password_label),
+                confirmPasswordValue = viewModel.confirmPasswordValue,
+                onConfirmPasswordValueChange = remember(viewModel) { viewModel::updateConfirmPasswordValue },
+                confirmPasswordFieldError = uiState.confirmPasswordFieldErrorMessage != null,
+                confirmPasswordLabel = uiState.confirmPasswordFieldErrorMessage?.asString()
+                    ?: stringResource(id = R.string.password_confirm_label),
+                onSignUpClick = remember(viewModel) { { viewModel.signUp(upPress) } }
+            )
+        }
     }
 }
 
@@ -99,15 +127,5 @@ private fun SignUpScreenContent(
             text = stringResource(id = R.string.sign_up_button_text),
             onClick = onSignUpClick
         )
-    }
-}
-
-@ScreenPreview
-@Composable
-private fun SignUpScreenPreview() {
-    MovieAppTheme {
-        Surface {
-            SignUpScreen(upPress = {})
-        }
     }
 }

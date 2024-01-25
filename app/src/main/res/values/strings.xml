@@ -48,4 +48,13 @@
     <string name="delete_account_text">Delete Account</string>
     <string name="delete_account_description_text">Are you sure you want to delete your account ? When you delete your account, all your user information is also deleted. This process is irreversible.</string>
     <string name="delete_text">Delete</string>
+
+    <!-- Input Error Messages -->
+    <string name="blank_field">Please fill in this field</string>
+    <string name="passwords_dont_match">Passwords do not match</string>
+    <string name="password_length">Password must be at least 6 characters in length</string>
+    <string name="unvalid_email">Please enter a valid email address</string>
+
+    <!-- Error Messages -->
+    <string name="unknown_error">Please try again later</string>
 </resources>
