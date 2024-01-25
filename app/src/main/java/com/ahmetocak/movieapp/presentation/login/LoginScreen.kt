@@ -33,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.common.DialogUiEvent
+import com.ahmetocak.movieapp.presentation.ui.components.ButtonCircularProgressIndicator
 import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
 import com.ahmetocak.movieapp.presentation.ui.components.MovieDialog
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
@@ -62,6 +64,28 @@ fun LoginScreen(
         viewModel.consumedErrorMessage()
     }
 
+    if (uiState.userMessages.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.userMessages.first().asString(),
+            Toast.LENGTH_LONG
+        ).show()
+        viewModel.consumedUserMessage()
+    }
+
+    if (uiState.dialogUiEvent != DialogUiEvent.InActive) {
+        ForgotPasswordDialog(
+            onDismissRequest = remember(viewModel) { viewModel::endResetPasswordDialog },
+            onSendClick = remember(viewModel) { viewModel::sendPasswordResetMail },
+            isLoading = uiState.dialogUiEvent == DialogUiEvent.Loading,
+            emailLabelText = uiState.passwordResetFieldErrorMessage?.asString()
+                ?: stringResource(id = R.string.email_address_text),
+            emailValue = viewModel.passwordResetEmailValue,
+            onEmailValueChange = remember(viewModel) { viewModel::updatePasswordResetMail },
+            isEmailFieldError = uiState.passwordResetFieldErrorMessage != null
+        )
+    }
+
     MovieScaffold(modifier = modifier) { paddingValues ->
         AuthBackground()
         if (uiState.isLoading) {
@@ -84,7 +108,7 @@ fun LoginScreen(
                 onLoginClick = remember(viewModel) { { viewModel.login(onLoginClick) } },
                 onCheckedChange = {},
                 onCreateAccountClick = onCreateAccountClick,
-                onForgotPasswordClick = {},
+                onForgotPasswordClick = remember(viewModel) { viewModel::startResetPasswordDialog },
                 rememberMeValue = false
             )
         }
@@ -186,10 +210,15 @@ private fun RememberMeBox(
 
 @Composable
 private fun ForgotPasswordDialog(
-    onCancelClick: () -> Unit,
-    onSendClick: () -> Unit
+    onDismissRequest: () -> Unit,
+    onSendClick: () -> Unit,
+    isLoading: Boolean,
+    emailValue: String,
+    onEmailValueChange: (String) -> Unit,
+    emailLabelText: String,
+    isEmailFieldError: Boolean
 ) {
-    MovieDialog(onDismissRequest = onCancelClick) {
+    MovieDialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -202,19 +231,27 @@ private fun ForgotPasswordDialog(
             )
             Text(text = stringResource(id = R.string.password_reset_description_text))
             TextField(
-                value = "",
-                onValueChange = {},
-                placeholder = {
-                    Text(text = stringResource(id = R.string.email_address_text))
-                }
+                value = emailValue,
+                onValueChange = onEmailValueChange,
+                label = {
+                    Text(text = emailLabelText)
+                },
+                isError = isEmailFieldError
             )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                ElevatedButton(onClick = onCancelClick) {
+                ElevatedButton(onClick = onDismissRequest) {
                     Text(text = stringResource(id = R.string.cancel_text))
                 }
                 Spacer(modifier = Modifier.width(Dimens.twoLevelPadding))
-                ElevatedButton(onClick = onSendClick) {
-                    Text(text = stringResource(id = R.string.send_text))
+                ElevatedButton(
+                    enabled = !isLoading && emailValue.isNotBlank(),
+                    onClick = onSendClick
+                ) {
+                    if (isLoading) {
+                        ButtonCircularProgressIndicator()
+                    } else {
+                        Text(text = stringResource(id = R.string.send_text))
+                    }
                 }
             }
         }

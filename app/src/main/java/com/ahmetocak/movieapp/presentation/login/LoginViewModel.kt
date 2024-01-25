@@ -6,8 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.common.DialogUiEvent
 import com.ahmetocak.movieapp.common.helpers.LoginInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
+import com.ahmetocak.movieapp.common.helpers.isValidEmail
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.model.auth.Auth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,12 +35,31 @@ class LoginViewModel @Inject constructor(
     var passwordValue by mutableStateOf("")
         private set
 
+    var passwordResetEmailValue by mutableStateOf("")
+        private set
+
     fun updateEmailValue(value: String) {
         emailValue = value
     }
 
     fun updatePasswordValue(value: String) {
         passwordValue = value
+    }
+
+    fun updatePasswordResetMail(value: String) {
+        passwordResetEmailValue = value
+    }
+
+    fun startResetPasswordDialog() {
+        _uiState.update {
+            it.copy(dialogUiEvent = DialogUiEvent.Active)
+        }
+    }
+
+    fun endResetPasswordDialog() {
+        _uiState.update {
+            it.copy(dialogUiEvent = DialogUiEvent.InActive)
+        }
     }
 
     fun login(onSuccess: () -> Unit) {
@@ -98,9 +119,52 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun sendPasswordResetMail() {
+        if (passwordResetEmailValue.isValidEmail()) {
+            viewModelScope.launch(Dispatchers.IO) {
+                _uiState.update {
+                    it.copy(dialogUiEvent = DialogUiEvent.Loading)
+                }
+                firebaseRepository.sendResetPasswordEmail(passwordResetEmailValue)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            _uiState.update {
+                                it.copy(
+                                    dialogUiEvent = DialogUiEvent.InActive,
+                                    userMessages = listOf(UiText.StringResource(R.string.password_reset_mail_sent))
+                                )
+                            }
+                        } else {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessages = listOf(
+                                        task.exception?.message?.let { message ->
+                                            UiText.DynamicString(message)
+                                        } ?: kotlin.run {
+                                            UiText.StringResource(R.string.unknown_error)
+                                        }
+                                    )
+                                )
+                            }
+                        }
+                    }
+            }
+        } else {
+            _uiState.update {
+                it.copy(passwordResetFieldErrorMessage = UiText.StringResource(R.string.unvalid_email))
+            }
+        }
+    }
+
     fun consumedErrorMessage() {
         _uiState.update {
             it.copy(errorMessages = emptyList())
+        }
+    }
+
+    fun consumedUserMessage() {
+        _uiState.update {
+            it.copy(userMessages = emptyList())
         }
     }
 }
@@ -108,6 +172,9 @@ class LoginViewModel @Inject constructor(
 data class LoginUiState(
     val isLoading: Boolean = false,
     val errorMessages: List<UiText> = emptyList(),
+    val userMessages: List<UiText> = emptyList(),
     val emailFieldErrorMessage: UiText? = null,
-    val passwordFieldErrorMessage: UiText? = null
+    val passwordFieldErrorMessage: UiText? = null,
+    val passwordResetFieldErrorMessage: UiText? = null,
+    val dialogUiEvent: DialogUiEvent = DialogUiEvent.InActive
 )

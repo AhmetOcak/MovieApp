@@ -56,4 +56,7 @@
 
     <!-- Error Messages -->
     <string name="unknown_error">Lütfen daha sonra tekrar deneyin</string>
+
+    <!-- User Messages -->
+    <string name="password_reset_mail_sent">Şifre sıfırlama maili gönderildi. Lütfen mail kutunu kontrol et</string>
 </resources>

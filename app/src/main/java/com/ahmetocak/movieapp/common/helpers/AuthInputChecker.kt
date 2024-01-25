@@ -2,6 +2,8 @@ package com.ahmetocak.movieapp.common.helpers
 
 import android.util.Patterns.EMAIL_ADDRESS
 
+fun String.isValidEmail(): Boolean = EMAIL_ADDRESS.matcher(this).matches()
+
 object SignUpInputChecker {
 
     fun checkEmailField(
@@ -13,7 +15,7 @@ object SignUpInputChecker {
         return if (email.isBlank()) {
             onBlank()
             false
-        } else if (!EMAIL_ADDRESS.matcher(email).matches()) {
+        } else if (!email.isValidEmail()) {
             onUnValid()
             false
         } else {
