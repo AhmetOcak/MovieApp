@@ -106,10 +106,10 @@ fun LoginScreen(
                 passwordFieldLabel = uiState.passwordFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.password_label),
                 onLoginClick = remember(viewModel) { { viewModel.login(onLoginClick) } },
-                onCheckedChange = {},
+                onRememberCheckedChange = remember(viewModel) { viewModel::updateRememberMeValue },
                 onCreateAccountClick = onCreateAccountClick,
                 onForgotPasswordClick = remember(viewModel) { viewModel::startResetPasswordDialog },
-                rememberMeValue = false
+                rememberMeValue = viewModel.rememberMeValue
             )
         }
     }
@@ -127,7 +127,7 @@ private fun LoginScreenContent(
     passwordFieldError: Boolean,
     passwordFieldLabel: String,
     onLoginClick: () -> Unit,
-    onCheckedChange: (Boolean) -> Unit,
+    onRememberCheckedChange: (Boolean) -> Unit,
     onCreateAccountClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     rememberMeValue: Boolean
@@ -153,7 +153,7 @@ private fun LoginScreenContent(
             isError = passwordFieldError,
             labelText = passwordFieldLabel
         )
-        RememberMeBox(checked = rememberMeValue, onCheckedChange = onCheckedChange)
+        RememberMeBox(checked = rememberMeValue, onRememberCheckedChange = onRememberCheckedChange)
         MovieButton(
             modifier = Modifier
                 .height(ComponentDimens.buttonHeight)
@@ -189,9 +189,7 @@ private fun SignUpNow(onCreateAccountClick: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RememberMeBox(
-    checked: Boolean, onCheckedChange: (Boolean) -> Unit
-) {
+private fun RememberMeBox(checked: Boolean, onRememberCheckedChange: (Boolean) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,9 +197,7 @@ private fun RememberMeBox(
         verticalAlignment = Alignment.CenterVertically
     ) {
         CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-            Checkbox(
-                checked = checked, onCheckedChange = onCheckedChange
-            )
+            Checkbox(checked = checked, onCheckedChange = onRememberCheckedChange)
         }
         Spacer(modifier = Modifier.width(4.dp))
         Text(text = stringResource(id = R.string.remember_me_text))

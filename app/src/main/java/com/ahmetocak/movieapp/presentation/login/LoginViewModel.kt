@@ -10,10 +10,11 @@ import com.ahmetocak.movieapp.common.DialogUiEvent
 import com.ahmetocak.movieapp.common.helpers.LoginInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.common.helpers.isValidEmail
+import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.model.auth.Auth
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +24,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val firebaseRepository: FirebaseRepository
+    private val firebaseRepository: FirebaseRepository,
+    private val dataStoreRepository: DataStoreRepository,
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -38,6 +41,9 @@ class LoginViewModel @Inject constructor(
     var passwordResetEmailValue by mutableStateOf("")
         private set
 
+    var rememberMeValue by mutableStateOf(false)
+        private set
+
     fun updateEmailValue(value: String) {
         emailValue = value
     }
@@ -48,6 +54,10 @@ class LoginViewModel @Inject constructor(
 
     fun updatePasswordResetMail(value: String) {
         passwordResetEmailValue = value
+    }
+
+    fun updateRememberMeValue(value: Boolean) {
+        rememberMeValue = value
     }
 
     fun startResetPasswordDialog() {
@@ -92,13 +102,14 @@ class LoginViewModel @Inject constructor(
         )
 
         if (isEmailOk && isPasswordOk) {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(ioDispatcher) {
                 _uiState.update {
                     it.copy(isLoading = true)
                 }
                 firebaseRepository.login(auth = Auth(emailValue, passwordValue))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            handleRememberMe()
                             onSuccess()
                         } else {
                             _uiState.update {
@@ -119,9 +130,17 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    private fun handleRememberMe() {
+        if (rememberMeValue) {
+            viewModelScope.launch(ioDispatcher) {
+                dataStoreRepository.updateRememberMe(true)
+            }
+        }
+    }
+
     fun sendPasswordResetMail() {
         if (passwordResetEmailValue.isValidEmail()) {
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(ioDispatcher) {
                 _uiState.update {
                     it.copy(dialogUiEvent = DialogUiEvent.Loading)
                 }
