@@ -1,6 +1,8 @@
 package com.ahmetocak.movieapp.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,20 +13,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
 import com.ahmetocak.movieapp.presentation.ui.components.MovieDialog
@@ -34,34 +41,53 @@ import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthBackground
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
-import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
 import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
-import com.ahmetocak.movieapp.utils.ScreenPreview
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier = Modifier, onCreateAccountClick: () -> Unit, onLoginClick: () -> Unit
+    modifier: Modifier = Modifier,
+    onCreateAccountClick: () -> Unit,
+    onLoginClick: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    if (uiState.errorMessages.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.errorMessages.first().asString(),
+            Toast.LENGTH_LONG
+        ).show()
+        viewModel.consumedErrorMessage()
+    }
 
     MovieScaffold(modifier = modifier) { paddingValues ->
         AuthBackground()
-        LoginScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            emailValue = "",
-            onEmailValueChange = {},
-            emailFieldError = false,
-            emailFieldLabel = stringResource(id = R.string.email_label),
-            passwordValue = "",
-            onPasswordValueChange = {},
-            passwordFieldError = false,
-            passwordFieldLabel = stringResource(id = R.string.password_label),
-            onLoginClick = onLoginClick,
-            onCheckedChange = {},
-            onCreateAccountClick = onCreateAccountClick,
-            onForgotPasswordClick = {},
-            rememberMeValue = false
-        )
+        if (uiState.isLoading) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            LoginScreenContent(
+                modifier = Modifier.padding(paddingValues),
+                emailValue = viewModel.emailValue,
+                onEmailValueChange = remember(viewModel) { viewModel::updateEmailValue },
+                emailFieldError = uiState.emailFieldErrorMessage != null,
+                emailFieldLabel = uiState.emailFieldErrorMessage?.asString()
+                    ?: stringResource(id = R.string.email_label),
+                passwordValue = viewModel.passwordValue,
+                onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
+                passwordFieldError = uiState.passwordFieldErrorMessage != null,
+                passwordFieldLabel = uiState.passwordFieldErrorMessage?.asString()
+                    ?: stringResource(id = R.string.password_label),
+                onLoginClick = remember(viewModel) { { viewModel.login(onLoginClick) } },
+                onCheckedChange = {},
+                onCreateAccountClick = onCreateAccountClick,
+                onForgotPasswordClick = {},
+                rememberMeValue = false
+            )
+        }
     }
 }
 
@@ -160,11 +186,10 @@ private fun RememberMeBox(
 
 @Composable
 private fun ForgotPasswordDialog(
-    onDismissRequest: () -> Unit,
     onCancelClick: () -> Unit,
     onSendClick: () -> Unit
 ) {
-    MovieDialog(onDismissRequest = onDismissRequest) {
+    MovieDialog(onDismissRequest = onCancelClick) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -192,16 +217,6 @@ private fun ForgotPasswordDialog(
                     Text(text = stringResource(id = R.string.send_text))
                 }
             }
-        }
-    }
-}
-
-@ScreenPreview
-@Composable
-private fun LoginScreenPreview() {
-    MovieAppTheme {
-        Surface {
-            LoginScreen(onCreateAccountClick = {}, onLoginClick = {})
         }
     }
 }
