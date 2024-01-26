@@ -1,6 +1,5 @@
 package com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ahmetocak.movieapp.model.movie.Movie
@@ -12,7 +11,6 @@ class MoviesPagingSource(private val apiCall: suspend (Int) -> Movie) : PagingSo
         return try {
             val currentPageNumber = params.key ?: 1
             val response = apiCall(currentPageNumber)
-            Log.d("PAGE", response.movies.toString())
             LoadResult.Page(
                 data = response.movies,
                 prevKey = null,

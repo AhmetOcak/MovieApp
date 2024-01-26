@@ -32,7 +32,7 @@ fun MovieItem(
     modifier: Modifier = Modifier,
     id: Int,
     name: String,
-    categories: List<String>,
+    categories: String,
     imageUrl: String,
     voteAverage: Double,
     voteCount: Int,
@@ -62,7 +62,7 @@ fun MovieItem(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = buildString { append(categories.joinToString(", ")) },
+                    text = categories,
                     style = MaterialTheme.typography.titleMedium.copy(color = Color.White),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
