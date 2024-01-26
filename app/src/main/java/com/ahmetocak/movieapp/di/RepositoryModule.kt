@@ -3,6 +3,7 @@ package com.ahmetocak.movieapp.di
 import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
+import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
 import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepositoryImpl
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
@@ -38,8 +39,9 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideMovieRepository(
-        movieRemoteDataSource: MovieRemoteDataSource
+        movieRemoteDataSource: MovieRemoteDataSource,
+        api: MovieApi
     ): MovieRepository {
-        return MovieRepositoryImpl(movieRemoteDataSource)
+        return MovieRepositoryImpl(movieRemoteDataSource, api)
     }
 }
