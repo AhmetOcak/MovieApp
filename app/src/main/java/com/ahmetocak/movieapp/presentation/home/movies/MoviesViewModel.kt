@@ -26,6 +26,7 @@ class MoviesViewModel @Inject constructor(
 
     init {
         getNowPlayingMovies()
+        getPopularMovies()
     }
 
     private fun getNowPlayingMovies() {
@@ -36,9 +37,28 @@ class MoviesViewModel @Inject constructor(
                         it.copy(nowPlayingMoviesState = MovieState.OnDataLoaded(response.data.movies))
                     }
                 }
+
                 is Response.Error -> {
                     _uiState.update {
                         it.copy(nowPlayingMoviesState = MovieState.OnError(response.errorMessage))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getPopularMovies() {
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = movieRepository.getPopularMoviesFirstPage()) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(popularMoviesState = MovieState.OnDataLoaded(response.data.movies))
+                    }
+                }
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(popularMoviesState = MovieState.OnError(response.errorMessage))
                     }
                 }
             }

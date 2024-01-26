@@ -65,7 +65,8 @@ fun MoviesScreen(
             modifier = Modifier.padding(paddingValues),
             onMovieClick = onMovieClick,
             onSeeAllClick = onSeeAllClick,
-            movieState = uiState.nowPlayingMoviesState
+            nowPlayingMoviesState = uiState.nowPlayingMoviesState,
+            popularMoviesState = uiState.popularMoviesState
         )
     }
 }
@@ -75,7 +76,8 @@ private fun MoviesScreenContent(
     modifier: Modifier,
     onMovieClick: (Int) -> Unit,
     onSeeAllClick: (SeeAllType) -> Unit,
-    movieState: MovieState
+    nowPlayingMoviesState: MovieState,
+    popularMoviesState: MovieState
 ) {
     Column(
         modifier = modifier
@@ -83,70 +85,54 @@ private fun MoviesScreenContent(
             .padding(vertical = Dimens.twoLevelPadding),
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
-        NowPlayingMoviesSection(
+        MovieSection(
             modifier = Modifier.weight(1f),
+            movieItemModifier = Modifier
+                .width(LocalConfiguration.current.screenWidthDp.dp)
+                .fillMaxHeight()
+                .padding(horizontal = Dimens.twoLevelPadding),
             onSeeAllClick = onSeeAllClick,
             onMovieClick = onMovieClick,
-            movieState = movieState
+            movieState = nowPlayingMoviesState,
+            seeAllType = SeeAllType.UPCOMING,
+            title = stringResource(id = R.string.now_playing_text)
         )
-        PopularMoviesSection(
+        MovieSection(
             modifier = Modifier.weight(1f),
+            movieItemModifier = Modifier.width(POPULAR_MOVIE_ITEM_WIDTH),
+            listContentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
             onSeeAllClick = onSeeAllClick,
-            onMovieClick = onMovieClick
+            onMovieClick = onMovieClick,
+            movieState = popularMoviesState,
+            seeAllType = SeeAllType.POPULAR,
+            title = stringResource(id = R.string.see_all_text)
         )
     }
 }
 
 @Composable
-private fun PopularMoviesSection(
-    modifier: Modifier,
-    onSeeAllClick: (SeeAllType) -> Unit,
-    onMovieClick: (Int) -> Unit
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-    ) {
-        ContentTitleSection(
-            text = stringResource(id = R.string.popular_movies_text),
-            onSeeAllClick = onSeeAllClick,
-            type = SeeAllType.POPULAR
-        )
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-        ) {
-            items(6) {
-                MovieItem(
-                    modifier = Modifier.width(POPULAR_MOVIE_ITEM_WIDTH),
-                    id = 0,
-                    name = "The Movie Name",
-                    categories = listOf("Drama", "Fear", "Sport"),
-                    imageUrl = "${TMDB.IMAGE_URL}/cwJrBL09kZAl7P2DQUttkPa6rob.jpg",
-                    voteAverage = 8.7,
-                    voteCount = 213,
-                    onClick = onMovieClick
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun NowPlayingMoviesSection(
-    modifier: Modifier,
+private fun MovieSection(
+    modifier: Modifier = Modifier,
+    movieItemModifier: Modifier = Modifier,
+    listContentPadding: PaddingValues = PaddingValues(0.dp),
+    reverseLayout: Boolean = false,
+    horizontalArrangement: Arrangement.Horizontal =
+        if (!reverseLayout) Arrangement.Start else Arrangement.End,
     onSeeAllClick: (SeeAllType) -> Unit,
     onMovieClick: (Int) -> Unit,
-    movieState: MovieState
+    movieState: MovieState,
+    seeAllType: SeeAllType,
+    title: String
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
         ContentTitleSection(
-            text = stringResource(id = R.string.now_playing_text),
+            text = title,
             onSeeAllClick = onSeeAllClick,
-            type = SeeAllType.UPCOMING
+            type = seeAllType
         )
         when (movieState) {
             is MovieState.Loading -> {
@@ -154,13 +140,13 @@ private fun NowPlayingMoviesSection(
             }
 
             is MovieState.OnDataLoaded -> {
-                LazyRow {
+                LazyRow(
+                    contentPadding = listContentPadding,
+                    horizontalArrangement = horizontalArrangement
+                ) {
                     items(movieState.movieList, key = { it.id }) { movie ->
                         MovieItem(
-                            modifier = Modifier
-                                .width(LocalConfiguration.current.screenWidthDp.dp)
-                                .fillMaxHeight()
-                                .padding(horizontal = Dimens.twoLevelPadding),
+                            modifier = movieItemModifier,
                             id = movie.id,
                             name = movie.movieName ?: "*",
                             categories = movie.genreIds.map { it.toString() },
@@ -183,6 +169,7 @@ private fun NowPlayingMoviesSection(
         }
     }
 }
+
 
 @Composable
 private fun ContentTitleSection(

@@ -6,4 +6,6 @@ import com.ahmetocak.movieapp.model.movie.Movie
 interface MovieRepository {
 
     suspend fun getNowPlayingMoviesFirstPage(): Response<Movie>
+
+    suspend fun getPopularMoviesFirstPage(): Response<Movie>
 }

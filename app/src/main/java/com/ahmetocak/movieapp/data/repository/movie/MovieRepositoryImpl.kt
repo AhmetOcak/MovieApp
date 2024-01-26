@@ -10,4 +10,7 @@ class MovieRepositoryImpl @Inject constructor(
 ) : MovieRepository {
     override suspend fun getNowPlayingMoviesFirstPage(): Response<Movie> =
         movieRemoteDataSource.getNowPlayingMoviesFirstPage()
+
+    override suspend fun getPopularMoviesFirstPage(): Response<Movie> =
+        movieRemoteDataSource.getPopularMoviesFirstPage()
 }

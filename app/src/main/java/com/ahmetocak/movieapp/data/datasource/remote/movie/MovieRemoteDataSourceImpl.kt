@@ -11,4 +11,7 @@ class MovieRemoteDataSourceImpl @Inject constructor(
 ) : MovieRemoteDataSource {
     override suspend fun getNowPlayingMoviesFirstPage(): Response<Movie> =
         apiCall { api.getNowPlayingMovies() }
+
+    override suspend fun getPopularMoviesFirstPage(): Response<Movie> =
+        apiCall { api.getPopularMovies() }
 }

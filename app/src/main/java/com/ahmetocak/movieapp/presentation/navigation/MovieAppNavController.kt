@@ -76,7 +76,11 @@ class MovieAppNavController(val navController: NavHostController) {
 
     fun navigateToHome(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
-            navController.navigate(MainDestinations.HOME_ROUTE)
+            navController.navigate(MainDestinations.HOME_ROUTE) {
+                popUpTo(MainDestinations.HOME_ROUTE) {
+                    inclusive = true
+                }
+            }
         }
     }
 }

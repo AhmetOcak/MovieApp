@@ -9,7 +9,13 @@ interface MovieApi {
 
     @GET(Network.EndPoints.NOW_PLAYING)
     suspend fun getNowPlayingMovies(
-        @Query("page") page: Int = 1,
-        @Query("api_key") apiKey: String = "ce10126f10a15837182856698036de55"
+        @Query(Network.Queries.PAGE) page: Int = 1,
+        @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
+    ): Movie
+
+    @GET(Network.EndPoints.POPULAR)
+    suspend fun getPopularMovies(
+        @Query(Network.Queries.PAGE) page: Int = 1,
+        @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
     ): Movie
 }
