@@ -1,12 +1,15 @@
 package com.ahmetocak.movieapp.model.movie
 
+import androidx.compose.runtime.Immutable
 import com.google.gson.annotations.SerializedName
 
+@Immutable
 data class Movie(
     @SerializedName("results")
     val movies: List<MovieContent>
 )
 
+@Immutable
 data class MovieContent(
     val id: Int,
 
