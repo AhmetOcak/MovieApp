@@ -78,7 +78,7 @@ fun MovieItem(
                         tint = RatingStarColor
                     )
                     Text(
-                        text = "$voteAverage ($voteCount)",
+                        text = "${String.format("%.1f", voteAverage)} ($voteCount)",
                         style = MaterialTheme.typography.titleMedium.copy(color = Color.White),
                     )
                 }
