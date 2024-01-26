@@ -57,6 +57,7 @@
 
     <!-- Error Messages -->
     <string name="unknown_error">Please try again later</string>
+    <string name="internet_error">Please check your internet connection</string>
 
     <!-- User Messages -->
     <string name="password_reset_mail_sent">Password reset mail has been sent. Please check your email box.</string>

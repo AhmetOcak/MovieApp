@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -21,9 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
+import com.ahmetocak.movieapp.presentation.ui.components.ErrorView
+import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
 import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
@@ -40,8 +46,10 @@ fun MoviesScreen(
     modifier: Modifier = Modifier,
     onMovieClick: (Int) -> Unit,
     onSeeAllClick: (SeeAllType) -> Unit,
-    onNavigateToRoute: (String) -> Unit
+    onNavigateToRoute: (String) -> Unit,
+    viewModel: MoviesViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
 
     MovieScaffold(
         modifier = modifier,
@@ -56,7 +64,8 @@ fun MoviesScreen(
         MoviesScreenContent(
             modifier = Modifier.padding(paddingValues),
             onMovieClick = onMovieClick,
-            onSeeAllClick = onSeeAllClick
+            onSeeAllClick = onSeeAllClick,
+            movieState = uiState.nowPlayingMoviesState
         )
     }
 }
@@ -65,7 +74,8 @@ fun MoviesScreen(
 private fun MoviesScreenContent(
     modifier: Modifier,
     onMovieClick: (Int) -> Unit,
-    onSeeAllClick: (SeeAllType) -> Unit
+    onSeeAllClick: (SeeAllType) -> Unit,
+    movieState: MovieState
 ) {
     Column(
         modifier = modifier
@@ -76,7 +86,8 @@ private fun MoviesScreenContent(
         NowPlayingMoviesSection(
             modifier = Modifier.weight(1f),
             onSeeAllClick = onSeeAllClick,
-            onMovieClick = onMovieClick
+            onMovieClick = onMovieClick,
+            movieState = movieState
         )
         PopularMoviesSection(
             modifier = Modifier.weight(1f),
@@ -125,7 +136,8 @@ private fun PopularMoviesSection(
 private fun NowPlayingMoviesSection(
     modifier: Modifier,
     onSeeAllClick: (SeeAllType) -> Unit,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    movieState: MovieState
 ) {
     Column(
         modifier = modifier,
@@ -136,20 +148,36 @@ private fun NowPlayingMoviesSection(
             onSeeAllClick = onSeeAllClick,
             type = SeeAllType.UPCOMING
         )
-        LazyRow {
-            items(5) {
-                MovieItem(
-                    modifier = Modifier
-                        .width(LocalConfiguration.current.screenWidthDp.dp)
-                        .fillMaxHeight()
-                        .padding(horizontal = Dimens.twoLevelPadding),
-                    id = 0,
-                    name = "The Movie Name",
-                    categories = listOf("Drama", "Fear", "Sport"),
-                    imageUrl = "${TMDB.IMAGE_URL}/f1AQhx6ZfGhPZFTVKgxG91PhEYc.jpg",
-                    voteAverage = 8.7,
-                    voteCount = 123,
-                    onClick = onMovieClick
+        when (movieState) {
+            is MovieState.Loading -> {
+                FullScreenCircularProgressIndicator()
+            }
+
+            is MovieState.OnDataLoaded -> {
+                LazyRow {
+                    items(movieState.movieList, key = { it.id }) { movie ->
+                        MovieItem(
+                            modifier = Modifier
+                                .width(LocalConfiguration.current.screenWidthDp.dp)
+                                .fillMaxHeight()
+                                .padding(horizontal = Dimens.twoLevelPadding),
+                            id = movie.id,
+                            name = movie.movieName ?: "*",
+                            categories = movie.genreIds.map { it.toString() },
+                            imageUrl = "${TMDB.IMAGE_URL}${movie.movieImageUrlPath}",
+                            voteAverage = movie.voteAverage ?: 0.0,
+                            voteCount = movie.voteCount ?: 0,
+                            onClick = onMovieClick
+                        )
+                    }
+                }
+            }
+
+            is MovieState.OnError -> {
+                ErrorView(
+                    modifier = Modifier.fillMaxSize(),
+                    errorMessage = movieState.errorMessage?.asString()
+                        ?: stringResource(id = R.string.unknown_error)
                 )
             }
         }
