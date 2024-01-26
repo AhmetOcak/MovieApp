@@ -94,7 +94,7 @@ private fun MoviesScreenContent(
             onSeeAllClick = onSeeAllClick,
             onMovieClick = onMovieClick,
             movieState = nowPlayingMoviesState,
-            seeAllType = SeeAllType.UPCOMING,
+            seeAllType = SeeAllType.NOW_PLAYING,
             title = stringResource(id = R.string.now_playing_text),
             usePosterImage = false
         )
@@ -107,7 +107,7 @@ private fun MoviesScreenContent(
             onMovieClick = onMovieClick,
             movieState = popularMoviesState,
             seeAllType = SeeAllType.POPULAR,
-            title = stringResource(id = R.string.see_all_text),
+            title = stringResource(id = R.string.popular_movies_text),
             usePosterImage = true
         )
     }
