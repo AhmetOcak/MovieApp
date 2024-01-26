@@ -11,7 +11,10 @@ data class MovieContent(
     val id: Int,
 
     @SerializedName("backdrop_path")
-    val movieImageUrlPath: String?,
+    val backdropImagePath: String?,
+
+    @SerializedName("poster_path")
+    val posterImagePath: String?,
 
     @SerializedName("genre_ids")
     val genreIds: List<Int>,

@@ -95,7 +95,8 @@ private fun MoviesScreenContent(
             onMovieClick = onMovieClick,
             movieState = nowPlayingMoviesState,
             seeAllType = SeeAllType.UPCOMING,
-            title = stringResource(id = R.string.now_playing_text)
+            title = stringResource(id = R.string.now_playing_text),
+            usePosterImage = false
         )
         MovieSection(
             modifier = Modifier.weight(1f),
@@ -106,7 +107,8 @@ private fun MoviesScreenContent(
             onMovieClick = onMovieClick,
             movieState = popularMoviesState,
             seeAllType = SeeAllType.POPULAR,
-            title = stringResource(id = R.string.see_all_text)
+            title = stringResource(id = R.string.see_all_text),
+            usePosterImage = true
         )
     }
 }
@@ -123,7 +125,8 @@ private fun MovieSection(
     onMovieClick: (Int) -> Unit,
     movieState: MovieState,
     seeAllType: SeeAllType,
-    title: String
+    title: String,
+    usePosterImage: Boolean
 ) {
     Column(
         modifier = modifier,
@@ -150,7 +153,7 @@ private fun MovieSection(
                             id = movie.id,
                             name = movie.movieName ?: "*",
                             categories = movie.genreIds.map { it.toString() },
-                            imageUrl = "${TMDB.IMAGE_URL}${movie.movieImageUrlPath}",
+                            imageUrl = "${TMDB.IMAGE_URL}${if (usePosterImage) movie.posterImagePath else movie.backdropImagePath}",
                             voteAverage = movie.voteAverage ?: 0.0,
                             voteCount = movie.voteCount ?: 0,
                             onClick = onMovieClick
