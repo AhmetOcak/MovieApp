@@ -13,5 +13,11 @@ object Network {
     const val BASE_URL = "https://api.themoviedb.org/"
     object EndPoints {
         const val NOW_PLAYING = "/3/movie/now_playing"
+        const val POPULAR = "/3/movie/popular"
+    }
+
+    object Queries {
+        const val PAGE = "page"
+        const val API_KEY = "api_key"
     }
 }
