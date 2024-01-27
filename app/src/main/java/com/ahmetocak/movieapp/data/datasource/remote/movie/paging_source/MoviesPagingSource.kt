@@ -14,7 +14,7 @@ class MoviesPagingSource(private val apiCall: suspend (Int) -> Movie) : PagingSo
             LoadResult.Page(
                 data = response.movies,
                 prevKey = null,
-                nextKey = if (currentPageNumber <= response.totalPages) currentPageNumber + 1 else null
+                nextKey = if (currentPageNumber < response.totalPages) currentPageNumber + 1 else null
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
