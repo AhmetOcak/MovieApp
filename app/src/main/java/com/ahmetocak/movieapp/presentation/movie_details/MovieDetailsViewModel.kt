@@ -9,7 +9,6 @@ import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
-import com.ahmetocak.movieapp.model.movie_detail.Trailer
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
