@@ -5,7 +5,6 @@ import com.ahmetocak.movieapp.model.movie_detail.MovieCreditDto
 import com.ahmetocak.movieapp.model.movie_detail.MovieDetailDto
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import com.ahmetocak.movieapp.utils.Network
-import com.google.android.gms.common.api.internal.ApiKey
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -26,19 +25,19 @@ interface MovieApi {
 
     @GET(Network.EndPoints.MOVIE_DETAILS)
     suspend fun getMovieDetails(
-        @Path("movie_id") movieId: Int,
+        @Path(Network.Paths.MOVIE_ID) movieId: Int,
         @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
     ): MovieDetailDto
 
     @GET(Network.EndPoints.MOVIE_CREDITS)
     suspend fun getMovieCredits(
-        @Path("movie_id") movieId: Int,
+        @Path(Network.Paths.MOVIE_ID) movieId: Int,
         @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
     ): MovieCreditDto
 
     @GET(Network.EndPoints.MOVIE_TRAILERS)
     suspend fun getMovieTrailers(
-        @Path("movie_id") movieId: Int,
+        @Path(Network.Paths.MOVIE_ID) movieId: Int,
         @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
     ): MovieTrailer
 }

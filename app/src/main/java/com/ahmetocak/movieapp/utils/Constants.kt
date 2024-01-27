@@ -15,13 +15,17 @@ object Network {
     object EndPoints {
         const val NOW_PLAYING = "/3/movie/now_playing"
         const val POPULAR = "/3/movie/popular"
-        const val MOVIE_DETAILS = "/3/movie/{movie_id}"
-        const val MOVIE_CREDITS = "/3/movie/{movie_id}/credits"
-        const val MOVIE_TRAILERS = "/3/movie/{movie_id}/videos"
+        const val MOVIE_DETAILS = "/3/movie/{${Paths.MOVIE_ID}}"
+        const val MOVIE_CREDITS = "/3/movie/{{${Paths.MOVIE_ID}}}/credits"
+        const val MOVIE_TRAILERS = "/3/movie/{{${Paths.MOVIE_ID}}}/videos"
     }
 
     object Queries {
         const val PAGE = "page"
         const val API_KEY = "api_key"
+    }
+
+    object Paths {
+        const val MOVIE_ID = "movie_id"
     }
 }
