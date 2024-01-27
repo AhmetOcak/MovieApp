@@ -6,6 +6,7 @@ import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie_detail.MovieCreditDto
 import com.ahmetocak.movieapp.model.movie_detail.MovieDetailDto
+import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import javax.inject.Inject
 
 class MovieRemoteDataSourceImpl @Inject constructor(
@@ -22,4 +23,7 @@ class MovieRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getMovieCredits(movieId: Int): Response<MovieCreditDto> =
         apiCall { api.getMovieCredits(movieId) }
+
+    override suspend fun getMovieTrailers(movieId: Int): Response<MovieTrailer> =
+        apiCall { api.getMovieTrailers(movieId) }
 }

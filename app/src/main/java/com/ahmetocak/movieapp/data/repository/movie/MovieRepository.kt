@@ -6,6 +6,7 @@ import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
+import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
@@ -21,4 +22,6 @@ interface MovieRepository {
     suspend fun getMovieDetails(movieId: Int): Response<MovieDetail>
 
     suspend fun getMovieCredits(movieId: Int): Response<MovieCredit>
+
+    suspend fun getMovieTrailers(movieId: Int): Response<MovieTrailer>
 }

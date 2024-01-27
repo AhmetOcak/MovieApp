@@ -49,6 +49,7 @@ import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.UiState
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
+import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.ErrorView
 import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
@@ -90,7 +91,8 @@ fun MovieDetailsScreen(
             onWatchListClick = {},
             detailUiState = uiState.detailUiState,
             directorName = uiState.directorName,
-            castUiState = uiState.castUiState
+            castUiState = uiState.castUiState,
+            trailerUiState = uiState.trailersUiState
         )
     }
 }
@@ -103,7 +105,8 @@ private fun MovieDetailsScreenContent(
     onWatchListClick: () -> Unit,
     detailUiState: UiState<MovieDetail>,
     directorName: String,
-    castUiState: UiState<MovieCredit>
+    castUiState: UiState<MovieCredit>,
+    trailerUiState: UiState<MovieTrailer>
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -117,7 +120,7 @@ private fun MovieDetailsScreenContent(
             directorName = directorName
         )
         ActorListSection(castUiState = castUiState)
-        TrailerListSection()
+        TrailerListSection(trailerUiState = trailerUiState)
     }
 }
 
@@ -275,20 +278,38 @@ private fun ActorListSection(castUiState: UiState<MovieCredit>) {
 }
 
 @Composable
-private fun TrailerListSection() {
-    LazyColumn(
-        modifier = Modifier.height(TRAILER_LIST_HEIGHT),
-        contentPadding = PaddingValues(Dimens.twoLevelPadding),
-        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-    ) {
-        item {
-            Text(
-                text = stringResource(id = R.string.trailers_text),
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-            )
+private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
+    when (trailerUiState) {
+        is UiState.Loading -> {
+            FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
         }
-        items(2) {
-            TrailerItem(videoId = "8H2qXJz3mdM", "Napolyon | TR Altyazılı Fragman | 24 Kasım 2023")
+
+        is UiState.OnDataLoaded -> {
+            LazyColumn(
+                modifier = Modifier.height(TRAILER_LIST_HEIGHT),
+                contentPadding = PaddingValues(Dimens.twoLevelPadding),
+                verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+            ) {
+                item {
+                    Text(
+                        text = stringResource(id = R.string.trailers_text),
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+                items(trailerUiState.data.trailers) { trailer ->
+                    TrailerItem(
+                        videoId = trailer.key,
+                        title = trailer.name
+                    )
+                }
+            }
+        }
+
+        is UiState.OnError -> {
+            ErrorView(
+                modifier = errorModifier,
+                errorMessage = trailerUiState.errorMessage.asString()
+            )
         }
     }
 }

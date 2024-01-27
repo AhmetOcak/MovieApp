@@ -17,6 +17,7 @@ object Network {
         const val POPULAR = "/3/movie/popular"
         const val MOVIE_DETAILS = "/3/movie/{movie_id}"
         const val MOVIE_CREDITS = "/3/movie/{movie_id}/credits"
+        const val MOVIE_TRAILERS = "/3/movie/{movie_id}/videos"
     }
 
     object Queries {

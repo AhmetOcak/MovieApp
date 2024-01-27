@@ -14,6 +14,7 @@ import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
+import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -56,4 +57,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieCredits(movieId: Int): Response<MovieCredit> =
         movieRemoteDataSource.getMovieCredits(movieId).mapResponse { it.toMovieCast() }
+
+    override suspend fun getMovieTrailers(movieId: Int): Response<MovieTrailer> =
+        movieRemoteDataSource.getMovieTrailers(movieId)
 }

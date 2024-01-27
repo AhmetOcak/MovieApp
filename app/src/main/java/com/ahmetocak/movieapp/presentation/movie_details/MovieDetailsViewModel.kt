@@ -8,6 +8,8 @@ import com.ahmetocak.movieapp.common.UiState
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
+import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
+import com.ahmetocak.movieapp.model.movie_detail.Trailer
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,6 +36,7 @@ class MovieDetailsViewModel @Inject constructor(
         movieId?.let { id ->
             getMovieDetails(id.toInt())
             getMovieCredits(id.toInt())
+            getMovieTrailers(id.toInt())
         }
     }
 
@@ -75,10 +78,29 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getMovieTrailers(movieId: Int) {
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = movieRepository.getMovieTrailers(movieId)) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(trailersUiState = UiState.OnDataLoaded(response.data))
+                    }
+                }
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(trailersUiState = UiState.OnError(response.errorMessage))
+                    }
+                }
+            }
+        }
+    }
 }
 
 data class MovieDetailUiState(
     val detailUiState: UiState<MovieDetail> = UiState.Loading,
     val castUiState: UiState<MovieCredit> = UiState.Loading,
-    val directorName: String = ""
+    val directorName: String = "",
+    val trailersUiState: UiState<MovieTrailer> = UiState.Loading
 )
