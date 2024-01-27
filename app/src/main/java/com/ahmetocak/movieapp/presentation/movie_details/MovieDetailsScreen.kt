@@ -193,7 +193,12 @@ private fun MovieDetails(
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
+            Column(
+                modifier = Modifier
+                    .weight(3f)
+                    .padding(end = Dimens.twoLevelPadding),
+                verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+            ) {
                 Text(
                     text = movieName,
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
@@ -232,8 +237,7 @@ private fun MovieDetails(
                     }
                 })
             }
-            Spacer(modifier = Modifier.width(Dimens.twoLevelPadding))
-            TmdbLogo()
+            TmdbLogo(modifier = Modifier.weight(1f))
         }
         Text(text = overview)
     }
