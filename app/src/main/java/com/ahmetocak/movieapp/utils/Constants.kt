@@ -14,6 +14,7 @@ object Network {
     object EndPoints {
         const val NOW_PLAYING = "/3/movie/now_playing"
         const val POPULAR = "/3/movie/popular"
+        const val MOVIE_DETAILS = "/3/movie/{movie_id}"
     }
 
     object Queries {

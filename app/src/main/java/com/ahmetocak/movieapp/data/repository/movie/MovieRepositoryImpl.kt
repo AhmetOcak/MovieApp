@@ -4,9 +4,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.ahmetocak.movieapp.common.Response
+import com.ahmetocak.movieapp.common.mapResponse
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source.MoviesPagingSource
+import com.ahmetocak.movieapp.domain.mapper.toMovieDetail
+import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
 import kotlinx.coroutines.flow.Flow
@@ -45,4 +48,7 @@ class MovieRepositoryImpl @Inject constructor(
             pagingSourceFactory = { moviesPagingSource }
         ).flow
     }
+
+    override suspend fun getMovieDetails(movieId: Int): Response<MovieDetail> =
+        movieRemoteDataSource.getMovieDetails(movieId).mapResponse { it.toMovieDetail() }
 }

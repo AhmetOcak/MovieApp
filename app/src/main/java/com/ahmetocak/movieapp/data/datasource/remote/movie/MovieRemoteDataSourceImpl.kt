@@ -4,6 +4,7 @@ import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.helpers.apiCall
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.model.movie.Movie
+import com.ahmetocak.movieapp.model.movie_detail.MovieDetailDto
 import javax.inject.Inject
 
 class MovieRemoteDataSourceImpl @Inject constructor(
@@ -14,4 +15,7 @@ class MovieRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getPopularMoviesFirstPage(): Response<Movie> =
         apiCall { api.getPopularMovies() }
+
+    override suspend fun getMovieDetails(movieId: Int): Response<MovieDetailDto> =
+        apiCall { api.getMovieDetails(movieId) }
 }
