@@ -2,6 +2,7 @@ package com.ahmetocak.movieapp.data.repository.movie
 
 import androidx.paging.PagingData
 import com.ahmetocak.movieapp.common.Response
+import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
@@ -18,4 +19,6 @@ interface MovieRepository {
     fun getAllPopularMovies(): Flow<PagingData<MovieContent>>
 
     suspend fun getMovieDetails(movieId: Int): Response<MovieDetail>
+
+    suspend fun getMovieCredits(movieId: Int): Response<MovieCredit>
 }

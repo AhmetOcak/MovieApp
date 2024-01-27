@@ -8,7 +8,9 @@ import com.ahmetocak.movieapp.common.mapResponse
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source.MoviesPagingSource
+import com.ahmetocak.movieapp.domain.mapper.toMovieCast
 import com.ahmetocak.movieapp.domain.mapper.toMovieDetail
+import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
@@ -51,4 +53,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieDetails(movieId: Int): Response<MovieDetail> =
         movieRemoteDataSource.getMovieDetails(movieId).mapResponse { it.toMovieDetail() }
+
+    override suspend fun getMovieCredits(movieId: Int): Response<MovieCredit> =
+        movieRemoteDataSource.getMovieCredits(movieId).mapResponse { it.toMovieCast() }
 }

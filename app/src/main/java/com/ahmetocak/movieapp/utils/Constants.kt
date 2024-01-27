@@ -2,6 +2,7 @@ package com.ahmetocak.movieapp.utils
 
 object TMDB {
     const val IMAGE_URL = "https://image.tmdb.org/t/p/w500"
+    const val JOB_DIRECTOR_KEY = "Director"
 }
 
 object DataStoreConstants {
@@ -15,6 +16,7 @@ object Network {
         const val NOW_PLAYING = "/3/movie/now_playing"
         const val POPULAR = "/3/movie/popular"
         const val MOVIE_DETAILS = "/3/movie/{movie_id}"
+        const val MOVIE_CREDITS = "/3/movie/{movie_id}/credits"
     }
 
     object Queries {

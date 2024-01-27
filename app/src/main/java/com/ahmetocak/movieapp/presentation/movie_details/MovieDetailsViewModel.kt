@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.UiState
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
+import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,7 @@ class MovieDetailsViewModel @Inject constructor(
 
         movieId?.let { id ->
             getMovieDetails(id.toInt())
+            getMovieCredits(id.toInt())
         }
     }
 
@@ -52,8 +54,31 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getMovieCredits(movieId: Int) {
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = movieRepository.getMovieCredits(movieId)) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            directorName = response.data.directorName,
+                            castUiState = UiState.OnDataLoaded(response.data)
+                        )
+                    }
+                }
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(castUiState = UiState.OnError(response.errorMessage))
+                    }
+                }
+            }
+        }
+    }
 }
 
 data class MovieDetailUiState(
-    val detailUiState: UiState<MovieDetail> = UiState.Loading
+    val detailUiState: UiState<MovieDetail> = UiState.Loading,
+    val castUiState: UiState<MovieCredit> = UiState.Loading,
+    val directorName: String = ""
 )

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -46,6 +47,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.UiState
+import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.ErrorView
@@ -66,6 +68,12 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 private val TRAILER_LIST_HEIGHT = 512.dp
 private val ACTOR_ITEM_HEIGHT = 128.dp
 
+private val errorModifier = Modifier
+    .fillMaxWidth()
+    .padding(vertical = Dimens.fourLevelPadding)
+
+private val circularProgressIndicatorPadding = PaddingValues(Dimens.fourLevelPadding)
+
 @Composable
 fun MovieDetailsScreen(
     modifier: Modifier = Modifier,
@@ -80,7 +88,9 @@ fun MovieDetailsScreen(
             upPress = upPress,
             isMovieInWatchList = false,
             onWatchListClick = {},
-            detailUiState = uiState.detailUiState
+            detailUiState = uiState.detailUiState,
+            directorName = uiState.directorName,
+            castUiState = uiState.castUiState
         )
     }
 }
@@ -91,7 +101,9 @@ private fun MovieDetailsScreenContent(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
     onWatchListClick: () -> Unit,
-    detailUiState: UiState<MovieDetail>
+    detailUiState: UiState<MovieDetail>,
+    directorName: String,
+    castUiState: UiState<MovieCredit>
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -101,9 +113,10 @@ private fun MovieDetailsScreenContent(
             upPress = upPress,
             isMovieInWatchList = isMovieInWatchList,
             onWatchListClick = onWatchListClick,
-            detailUiState = detailUiState
+            detailUiState = detailUiState,
+            directorName = directorName
         )
-        ActorListSection()
+        ActorListSection(castUiState = castUiState)
         TrailerListSection()
     }
 }
@@ -113,14 +126,15 @@ private fun MovieSection(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
     onWatchListClick: () -> Unit,
-    detailUiState: UiState<MovieDetail>
+    detailUiState: UiState<MovieDetail>,
+    directorName: String
 ) {
     val movieImageHeight: Dp =
         (LocalConfiguration.current.screenHeightDp.dp / 2) + LocalConfiguration.current.screenHeightDp.dp / 8
 
     when (detailUiState) {
         is UiState.Loading -> {
-            FullScreenCircularProgressIndicator(paddingValues = PaddingValues(Dimens.fourLevelPadding))
+            FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
         }
 
         is UiState.OnDataLoaded -> {
@@ -144,7 +158,7 @@ private fun MovieSection(
                     categories = genres.joinToString(),
                     releaseDate = releaseDate,
                     movieDuration = duration.convertToDurationTime(),
-                    director = "UNKNOWN",
+                    directorName = directorName,
                     movieName = movieName,
                     overview = overview
                 )
@@ -153,9 +167,7 @@ private fun MovieSection(
 
         is UiState.OnError -> {
             ErrorView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = Dimens.fourLevelPadding),
+                modifier = errorModifier,
                 errorMessage = detailUiState.errorMessage.asString()
             )
         }
@@ -169,7 +181,7 @@ private fun MovieDetails(
     categories: String,
     releaseDate: String,
     movieDuration: String,
-    director: String,
+    directorName: String,
     movieName: String,
     overview: String
 ) {
@@ -213,7 +225,7 @@ private fun MovieDetails(
                 Text(text = buildAnnotatedString {
                     append("${stringResource(id = R.string.director_text)}: ")
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(director)
+                        append(directorName)
                     }
                 })
             }
@@ -225,24 +237,39 @@ private fun MovieDetails(
 }
 
 @Composable
-private fun ActorListSection() {
-    Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
-        Text(
-            modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
-            text = stringResource(id = R.string.actors_text),
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-        )
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-        ) {
-            items(5) {
-                ActorItem(
-                    imageUrl = "${TMDB.IMAGE_URL}/dD7hrRueEZmQgGWBp7pAOOt5gLV.jpg",
-                    actorName = "Joaquin Phoenix",
-                    characterName = "Napoleon Bonaparte"
+private fun ActorListSection(castUiState: UiState<MovieCredit>) {
+    when (castUiState) {
+        is UiState.Loading -> {
+            FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
+        }
+
+        is UiState.OnDataLoaded -> {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
+                Text(
+                    modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
+                    text = stringResource(id = R.string.actors_text),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+                ) {
+                    items(castUiState.data.cast, key = { it.id }) { cast ->
+                        ActorItem(
+                            imageUrl = "${TMDB.IMAGE_URL}${cast.imageUrlPath}",
+                            actorName = cast.name,
+                            characterName = cast.characterName
+                        )
+                    }
+                }
             }
+        }
+
+        is UiState.OnError -> {
+            ErrorView(
+                modifier = errorModifier,
+                errorMessage = castUiState.errorMessage.asString()
+            )
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.ahmetocak.movieapp.data.datasource.remote.movie.api
 
 import com.ahmetocak.movieapp.model.movie.Movie
+import com.ahmetocak.movieapp.model.movie_detail.MovieCreditDto
 import com.ahmetocak.movieapp.model.movie_detail.MovieDetailDto
 import com.ahmetocak.movieapp.utils.Network
 import retrofit2.http.GET
@@ -26,4 +27,10 @@ interface MovieApi {
         @Path("movie_id") movieId: Int,
         @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
     ): MovieDetailDto
+
+    @GET(Network.EndPoints.MOVIE_CREDITS)
+    suspend fun getMovieCredits(
+        @Path("movie_id") movieId: Int,
+        @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
+    ): MovieCreditDto
 }
