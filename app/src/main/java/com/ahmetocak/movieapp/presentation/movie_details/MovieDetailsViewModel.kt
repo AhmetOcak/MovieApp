@@ -11,6 +11,7 @@ import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
+import com.ahmetocak.movieapp.domain.usecase.firebase.DeleteMovieFromWatchListUseCase
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
@@ -28,7 +29,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
-    private val firebaseRepository: FirebaseRepository
+    private val firebaseRepository: FirebaseRepository,
+    private val deleteMovieFromWatchListUseCase: DeleteMovieFromWatchListUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailUiState())
@@ -103,14 +105,14 @@ class MovieDetailsViewModel @Inject constructor(
 
     fun addMovieToFirestore(watchListMovie: WatchListMovie) {
         _uiState.update {
-            it.copy(isWatchlistAddingInProgress = true)
+            it.copy(isWatchlistButtonInProgress = true)
         }
         viewModelScope.launch(ioDispatcher) {
             firebaseRepository.addMovieToFirestore(watchListMovie).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     _uiState.update {
                         it.copy(
-                            isWatchlistAddingInProgress = false,
+                            isWatchlistButtonInProgress = false,
                             isMovieInWatchList = true,
                             userMessages = listOf(
                                 UiText.StringResource(R.string.movie_add_watch_list)
@@ -127,11 +129,47 @@ class MovieDetailsViewModel @Inject constructor(
                                     UiText.StringResource(R.string.unknown_error)
                                 }
                             ),
-                            isWatchlistAddingInProgress = false
+                            isWatchlistButtonInProgress = false
                         )
                     }
                 }
             }
+        }
+    }
+
+    fun deleteMovieFromTheFirestore(watchListMovie: WatchListMovie) {
+        _uiState.update {
+            it.copy(isWatchlistButtonInProgress = true)
+        }
+        viewModelScope.launch(ioDispatcher) {
+            deleteMovieFromWatchListUseCase(
+                watchListMovie = watchListMovie,
+                onTaskSuccess = {
+                    _uiState.update {
+                        it.copy(
+                            isWatchlistButtonInProgress = false,
+                            isMovieInWatchList = false,
+                            userMessages = listOf(
+                                UiText.StringResource(R.string.movie_remove_watch_list)
+                            )
+                        )
+                    }
+                },
+                onTaskError = { errorMessage ->
+                    _uiState.update {
+                        it.copy(
+                            isWatchlistButtonInProgress = false,
+                            userMessages = listOf(
+                                errorMessage?.let { message ->
+                                    UiText.DynamicString(message)
+                                } ?: kotlin.run {
+                                    UiText.StringResource(R.string.unknown_error)
+                                }
+                            )
+                        )
+                    }
+                }
+            )
         }
     }
 
@@ -148,6 +186,6 @@ data class MovieDetailUiState(
     val directorName: String = "",
     val trailersUiState: UiState<MovieTrailer> = UiState.Loading,
     val userMessages: List<UiText> = emptyList(),
-    val isWatchlistAddingInProgress: Boolean = false,
+    val isWatchlistButtonInProgress: Boolean = false,
     val isMovieInWatchList: Boolean = false
 )

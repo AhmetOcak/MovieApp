@@ -18,4 +18,6 @@ interface FirebaseRepository {
     fun deleteAccount(): Task<Void>?
 
     fun addMovieToFirestore(watchListMovie: WatchListMovie): Task<Void>
+
+    fun removeMovieData(watchListMovie: WatchListMovie): Task<Void>
 }

@@ -61,4 +61,5 @@
     <!-- User Messages -->
     <string name="password_reset_mail_sent">Şifre sıfırlama maili gönderildi. Lütfen mail kutunu kontrol et</string>
     <string name="movie_add_watch_list">Film izleme listesine eklendi.</string>
+    <string name="movie_remove_watch_list">Film izleme listesinden çıkartıldı.</string>
 </resources>

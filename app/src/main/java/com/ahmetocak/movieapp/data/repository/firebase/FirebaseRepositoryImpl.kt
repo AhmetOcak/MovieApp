@@ -26,4 +26,7 @@ class FirebaseRepositoryImpl @Inject constructor(
     override fun deleteAccount(): Task<Void>? = firebaseAuthDataSource.deleteAccount()
     override fun addMovieToFirestore(watchListMovie: WatchListMovie): Task<Void> =
         firebaseFirestoreDataSource.addMovieData(watchListMovie)
+
+    override fun removeMovieData(watchListMovie: WatchListMovie): Task<Void> =
+        firebaseFirestoreDataSource.removeMovieData(watchListMovie)
 }

@@ -102,12 +102,12 @@ fun MovieDetailsScreen(
             modifier = Modifier.padding(paddingValues),
             upPress = upPress,
             isMovieInWatchList = uiState.isMovieInWatchList,
-            onAddToWatchListClick = remember(viewModel) { viewModel::addMovieToFirestore },
+            onAddToWatchListClick = remember(viewModel) { viewModel::deleteMovieFromTheFirestore },
             detailUiState = uiState.detailUiState,
             directorName = uiState.directorName,
             castUiState = uiState.castUiState,
             trailerUiState = uiState.trailersUiState,
-            isWatchlistAddingInProgress = uiState.isWatchlistAddingInProgress
+            isWatchlistButtonInProgress = uiState.isWatchlistButtonInProgress
         )
     }
 }
@@ -122,7 +122,7 @@ private fun MovieDetailsScreenContent(
     directorName: String,
     castUiState: UiState<MovieCredit>,
     trailerUiState: UiState<MovieTrailer>,
-    isWatchlistAddingInProgress: Boolean
+    isWatchlistButtonInProgress: Boolean
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -134,7 +134,7 @@ private fun MovieDetailsScreenContent(
             onAddToWatchListClick = onAddToWatchListClick,
             detailUiState = detailUiState,
             directorName = directorName,
-            isWatchlistAddingInProgress = isWatchlistAddingInProgress
+            isWatchlistButtonInProgress = isWatchlistButtonInProgress
         )
         ActorListSection(castUiState = castUiState)
         TrailerListSection(trailerUiState = trailerUiState)
@@ -148,7 +148,7 @@ private fun MovieSection(
     onAddToWatchListClick: (WatchListMovie) -> Unit,
     detailUiState: UiState<MovieDetail>,
     directorName: String,
-    isWatchlistAddingInProgress: Boolean
+    isWatchlistButtonInProgress: Boolean
 ) {
     val movieImageHeight: Dp =
         (LocalConfiguration.current.screenHeightDp.dp / 2) + LocalConfiguration.current.screenHeightDp.dp / 8
@@ -182,7 +182,7 @@ private fun MovieSection(
                                 )
                             )
                         },
-                        isWatchlistAddingInProgress = isWatchlistAddingInProgress
+                        isWatchlistButtonInProgress = isWatchlistButtonInProgress
                     )
                 }
                 MovieDetails(
@@ -406,7 +406,7 @@ private fun TopAppBar(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
     onAddToWatchListClick: () -> Unit,
-    isWatchlistAddingInProgress: Boolean
+    isWatchlistButtonInProgress: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -429,7 +429,7 @@ private fun TopAppBar(
             onClick = onAddToWatchListClick,
             colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
         ) {
-            if (isWatchlistAddingInProgress) {
+            if (isWatchlistButtonInProgress) {
                 CircularProgressIndicator()
             } else {
                 Icon(

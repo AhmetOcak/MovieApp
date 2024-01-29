@@ -22,4 +22,10 @@ class FirebaseFirestoreDataSourceImpl @Inject constructor(
                 SetOptions.merge()
             )
     }
+
+    override fun removeMovieData(watchListMovie: WatchListMovie): Task<Void> {
+        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
+            .document(firebaseAuth.currentUser?.uid ?: "")
+            .update(mapOf(Firestore.WATCH_LIST_ARRAY_NAME to FieldValue.arrayRemove(watchListMovie)))
+    }
 }

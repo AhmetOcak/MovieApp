@@ -6,4 +6,6 @@ import com.google.android.gms.tasks.Task
 interface FirebaseFirestoreDataSource {
 
     fun addMovieData(watchListMovie: WatchListMovie): Task<Void>
+
+    fun removeMovieData(watchListMovie: WatchListMovie): Task<Void>
 }
