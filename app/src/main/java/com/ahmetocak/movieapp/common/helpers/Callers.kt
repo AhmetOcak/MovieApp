@@ -17,3 +17,13 @@ suspend inline fun <T> apiCall(crossinline call: suspend () -> T): Response<T> {
             ?: UiText.StringResource(R.string.unknown_error))
     }
 }
+
+suspend inline fun <T> dbCall(crossinline call: suspend () -> T): Response<T> {
+    return try {
+        Response.Success(data = call())
+    } catch (e: Exception) {
+        Log.e("DB CALL EXCEPTION", e.stackTraceToString())
+        Response.Error(errorMessage = e.message?.let { message -> UiText.DynamicString(message) }
+            ?: UiText.StringResource(R.string.unknown_error))
+    }
+}
