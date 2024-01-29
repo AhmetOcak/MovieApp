@@ -25,6 +25,9 @@ data class WatchListEntity(
     @ColumnInfo("vote_average")
     val voteAverage: Float,
 
-    @ColumnInfo("voteCount")
-    val voteCount: Int
+    @ColumnInfo("vote_count")
+    val voteCount: Int,
+
+    @ColumnInfo("image_url_path")
+    val imageUrlPath: String
 )

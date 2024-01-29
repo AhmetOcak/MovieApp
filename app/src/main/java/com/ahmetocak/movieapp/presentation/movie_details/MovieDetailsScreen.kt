@@ -102,7 +102,7 @@ fun MovieDetailsScreen(
             modifier = Modifier.padding(paddingValues),
             upPress = upPress,
             isMovieInWatchList = uiState.isMovieInWatchList,
-            onAddToWatchListClick = remember(viewModel) { viewModel::deleteMovieFromTheFirestore },
+            onAddToWatchListClick = remember(viewModel) { viewModel::addMovieToFirestore },
             detailUiState = uiState.detailUiState,
             directorName = uiState.directorName,
             castUiState = uiState.castUiState,
@@ -178,7 +178,8 @@ private fun MovieSection(
                                     releaseYear = releaseDate.take(4),
                                     genres = genres,
                                     voteAverage = voteAverage,
-                                    voteCount = voteCount
+                                    voteCount = voteCount,
+                                    imageUrlPath = imageUrlPath
                                 )
                             )
                         },

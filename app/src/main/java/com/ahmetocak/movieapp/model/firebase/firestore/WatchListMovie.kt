@@ -9,7 +9,8 @@ data class WatchListMovie(
     val releaseYear: String? = null,
     val genres: List<String> = emptyList(),
     val voteAverage: Float? = null,
-    val voteCount: Int? = null
+    val voteCount: Int? = null,
+    val imageUrlPath: String? = null
 )
 
 @Immutable
