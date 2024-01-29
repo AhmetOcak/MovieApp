@@ -28,9 +28,9 @@ interface MovieRepository {
 
     fun searchMovie(query: String): Flow<PagingData<MovieContent>>
 
-    suspend fun addMovieToWatchList(watchListEntity: WatchListEntity)
+    suspend fun addMovieToWatchList(watchListEntity: WatchListEntity): Response<Unit>
 
-    suspend fun getWatchList(): List<WatchListEntity>
+    suspend fun getWatchList(): Response<List<WatchListEntity>>
 
-    suspend fun removeMovieFromWatchList(movieId: Int)
+    suspend fun removeMovieFromWatchList(movieId: Int): Response<Unit>
 }

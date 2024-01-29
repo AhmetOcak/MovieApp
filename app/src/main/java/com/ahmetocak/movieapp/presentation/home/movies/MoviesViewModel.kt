@@ -34,6 +34,7 @@ class MoviesViewModel @Inject constructor(
         /*
         getNowPlayingMovies()
         getPopularMovies()
+        getUserWatchListAndSaveToDatabase()
          */
     }
 
@@ -105,7 +106,15 @@ class MoviesViewModel @Inject constructor(
 
     private fun addMovieToWatchList(watchListEntity: WatchListEntity) {
         viewModelScope.launch(ioDispatcher) {
-            movieRepository.addMovieToWatchList(watchListEntity)
+            when (val response = movieRepository.addMovieToWatchList(watchListEntity)) {
+                is Response.Success -> {}
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(errorMessage = listOf(response.errorMessage))
+                    }
+                }
+            }
         }
     }
 }
