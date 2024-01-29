@@ -41,8 +41,11 @@ fun NavGraphBuilder.addHomeGraph(
             onNavigateToRoute = onNavigateToRoute
         )
     }
-    composable(HomeSections.SEARCH.route) {
-        SearchScreen(onNavigateToRoute = onNavigateToRoute)
+    composable(HomeSections.SEARCH.route) { from ->
+        SearchScreen(
+            onNavigateToRoute = onNavigateToRoute,
+            onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } },
+        )
     }
     composable(HomeSections.WATCH_LIST.route) { from ->
         WatchListScreen(

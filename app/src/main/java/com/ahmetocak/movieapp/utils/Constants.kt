@@ -18,11 +18,13 @@ object Network {
         const val MOVIE_DETAILS = "/3/movie/{${Paths.MOVIE_ID}}"
         const val MOVIE_CREDITS = "/3/movie/{{${Paths.MOVIE_ID}}}/credits"
         const val MOVIE_TRAILERS = "/3/movie/{{${Paths.MOVIE_ID}}}/videos"
+        const val SEARCH_MOVIE = "/3/search/movie"
     }
 
     object Queries {
         const val PAGE = "page"
         const val API_KEY = "api_key"
+        const val SEARCH_QUERY = "query"
     }
 
     object Paths {

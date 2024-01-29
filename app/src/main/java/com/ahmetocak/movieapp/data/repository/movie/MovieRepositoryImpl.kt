@@ -8,6 +8,7 @@ import com.ahmetocak.movieapp.common.mapResponse
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source.MoviesPagingSource
+import com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source.SearchMoviesPagingSource
 import com.ahmetocak.movieapp.domain.mapper.toMovieCast
 import com.ahmetocak.movieapp.domain.mapper.toMovieDetail
 import com.ahmetocak.movieapp.domain.model.MovieCredit
@@ -60,4 +61,15 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieTrailers(movieId: Int): Response<MovieTrailer> =
         movieRemoteDataSource.getMovieTrailers(movieId)
+
+    override fun searchMovie(query: String): Flow<PagingData<MovieContent>> {
+        val searchMoviePagingSource = SearchMoviesPagingSource(
+            query = query,
+            api = api
+        )
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = { searchMoviePagingSource }
+        ).flow
+    }
 }

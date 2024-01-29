@@ -40,4 +40,10 @@ interface MovieApi {
         @Path(Network.Paths.MOVIE_ID) movieId: Int,
         @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
     ): MovieTrailer
+
+    @GET(Network.EndPoints.SEARCH_MOVIE)
+    suspend fun searchMovie(
+        @Query(Network.Queries.SEARCH_QUERY) query: String,
+        @Query(Network.Queries.API_KEY) apiKey: String = "ce10126f10a15837182856698036de55"
+    ): Movie
 }
