@@ -14,3 +14,15 @@ fun WatchListMovie.toWatchListEntity(): WatchListEntity {
         imageUrlPath = imageUrlPath ?: ""
     )
 }
+
+fun WatchListEntity.toWatchListMovie(): WatchListMovie {
+    return WatchListMovie(
+        id = movieId,
+        name = movieName,
+        releaseYear = releaseYear,
+        genres = genres.split(","),
+        voteAverage = voteAverage,
+        voteCount = voteCount,
+        imageUrlPath = imageUrlPath
+    )
+}
