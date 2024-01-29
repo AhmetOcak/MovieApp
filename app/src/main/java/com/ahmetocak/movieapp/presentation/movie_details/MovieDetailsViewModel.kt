@@ -137,7 +137,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    fun deleteMovieFromTheFirestore(watchListMovie: WatchListMovie) {
+    fun removeMovieFromTheWatchList(watchListMovie: WatchListMovie) {
         _uiState.update {
             it.copy(isWatchlistButtonInProgress = true)
         }
