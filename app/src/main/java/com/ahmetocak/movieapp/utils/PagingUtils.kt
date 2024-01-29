@@ -1,6 +1,5 @@
 package com.ahmetocak.movieapp.utils
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -63,7 +62,6 @@ fun LazyGridScope.onLoadStateAppend(loadState: LoadState, isSearchResultEmpty: B
         }
 
         is LoadState.NotLoading -> {
-            Log.d("result", "${loadState.endOfPaginationReached}")
             if (isSearchResultEmpty && loadState.endOfPaginationReached) {
                 items(1, span = { GridItemSpan(maxLineSpan) }) {
                     Column(
@@ -72,8 +70,8 @@ fun LazyGridScope.onLoadStateAppend(loadState: LoadState, isSearchResultEmpty: B
                         verticalArrangement = Arrangement.Center
                     ) {
                         Image(
-                            modifier = Modifier.size(112.dp),
-                            painter = painterResource(id = R.drawable.search_result_empty),
+                            modifier = Modifier.size(ComponentDimens.emptyWarningImageSize),
+                            painter = painterResource(id = R.drawable.empty),
                             contentDescription = null,
                             contentScale = ContentScale.Crop
                         )

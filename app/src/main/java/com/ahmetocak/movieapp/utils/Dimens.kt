@@ -15,4 +15,5 @@ object Dimens {
 
 object ComponentDimens {
     val buttonHeight = 56.dp
+    val emptyWarningImageSize = 112.dp
 }
