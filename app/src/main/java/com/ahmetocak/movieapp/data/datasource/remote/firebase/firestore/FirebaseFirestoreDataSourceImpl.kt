@@ -4,6 +4,7 @@ import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.utils.Firestore
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -27,5 +28,11 @@ class FirebaseFirestoreDataSourceImpl @Inject constructor(
         return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
             .document(firebaseAuth.currentUser?.uid ?: "")
             .update(mapOf(Firestore.WATCH_LIST_ARRAY_NAME to FieldValue.arrayRemove(watchListMovie)))
+    }
+
+    override fun getMovieData(): Task<DocumentSnapshot> {
+        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
+            .document(firebaseAuth.currentUser?.uid ?: "")
+            .get()
     }
 }

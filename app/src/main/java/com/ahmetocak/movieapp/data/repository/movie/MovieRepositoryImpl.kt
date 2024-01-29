@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.mapResponse
+import com.ahmetocak.movieapp.data.datasource.local.watch_list.WatchListLocalDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source.MoviesPagingSource
@@ -16,12 +17,14 @@ import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
+import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
     private val movieRemoteDataSource: MovieRemoteDataSource,
-    private val api: MovieApi
+    private val api: MovieApi,
+    private val watchListLocalDataSource: WatchListLocalDataSource
 ) : MovieRepository {
     override suspend fun getNowPlayingMoviesFirstPage(): Response<Movie> =
         movieRemoteDataSource.getNowPlayingMoviesFirstPage()
@@ -72,4 +75,13 @@ class MovieRepositoryImpl @Inject constructor(
             pagingSourceFactory = { searchMoviePagingSource }
         ).flow
     }
+
+    override suspend fun addMovieToWatchList(watchListEntity: WatchListEntity) =
+        watchListLocalDataSource.addMovieToWatchList(watchListEntity)
+
+    override suspend fun getWatchList(): List<WatchListEntity> =
+        watchListLocalDataSource.getWatchList()
+
+    override suspend fun removeMovieFromWatchList(movieId: Int) =
+        watchListLocalDataSource.removeMovieFromWatchList(movieId)
 }

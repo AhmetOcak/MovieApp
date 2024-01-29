@@ -7,6 +7,7 @@ import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
+import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
@@ -26,4 +27,10 @@ interface MovieRepository {
     suspend fun getMovieTrailers(movieId: Int): Response<MovieTrailer>
 
     fun searchMovie(query: String): Flow<PagingData<MovieContent>>
+
+    suspend fun addMovieToWatchList(watchListEntity: WatchListEntity)
+
+    suspend fun getWatchList(): List<WatchListEntity>
+
+    suspend fun removeMovieFromWatchList(movieId: Int)
 }

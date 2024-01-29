@@ -4,10 +4,15 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class WatchListMovie(
-    val id: Int,
-    val name: String,
-    val releaseYear: String,
-    val genres: List<String>,
-    val voteAverage: Float,
-    val voteCount: Int
+    val id: Int? = null,
+    val name: String? = null,
+    val releaseYear: String? = null,
+    val genres: List<String> = emptyList(),
+    val voteAverage: Float? = null,
+    val voteCount: Int? = null
+)
+
+@Immutable
+data class WatchList(
+    val watchList: List<WatchListMovie> = emptyList()
 )

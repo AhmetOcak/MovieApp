@@ -4,6 +4,7 @@ import com.ahmetocak.movieapp.model.firebase.auth.Auth
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.firestore.DocumentSnapshot
 
 interface FirebaseRepository {
 
@@ -20,4 +21,6 @@ interface FirebaseRepository {
     fun addMovieToFirestore(watchListMovie: WatchListMovie): Task<Void>
 
     fun removeMovieData(watchListMovie: WatchListMovie): Task<Void>
+
+    fun getMovieData(): Task<DocumentSnapshot>
 }

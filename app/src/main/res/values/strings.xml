@@ -58,6 +58,7 @@
     <!-- Error Messages -->
     <string name="unknown_error">Please try again later</string>
     <string name="internet_error">Please check your internet connection</string>
+    <string name="watch_list_get_error">Your watchlist could not be loaded. please try again later.</string>
 
     <!-- User Messages -->
     <string name="password_reset_mail_sent">Password reset mail has been sent. Please check your email box.</string>

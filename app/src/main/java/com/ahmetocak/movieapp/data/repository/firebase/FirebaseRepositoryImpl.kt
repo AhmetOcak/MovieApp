@@ -6,6 +6,7 @@ import com.ahmetocak.movieapp.model.firebase.auth.Auth
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.firestore.DocumentSnapshot
 import javax.inject.Inject
 
 class FirebaseRepositoryImpl @Inject constructor(
@@ -29,4 +30,6 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override fun removeMovieData(watchListMovie: WatchListMovie): Task<Void> =
         firebaseFirestoreDataSource.removeMovieData(watchListMovie)
+
+    override fun getMovieData(): Task<DocumentSnapshot> = firebaseFirestoreDataSource.getMovieData()
 }

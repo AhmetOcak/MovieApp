@@ -34,5 +34,9 @@ object Network {
 
 object Firestore {
     const val WATCH_LIST_COLLECTION_KEY = "movie_watch_lists"
-    const val WATCH_LIST_ARRAY_NAME = "watch_list"
+    const val WATCH_LIST_ARRAY_NAME = "watchList"
+}
+
+object Database {
+    const val WATCH_LIST_DB_NAME =  "watch_list_db"
 }

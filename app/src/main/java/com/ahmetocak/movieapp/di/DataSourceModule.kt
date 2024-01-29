@@ -4,6 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSource
 import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl
+import com.ahmetocak.movieapp.data.datasource.local.watch_list.WatchListLocalDataSource
+import com.ahmetocak.movieapp.data.datasource.local.watch_list.WatchListLocalDataSourceImpl
+import com.ahmetocak.movieapp.data.datasource.local.watch_list.db.WatchListDao
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.firestore.FirebaseFirestoreDataSource
@@ -48,5 +51,11 @@ object DataSourceModule {
         auth: FirebaseAuth
     ): FirebaseFirestoreDataSource {
         return FirebaseFirestoreDataSourceImpl(firestore, auth)
+    }
+
+    @Singleton
+    @Provides
+    fun provideWatchListLocalDataSource(dao: WatchListDao): WatchListLocalDataSource {
+        return WatchListLocalDataSourceImpl(dao)
     }
 }
