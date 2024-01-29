@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.model.auth
+package com.ahmetocak.movieapp.model.firebase.auth
 
 data class Auth(
     val email: String,

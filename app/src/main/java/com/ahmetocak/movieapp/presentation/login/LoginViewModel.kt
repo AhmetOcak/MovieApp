@@ -12,7 +12,7 @@ import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.common.helpers.isValidEmail
 import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
-import com.ahmetocak.movieapp.model.auth.Auth
+import com.ahmetocak.movieapp.model.firebase.auth.Auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
