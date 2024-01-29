@@ -159,13 +159,7 @@ class MovieDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isWatchlistButtonInProgress = false,
-                            userMessages = listOf(
-                                errorMessage?.let { message ->
-                                    UiText.DynamicString(message)
-                                } ?: kotlin.run {
-                                    UiText.StringResource(R.string.unknown_error)
-                                }
-                            )
+                            userMessages = listOf(errorMessage)
                         )
                     }
                 }
