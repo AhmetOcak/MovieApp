@@ -61,4 +61,5 @@
 
     <!-- User Messages -->
     <string name="password_reset_mail_sent">Password reset mail has been sent. Please check your email box.</string>
+    <string name="movie_add_watch_list">Movie added to watch list.</string>
 </resources>

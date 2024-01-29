@@ -31,3 +31,8 @@ object Network {
         const val MOVIE_ID = "movie_id"
     }
 }
+
+object Firestore {
+    const val WATCH_LIST_COLLECTION_KEY = "movie_watch_lists"
+    const val WATCH_LIST_ARRAY_NAME = "watch_list"
+}

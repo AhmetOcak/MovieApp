@@ -6,10 +6,13 @@ import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourc
 import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSourceImpl
+import com.ahmetocak.movieapp.data.datasource.remote.firebase.firestore.FirebaseFirestoreDataSource
+import com.ahmetocak.movieapp.data.datasource.remote.firebase.firestore.FirebaseFirestoreDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,5 +39,14 @@ object DataSourceModule {
     @Provides
     fun provideMovieRemoteDataSource(api: MovieApi): MovieRemoteDataSource {
         return MovieRemoteDataSourceImpl(api)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseFirestoreDataSource(
+        firestore: FirebaseFirestore,
+        auth: FirebaseAuth
+    ): FirebaseFirestoreDataSource {
+        return FirebaseFirestoreDataSourceImpl(firestore, auth)
     }
 }

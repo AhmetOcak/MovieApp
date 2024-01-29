@@ -1,5 +1,6 @@
 package com.ahmetocak.movieapp.presentation.movie_details
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,10 +33,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,6 +53,7 @@ import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.UiState
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
+import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.ErrorView
@@ -83,16 +88,26 @@ fun MovieDetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    if (uiState.userMessages.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.userMessages.first().asString(),
+            Toast.LENGTH_SHORT
+        ).show()
+        viewModel.consumedUserMessage()
+    }
+
     MovieScaffold(modifier = modifier) { paddingValues ->
         MovieDetailsScreenContent(
             modifier = Modifier.padding(paddingValues),
             upPress = upPress,
-            isMovieInWatchList = false,
-            onWatchListClick = {},
+            isMovieInWatchList = uiState.isMovieInWatchList,
+            onAddToWatchListClick = remember(viewModel) { viewModel::addMovieToFirestore },
             detailUiState = uiState.detailUiState,
             directorName = uiState.directorName,
             castUiState = uiState.castUiState,
-            trailerUiState = uiState.trailersUiState
+            trailerUiState = uiState.trailersUiState,
+            isWatchlistAddingInProgress = uiState.isWatchlistAddingInProgress
         )
     }
 }
@@ -102,11 +117,12 @@ private fun MovieDetailsScreenContent(
     modifier: Modifier,
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
-    onWatchListClick: () -> Unit,
+    onAddToWatchListClick: (WatchListMovie) -> Unit,
     detailUiState: UiState<MovieDetail>,
     directorName: String,
     castUiState: UiState<MovieCredit>,
-    trailerUiState: UiState<MovieTrailer>
+    trailerUiState: UiState<MovieTrailer>,
+    isWatchlistAddingInProgress: Boolean
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -115,9 +131,10 @@ private fun MovieDetailsScreenContent(
         MovieSection(
             upPress = upPress,
             isMovieInWatchList = isMovieInWatchList,
-            onWatchListClick = onWatchListClick,
+            onAddToWatchListClick = onAddToWatchListClick,
             detailUiState = detailUiState,
-            directorName = directorName
+            directorName = directorName,
+            isWatchlistAddingInProgress = isWatchlistAddingInProgress
         )
         ActorListSection(castUiState = castUiState)
         TrailerListSection(trailerUiState = trailerUiState)
@@ -128,9 +145,10 @@ private fun MovieDetailsScreenContent(
 private fun MovieSection(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
-    onWatchListClick: () -> Unit,
+    onAddToWatchListClick: (WatchListMovie) -> Unit,
     detailUiState: UiState<MovieDetail>,
-    directorName: String
+    directorName: String,
+    isWatchlistAddingInProgress: Boolean
 ) {
     val movieImageHeight: Dp =
         (LocalConfiguration.current.screenHeightDp.dp / 2) + LocalConfiguration.current.screenHeightDp.dp / 8
@@ -152,7 +170,19 @@ private fun MovieSection(
                     TopAppBar(
                         upPress = upPress,
                         isMovieInWatchList = isMovieInWatchList,
-                        onWatchListClick = onWatchListClick
+                        onAddToWatchListClick = {
+                            onAddToWatchListClick(
+                                WatchListMovie(
+                                    id = id,
+                                    name = movieName,
+                                    releaseYear = releaseDate.take(4),
+                                    genres = genres,
+                                    voteAverage = voteAverage,
+                                    voteCount = voteCount
+                                )
+                            )
+                        },
+                        isWatchlistAddingInProgress = isWatchlistAddingInProgress
                     )
                 }
                 MovieDetails(
@@ -375,7 +405,8 @@ private fun TrailerItem(videoId: String, title: String) {
 private fun TopAppBar(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
-    onWatchListClick: () -> Unit
+    onAddToWatchListClick: () -> Unit,
+    isWatchlistAddingInProgress: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -395,14 +426,18 @@ private fun TopAppBar(
             )
         }
         IconButton(
-            onClick = onWatchListClick,
+            onClick = onAddToWatchListClick,
             colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
         ) {
-            Icon(
-                imageVector = if (isMovieInWatchList) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                contentDescription = null,
-                tint = Color.Black
-            )
+            if (isWatchlistAddingInProgress) {
+                CircularProgressIndicator()
+            } else {
+                Icon(
+                    imageVector = if (isMovieInWatchList) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
+                    contentDescription = null,
+                    tint = Color.Black
+                )
+            }
         }
     }
 }

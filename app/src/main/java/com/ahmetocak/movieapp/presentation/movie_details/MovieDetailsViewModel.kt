@@ -3,11 +3,15 @@ package com.ahmetocak.movieapp.presentation.movie_details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.UiState
+import com.ahmetocak.movieapp.common.helpers.UiText
+import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
+import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +27,8 @@ import javax.inject.Inject
 class MovieDetailsViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val ioDispatcher: CoroutineDispatcher,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailUiState())
@@ -95,11 +100,54 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    fun addMovieToFirestore(watchListMovie: WatchListMovie) {
+        _uiState.update {
+            it.copy(isWatchlistAddingInProgress = true)
+        }
+        viewModelScope.launch(ioDispatcher) {
+            firebaseRepository.addMovieToFirestore(watchListMovie).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _uiState.update {
+                        it.copy(
+                            isWatchlistAddingInProgress = false,
+                            isMovieInWatchList = true,
+                            userMessages = listOf(
+                                UiText.StringResource(R.string.movie_add_watch_list)
+                            )
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            userMessages = listOf(
+                                task.exception?.message?.let { message ->
+                                    UiText.DynamicString(message)
+                                } ?: kotlin.run {
+                                    UiText.StringResource(R.string.unknown_error)
+                                }
+                            ),
+                            isWatchlistAddingInProgress = false
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun consumedUserMessage() {
+        _uiState.update {
+            it.copy(userMessages = emptyList())
+        }
+    }
 }
 
 data class MovieDetailUiState(
     val detailUiState: UiState<MovieDetail> = UiState.Loading,
     val castUiState: UiState<MovieCredit> = UiState.Loading,
     val directorName: String = "",
-    val trailersUiState: UiState<MovieTrailer> = UiState.Loading
+    val trailersUiState: UiState<MovieTrailer> = UiState.Loading,
+    val userMessages: List<UiText> = emptyList(),
+    val isWatchlistAddingInProgress: Boolean = false,
+    val isMovieInWatchList: Boolean = false
 )

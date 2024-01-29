@@ -9,6 +9,8 @@ import com.ahmetocak.movieapp.utils.DataStoreConstants
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,5 +44,11 @@ object AppModule {
     @Provides
     fun provideIoDispatcher(): CoroutineDispatcher {
         return Dispatchers.IO
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseFirestore(): FirebaseFirestore {
+        return Firebase.firestore
     }
 }
