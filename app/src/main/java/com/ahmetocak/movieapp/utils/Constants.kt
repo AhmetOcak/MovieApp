@@ -16,8 +16,8 @@ object Network {
         const val NOW_PLAYING = "/3/movie/now_playing"
         const val POPULAR = "/3/movie/popular"
         const val MOVIE_DETAILS = "/3/movie/{${Paths.MOVIE_ID}}"
-        const val MOVIE_CREDITS = "/3/movie/{{${Paths.MOVIE_ID}}}/credits"
-        const val MOVIE_TRAILERS = "/3/movie/{{${Paths.MOVIE_ID}}}/videos"
+        const val MOVIE_CREDITS = "/3/movie/{${Paths.MOVIE_ID}}/credits"
+        const val MOVIE_TRAILERS = "/3/movie/{${Paths.MOVIE_ID}}/videos"
         const val SEARCH_MOVIE = "/3/search/movie"
     }
 
