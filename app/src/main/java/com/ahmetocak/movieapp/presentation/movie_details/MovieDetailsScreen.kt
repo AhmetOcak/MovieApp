@@ -102,7 +102,7 @@ fun MovieDetailsScreen(
             modifier = Modifier.padding(paddingValues),
             upPress = upPress,
             isMovieInWatchList = uiState.isMovieInWatchList,
-            onAddToWatchListClick = remember(viewModel) { viewModel::addMovieToFirestore },
+            onAddToWatchListClick = remember(viewModel) { viewModel::addMovieToWatchList },
             detailUiState = uiState.detailUiState,
             directorName = uiState.directorName,
             castUiState = uiState.castUiState,

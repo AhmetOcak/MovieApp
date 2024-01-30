@@ -9,11 +9,13 @@ import com.ahmetocak.movieapp.common.UiState
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
+import com.ahmetocak.movieapp.domain.mapper.toWatchListEntity
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.domain.usecase.firebase.DeleteMovieFromWatchListUseCase
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
+import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -103,22 +105,14 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    fun addMovieToFirestore(watchListMovie: WatchListMovie) {
+    fun addMovieToWatchList(watchListMovie: WatchListMovie) {
         _uiState.update {
             it.copy(isWatchlistButtonInProgress = true)
         }
         viewModelScope.launch(ioDispatcher) {
             firebaseRepository.addMovieToFirestore(watchListMovie).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _uiState.update {
-                        it.copy(
-                            isWatchlistButtonInProgress = false,
-                            isMovieInWatchList = true,
-                            userMessages = listOf(
-                                UiText.StringResource(R.string.movie_add_watch_list)
-                            )
-                        )
-                    }
+                    addMovieToWatchListDb(watchListMovie.toWatchListEntity())
                 } else {
                     _uiState.update {
                         it.copy(
@@ -131,6 +125,30 @@ class MovieDetailsViewModel @Inject constructor(
                             ),
                             isWatchlistButtonInProgress = false
                         )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addMovieToWatchListDb(watchListEntity: WatchListEntity) {
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = movieRepository.addMovieToWatchList(watchListEntity)) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isWatchlistButtonInProgress = false,
+                            isMovieInWatchList = true,
+                            userMessages = listOf(
+                                UiText.StringResource(R.string.movie_add_watch_list)
+                            )
+                        )
+                    }
+                }
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(userMessages = listOf(response.errorMessage))
                     }
                 }
             }
