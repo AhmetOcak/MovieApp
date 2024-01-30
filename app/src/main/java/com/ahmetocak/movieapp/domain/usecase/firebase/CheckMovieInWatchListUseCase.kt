@@ -25,6 +25,8 @@ class CheckMovieInWatchListUseCase @Inject constructor(private val repository: F
                     }
 
                     onSuccess(movieInWatchList != null)
+                } else {
+                    onSuccess(false)
                 }
             } else {
                 onError(

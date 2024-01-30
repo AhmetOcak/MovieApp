@@ -20,7 +20,7 @@ fun WatchListEntity.toWatchListMovie(): WatchListMovie {
         id = movieId,
         name = movieName,
         releaseYear = releaseYear,
-        genres = genres.split(","),
+        genres = genres.split(", "),
         voteAverage = voteAverage,
         voteCount = voteCount,
         imageUrlPath = imageUrlPath
