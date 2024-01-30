@@ -12,6 +12,7 @@ import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.domain.mapper.toWatchListEntity
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
+import com.ahmetocak.movieapp.domain.usecase.firebase.CheckMovieInWatchListUseCase
 import com.ahmetocak.movieapp.domain.usecase.firebase.DeleteMovieFromWatchListUseCase
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
@@ -32,7 +33,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle,
     private val firebaseRepository: FirebaseRepository,
-    private val deleteMovieFromWatchListUseCase: DeleteMovieFromWatchListUseCase
+    private val deleteMovieFromWatchListUseCase: DeleteMovieFromWatchListUseCase,
+    private val checkMovieInWatchListUseCase: CheckMovieInWatchListUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailUiState())
@@ -45,6 +47,7 @@ class MovieDetailsViewModel @Inject constructor(
             getMovieDetails(id.toInt())
             getMovieCredits(id.toInt())
             getMovieTrailers(id.toInt())
+            isMovieInWatchList(id.toInt())
         }
     }
 
@@ -105,7 +108,15 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    fun addMovieToWatchList(watchListMovie: WatchListMovie) {
+    fun handleWatchListAction(watchListMovie: WatchListMovie) {
+        if (_uiState.value.isMovieInWatchList) {
+            removeMovieFromTheWatchList(watchListMovie)
+        } else {
+            addMovieToWatchList(watchListMovie)
+        }
+    }
+
+    private fun addMovieToWatchList(watchListMovie: WatchListMovie) {
         _uiState.update {
             it.copy(isWatchlistButtonInProgress = true)
         }
@@ -155,7 +166,7 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    fun removeMovieFromTheWatchList(watchListMovie: WatchListMovie) {
+    private fun removeMovieFromTheWatchList(watchListMovie: WatchListMovie) {
         _uiState.update {
             it.copy(isWatchlistButtonInProgress = true)
         }
@@ -174,6 +185,33 @@ class MovieDetailsViewModel @Inject constructor(
                     }
                 },
                 onTaskError = { errorMessage ->
+                    _uiState.update {
+                        it.copy(
+                            isWatchlistButtonInProgress = false,
+                            userMessages = listOf(errorMessage)
+                        )
+                    }
+                }
+            )
+        }
+    }
+
+    private fun isMovieInWatchList(movieId: Int) {
+        _uiState.update {
+            it.copy(isWatchlistButtonInProgress = true)
+        }
+        viewModelScope.launch(ioDispatcher) {
+            checkMovieInWatchListUseCase(
+                movieId = movieId,
+                onSuccess = { isMovieInWatchList ->
+                    _uiState.update {
+                        it.copy(
+                            isWatchlistButtonInProgress = false,
+                            isMovieInWatchList = isMovieInWatchList
+                        )
+                    }
+                },
+                onError = { errorMessage ->
                     _uiState.update {
                         it.copy(
                             isWatchlistButtonInProgress = false,

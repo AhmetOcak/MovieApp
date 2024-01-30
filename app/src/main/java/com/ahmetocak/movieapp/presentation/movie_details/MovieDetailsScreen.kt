@@ -102,7 +102,7 @@ fun MovieDetailsScreen(
             modifier = Modifier.padding(paddingValues),
             upPress = upPress,
             isMovieInWatchList = uiState.isMovieInWatchList,
-            onAddToWatchListClick = remember(viewModel) { viewModel::addMovieToWatchList },
+            onWatchListClick = remember(viewModel) { viewModel::handleWatchListAction },
             detailUiState = uiState.detailUiState,
             directorName = uiState.directorName,
             castUiState = uiState.castUiState,
@@ -117,7 +117,7 @@ private fun MovieDetailsScreenContent(
     modifier: Modifier,
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
-    onAddToWatchListClick: (WatchListMovie) -> Unit,
+    onWatchListClick: (WatchListMovie) -> Unit,
     detailUiState: UiState<MovieDetail>,
     directorName: String,
     castUiState: UiState<MovieCredit>,
@@ -131,7 +131,7 @@ private fun MovieDetailsScreenContent(
         MovieSection(
             upPress = upPress,
             isMovieInWatchList = isMovieInWatchList,
-            onAddToWatchListClick = onAddToWatchListClick,
+            onWatchListClick = onWatchListClick,
             detailUiState = detailUiState,
             directorName = directorName,
             isWatchlistButtonInProgress = isWatchlistButtonInProgress
@@ -145,7 +145,7 @@ private fun MovieDetailsScreenContent(
 private fun MovieSection(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
-    onAddToWatchListClick: (WatchListMovie) -> Unit,
+    onWatchListClick: (WatchListMovie) -> Unit,
     detailUiState: UiState<MovieDetail>,
     directorName: String,
     isWatchlistButtonInProgress: Boolean
@@ -170,8 +170,8 @@ private fun MovieSection(
                     TopAppBar(
                         upPress = upPress,
                         isMovieInWatchList = isMovieInWatchList,
-                        onAddToWatchListClick = {
-                            onAddToWatchListClick(
+                        onWatchListClick = {
+                            onWatchListClick(
                                 WatchListMovie(
                                     id = id,
                                     name = movieName,
@@ -406,7 +406,7 @@ private fun TrailerItem(videoId: String, title: String) {
 private fun TopAppBar(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
-    onAddToWatchListClick: () -> Unit,
+    onWatchListClick: () -> Unit,
     isWatchlistButtonInProgress: Boolean
 ) {
     Row(
@@ -427,7 +427,7 @@ private fun TopAppBar(
             )
         }
         IconButton(
-            onClick = onAddToWatchListClick,
+            onClick = onWatchListClick,
             colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
         ) {
             if (isWatchlistButtonInProgress) {
