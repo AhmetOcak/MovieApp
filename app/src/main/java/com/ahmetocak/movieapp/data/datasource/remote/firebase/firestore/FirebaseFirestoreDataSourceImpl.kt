@@ -35,4 +35,10 @@ class FirebaseFirestoreDataSourceImpl @Inject constructor(
             .document(firebaseAuth.currentUser?.uid ?: "")
             .get()
     }
+
+    override fun deleteMovieDocument(): Task<Void> {
+        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
+            .document(firebaseAuth.currentUser?.uid ?: "")
+            .delete()
+    }
 }

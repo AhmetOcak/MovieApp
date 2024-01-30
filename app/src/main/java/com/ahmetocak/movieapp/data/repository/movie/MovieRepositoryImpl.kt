@@ -84,4 +84,7 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun removeMovieFromWatchList(movieId: Int) =
         watchListLocalDataSource.removeMovieFromWatchList(movieId)
+
+    override suspend fun deleteWatchList(): Response<Unit> =
+        watchListLocalDataSource.deleteWatchList()
 }

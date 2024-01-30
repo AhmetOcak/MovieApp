@@ -11,4 +11,6 @@ interface FirebaseFirestoreDataSource {
     fun removeMovieData(watchListMovie: WatchListMovie): Task<Void>
 
     fun getMovieData(): Task<DocumentSnapshot>
+
+    fun deleteMovieDocument(): Task<Void>
 }

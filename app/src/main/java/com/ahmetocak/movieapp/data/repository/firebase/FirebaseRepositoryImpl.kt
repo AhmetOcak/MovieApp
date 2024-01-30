@@ -25,6 +25,7 @@ class FirebaseRepositoryImpl @Inject constructor(
         firebaseAuthDataSource.reAuthenticate(auth)
 
     override fun deleteAccount(): Task<Void>? = firebaseAuthDataSource.deleteAccount()
+
     override fun addMovieToFirestore(watchListMovie: WatchListMovie): Task<Void> =
         firebaseFirestoreDataSource.addMovieData(watchListMovie)
 
@@ -32,4 +33,7 @@ class FirebaseRepositoryImpl @Inject constructor(
         firebaseFirestoreDataSource.removeMovieData(watchListMovie)
 
     override fun getMovieData(): Task<DocumentSnapshot> = firebaseFirestoreDataSource.getMovieData()
+
+    override fun deleteMovieDocument(): Task<Void> =
+        firebaseFirestoreDataSource.deleteMovieDocument()
 }

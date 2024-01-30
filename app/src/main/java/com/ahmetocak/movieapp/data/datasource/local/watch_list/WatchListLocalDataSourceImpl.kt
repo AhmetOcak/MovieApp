@@ -18,4 +18,6 @@ class WatchListLocalDataSourceImpl @Inject constructor(
 
     override suspend fun removeMovieFromWatchList(movieId: Int) =
         dbCall { dao.removeMovieFromWatchList(movieId) }
+
+    override suspend fun deleteWatchList(): Response<Unit> = dbCall { dao.deleteWatchList() }
 }

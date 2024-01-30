@@ -11,4 +11,6 @@ interface WatchListLocalDataSource {
     suspend fun getWatchList(): Response<Flow<List<WatchListEntity>>>
 
     suspend fun removeMovieFromWatchList(movieId: Int): Response<Unit>
+
+    suspend fun deleteWatchList(): Response<Unit>
 }

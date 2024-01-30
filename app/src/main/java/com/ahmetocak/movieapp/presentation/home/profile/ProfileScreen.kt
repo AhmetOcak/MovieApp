@@ -1,6 +1,7 @@
 package com.ahmetocak.movieapp.presentation.home.profile
 
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,6 +40,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,12 +57,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.common.DialogUiEvent
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
+import com.ahmetocak.movieapp.presentation.ui.components.ButtonCircularProgressIndicator
 import com.ahmetocak.movieapp.presentation.ui.components.MovieDialog
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.movieapp.presentation.ui.theme.backgroundDark
 import com.ahmetocak.movieapp.presentation.ui.theme.backgroundLight
 import com.ahmetocak.movieapp.presentation.ui.theme.primaryContainerDark
@@ -81,8 +87,32 @@ private enum class Languages {
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     onNavigateToRoute: (String) -> Unit,
-    onLogOutClick: () -> Unit
+    onLogOutClick: () -> Unit,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    if (uiState.deleteAccountDialogUiEvent != DialogUiEvent.InActive) {
+        DeleteAccountDialog(
+            onDismissRequest = viewModel::endDeleteAccountDialog,
+            onCancelClick = viewModel::endDeleteAccountDialog,
+            onDeleteClick = remember(viewModel) { {
+                viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
+            } },
+            password = viewModel.password,
+            onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
+            isLoading = uiState.deleteAccountDialogUiEvent == DialogUiEvent.Loading
+        )
+    }
+
+    if (uiState.userMessages.isNotEmpty()) {
+        Toast.makeText(
+            LocalContext.current,
+            uiState.userMessages.first().asString(),
+            Toast.LENGTH_SHORT
+        ).show()
+        viewModel.userMessageConsumed()
+    }
 
     MovieScaffold(
         modifier = modifier,
@@ -98,8 +128,8 @@ fun ProfileScreen(
             modifier = Modifier.padding(paddingValues),
             onLogOutClick = onLogOutClick,
             profileImageUrl = "https://picsum.photos/200/300",
-            userEmail = "ahmetocak754@gmail.com",
-            onDeleteAccountClick = {},
+            userEmail = uiState.userEmail,
+            onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },
             onDarkThemeSwitchChange = {},
             onLanguageSelect = {},
             isAppThemeDark = isSystemInDarkTheme(),
@@ -380,7 +410,10 @@ private fun TopAppBar(onLogOutClick: () -> Unit, onDeleteAccountClick: () -> Uni
 private fun DeleteAccountDialog(
     onDismissRequest: () -> Unit,
     onCancelClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    password: String,
+    onPasswordValueChange: (String) -> Unit,
+    isLoading: Boolean
 ) {
     MovieDialog(onDismissRequest = onDismissRequest) {
         Column(
@@ -394,6 +427,11 @@ private fun DeleteAccountDialog(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(text = stringResource(id = R.string.delete_account_description_text))
+            AuthPasswordOutlinedTextField(
+                value = password,
+                onValueChange = onPasswordValueChange,
+                labelText = stringResource(id = R.string.password_label)
+            )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 ElevatedButton(onClick = onCancelClick) {
                     Text(text = stringResource(id = R.string.cancel_text))
@@ -401,9 +439,14 @@ private fun DeleteAccountDialog(
                 Spacer(modifier = Modifier.width(Dimens.twoLevelPadding))
                 Button(
                     onClick = onDeleteClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                    enabled = password.isNotBlank() && !isLoading
                 ) {
-                    Text(text = stringResource(id = R.string.delete_text))
+                    if (isLoading) {
+                        ButtonCircularProgressIndicator()
+                    } else {
+                        Text(text = stringResource(id = R.string.delete_text))
+                    }
                 }
             }
         }

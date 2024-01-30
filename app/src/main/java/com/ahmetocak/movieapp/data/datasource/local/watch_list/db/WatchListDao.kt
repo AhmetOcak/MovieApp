@@ -18,4 +18,7 @@ interface WatchListDao {
 
     @Query("DELETE FROM WatchListEntity WHERE id == :movieId")
     suspend fun removeMovieFromWatchList(movieId: Int)
+
+    @Query("DELETE FROM WatchListEntity")
+    suspend fun deleteWatchList()
 }
