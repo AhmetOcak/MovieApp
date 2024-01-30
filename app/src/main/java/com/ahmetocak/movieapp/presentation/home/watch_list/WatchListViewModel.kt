@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,11 +34,16 @@ class WatchListViewModel @Inject constructor(
     }
 
     private fun getWatchList() {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             when (val response = movieRepository.getWatchList()) {
                 is Response.Success -> {
-                    _uiState.update {
-                        it.copy(isLoading = false, watchList = response.data)
+                    response.data.flowOn(ioDispatcher).collect { watchList ->
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                watchList = watchList
+                            )
+                        }
                     }
                 }
 
@@ -58,15 +64,10 @@ class WatchListViewModel @Inject constructor(
             deleteMovieFromWatchListUseCase.invoke(
                 watchListMovie = watchListMovie,
                 onTaskSuccess = {
-                    val currentWatchList = _uiState.value.watchList.toMutableList()
-                    currentWatchList.removeIf {
-                        it.movieId == watchListMovie.id
-                    }
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            userMessages = listOf(UiText.StringResource(R.string.movie_remove_watch_list)),
-                            watchList = currentWatchList
+                            userMessages = listOf(UiText.StringResource(R.string.movie_remove_watch_list))
                         )
                     }
                 },

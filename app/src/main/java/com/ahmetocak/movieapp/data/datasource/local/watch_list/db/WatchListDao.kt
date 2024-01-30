@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WatchListDao {
@@ -13,7 +14,7 @@ interface WatchListDao {
     suspend fun addMovieToWatchList(watchListEntity: WatchListEntity)
 
     @Query("SELECT * FROM WatchListEntity")
-    suspend fun getWatchList(): List<WatchListEntity>
+    fun getWatchList(): Flow<List<WatchListEntity>>
 
     @Query("DELETE FROM WatchListEntity WHERE id == :movieId")
     suspend fun removeMovieFromWatchList(movieId: Int)

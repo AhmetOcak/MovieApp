@@ -150,7 +150,9 @@ private fun WatchListScreenContent(
 @Composable
 private fun EmptyWatchListView(modifier: Modifier) {
     Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = Dimens.fourLevelPadding),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = Dimens.fourLevelPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

@@ -79,7 +79,7 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun addMovieToWatchList(watchListEntity: WatchListEntity) =
         watchListLocalDataSource.addMovieToWatchList(watchListEntity)
 
-    override suspend fun getWatchList(): Response<List<WatchListEntity>> =
+    override suspend fun getWatchList(): Response<Flow<List<WatchListEntity>>> =
         watchListLocalDataSource.getWatchList()
 
     override suspend fun removeMovieFromWatchList(movieId: Int) =
