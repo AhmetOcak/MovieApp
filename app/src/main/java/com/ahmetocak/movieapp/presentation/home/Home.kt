@@ -96,9 +96,7 @@ fun MovieNavigationBar(
             NavigationBarItem(
                 selected = currentSection.route == section.route,
                 onClick = {
-                    if (currentSection.route != section.route) {
-                        navigateToRoute(section.route)
-                    }
+                    navigateToRoute(section.route)
                 },
                 icon = {
                     Icon(

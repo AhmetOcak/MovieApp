@@ -41,11 +41,11 @@ class MovieAppNavController(val navController: NavHostController) {
     fun navigateToNavigationBar(route: String) {
         if (route != currentRoute) {
             navController.navigate(route) {
-                launchSingleTop = true
-                restoreState = true
                 popUpTo(findStartDestination(navController.graph).id) {
                     saveState = true
                 }
+                launchSingleTop = true
+                restoreState = true
             }
         }
     }
@@ -64,7 +64,9 @@ class MovieAppNavController(val navController: NavHostController) {
 
     fun navigateLogin(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
-            navController.navigate(MainDestinations.LOGIN_ROUTE)
+            navController.navigate(MainDestinations.LOGIN_ROUTE) {
+                popUpTo(0)
+            }
         }
     }
 
@@ -77,9 +79,7 @@ class MovieAppNavController(val navController: NavHostController) {
     fun navigateToHome(from: NavBackStackEntry) {
         if (shouldNavigate(from)) {
             navController.navigate(MainDestinations.HOME_ROUTE) {
-                popUpTo(MainDestinations.HOME_ROUTE) {
-                    inclusive = true
-                }
+                popUpTo(0)
             }
         }
     }
