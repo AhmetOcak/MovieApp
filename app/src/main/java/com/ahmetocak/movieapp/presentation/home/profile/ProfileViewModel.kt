@@ -35,6 +35,7 @@ class ProfileViewModel @Inject constructor(
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     init {
+        getUserProfileImage()
         _uiState.update {
             it.copy(userEmail = firebaseAuth.currentUser?.email ?: "")
         }
@@ -66,12 +67,14 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             reAuthenticate {
                 deleteMovieDocument {
-                    clearMovieLocalDatabase {
-                        deleteAccount {
-                            _uiState.update {
-                                it.copy(deleteAccountDialogUiEvent = DialogUiEvent.InActive)
+                    deleteUserProfileImage {
+                        clearMovieLocalDatabase {
+                            deleteAccount {
+                                _uiState.update {
+                                    it.copy(deleteAccountDialogUiEvent = DialogUiEvent.InActive)
+                                }
+                                onAccountDeleteEnd()
                             }
-                            onAccountDeleteEnd()
                         }
                     }
                 }
@@ -106,6 +109,16 @@ class ProfileViewModel @Inject constructor(
 
     private fun deleteMovieDocument(onSuccess: () -> Unit) {
         firebaseRepository.deleteMovieDocument().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                onSuccess()
+            } else {
+                handleDeleteAccountError(task.exception)
+            }
+        }
+    }
+
+    private fun deleteUserProfileImage(onSuccess: () -> Unit) {
+        firebaseRepository.deleteUserProfileImage().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 onSuccess()
             } else {
@@ -149,15 +162,15 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun uploadUserProfileImage(imageUri: Uri?) {
+        _uiState.update {
+            it.copy(isProfileImageUploading = true)
+        }
         viewModelScope.launch(ioDispatcher) {
-            _uiState.update {
-                it.copy(isProfileImgUploading = true)
-            }
             imageUri?.let { uri ->
                 firebaseRepository.uploadProfileImage(uri).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         _uiState.update {
-                            it.copy(profileImgUri = uri, isProfileImgUploading = false)
+                            it.copy(profileImgUri = uri, isProfileImageUploading = false)
                         }
                     } else {
                         _uiState.update {
@@ -165,7 +178,7 @@ class ProfileViewModel @Inject constructor(
                                 userMessages = listOf(task.exception?.message?.let { message ->
                                     UiText.DynamicString(message)
                                 } ?: kotlin.run { UiText.StringResource(R.string.unknown_error) }),
-                                isProfileImgUploading = false
+                                isProfileImageUploading = false
                             )
                         }
                     }
@@ -174,8 +187,20 @@ class ProfileViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         userMessages = listOf(UiText.StringResource(R.string.unknown_error)),
-                        isProfileImgUploading = false
+                        isProfileImageUploading = false
                     )
+                }
+            }
+        }
+    }
+
+    private fun getUserProfileImage() {
+        viewModelScope.launch(ioDispatcher) {
+            firebaseRepository.getUserProfileImage().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _uiState.update {
+                        it.copy(profileImgUri = task.result)
+                    }
                 }
             }
         }
@@ -187,5 +212,5 @@ data class ProfileUiState(
     val userEmail: String = "",
     val userMessages: List<UiText> = emptyList(),
     val deleteAccountDialogUiEvent: DialogUiEvent = DialogUiEvent.InActive,
-    val isProfileImgUploading: Boolean = false
+    val isProfileImageUploading: Boolean = false
 )

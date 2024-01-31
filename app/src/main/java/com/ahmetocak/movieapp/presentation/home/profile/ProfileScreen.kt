@@ -155,7 +155,7 @@ fun ProfileScreen(
                     )
                 }
             },
-            isProfileImgUploading = uiState.isProfileImgUploading
+            isProfileImgUploading = uiState.isProfileImageUploading
         )
     }
 }

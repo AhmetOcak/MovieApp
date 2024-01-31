@@ -4,27 +4,33 @@ import android.net.Uri
 import com.ahmetocak.movieapp.utils.Firestorage
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import javax.inject.Inject
 
 class FirebaseStorageDataSourceImpl @Inject constructor(
-    storageReference: StorageReference,
-    firebaseAuth: FirebaseAuth
-): FirebaseStorageDataSource {
+    firebaseStorage: FirebaseStorage,
+    private val firebaseAuth: FirebaseAuth
+) : FirebaseStorageDataSource {
 
-    private val profileImageReference = storageReference
-        .child("${Firestorage.USER_PROFILE_IMG_PATH}/${firebaseAuth.currentUser?.uid}")
+    private val storageRef = firebaseStorage.reference
+
 
     override fun uploadProfileImage(imageUri: Uri): UploadTask {
-        return profileImageReference.putFile(imageUri)
+        val profileImageRef =
+            storageRef.child("${Firestorage.USER_PROFILE_IMG_PATH}/${firebaseAuth.currentUser?.uid}")
+        return profileImageRef.putFile(imageUri)
     }
 
     override fun getUserProfileImage(): Task<Uri> {
-        return profileImageReference.downloadUrl
+        val profileImageRef =
+            storageRef.child("${Firestorage.USER_PROFILE_IMG_PATH}/${firebaseAuth.currentUser?.uid}")
+        return profileImageRef.downloadUrl
     }
 
     override fun deleteUserProfileImage(): Task<Void> {
-        return profileImageReference.delete()
+        val profileImageRef =
+            storageRef.child("${Firestorage.USER_PROFILE_IMG_PATH}/${firebaseAuth.currentUser?.uid}")
+        return profileImageRef.delete()
     }
 }

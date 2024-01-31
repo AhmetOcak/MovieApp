@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storage
 import dagger.Module
 import dagger.Provides
@@ -56,7 +56,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideFirebaseStorageReference(): StorageReference {
-        return Firebase.storage.reference
+    fun provideFirebaseStorageReference(): FirebaseStorage {
+        return Firebase.storage
     }
 }
