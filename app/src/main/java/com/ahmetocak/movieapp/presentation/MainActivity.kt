@@ -21,7 +21,8 @@ class MainActivity : ComponentActivity() {
 
             MovieApp(
                 startDestination = MainDestinations.HOME_ROUTE,
-                darkTheme = uiState.isDarkModeOn
+                darkTheme = uiState.isDarkModeOn,
+                dynamicColor = uiState.isDynamicColorOn
             )
         }
     }

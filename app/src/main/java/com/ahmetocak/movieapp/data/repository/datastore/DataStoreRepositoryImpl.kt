@@ -17,4 +17,9 @@ class DataStoreRepositoryImpl @Inject constructor(
 
     override suspend fun updateAppTheme(isDarkMode: Boolean) =
         dataStoreDataSource.updateAppTheme(isDarkMode)
+
+    override suspend fun getDynamicColor(): Flow<Boolean> = dataStoreDataSource.getDynamicColor()
+
+    override suspend fun updateDynamicColor(dynamicColor: Boolean) =
+        dataStoreDataSource.updateDynamicColor(dynamicColor)
 }

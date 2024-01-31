@@ -23,8 +23,12 @@ import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
 import com.ahmetocak.movieapp.utils.SeeAllType
 
 @Composable
-fun MovieApp(startDestination: String, darkTheme: Boolean = isSystemInDarkTheme()) {
-    MovieAppTheme(darkTheme = darkTheme) {
+fun MovieApp(
+    startDestination: String,
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false
+) {
+    MovieAppTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
         Surface {
             val movieAppNavController = rememberMovieAppNavController()
             NavHost(

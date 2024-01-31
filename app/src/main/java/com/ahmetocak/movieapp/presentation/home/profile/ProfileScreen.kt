@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -144,18 +143,16 @@ fun ProfileScreen(
             onDarkThemeSwitchChange = remember(viewModel) { viewModel::setTheme },
             onLanguageSelect = {},
             isAppThemeDark = uiState.isDarkModeOn,
-            onDynamicColorSwitchChange = {},
-            isDynamicColorActive = false,
+            onDynamicColorSwitchChange = remember(viewModel) { viewModel::setDynamicColor },
+            isDynamicColorActive = uiState.isDynamicColorOn,
             onPickUpFromGalleryClick = remember {
                 {
                     pickMedia.launch(
-                        PickVisualMediaRequest(
-                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                        )
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }
             },
-            isProfileImgUploading = uiState.isProfileImageUploading
+            isProfileImageUploading = uiState.isProfileImageUploading
         )
     }
 }
@@ -173,7 +170,7 @@ private fun ProfileScreenContent(
     onDynamicColorSwitchChange: (Boolean) -> Unit,
     isDynamicColorActive: Boolean,
     onPickUpFromGalleryClick: () -> Unit,
-    isProfileImgUploading: Boolean
+    isProfileImageUploading: Boolean
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ProfileSection(
@@ -184,7 +181,7 @@ private fun ProfileScreenContent(
             onDeleteAccountClick = onDeleteAccountClick,
             isAppThemeDark = isAppThemeDark,
             onPickUpFromGalleryClick = onPickUpFromGalleryClick,
-            isProfileImgUploading = isProfileImgUploading
+            isProfileImageUploading = isProfileImageUploading
         )
         SettingsSection(
             modifier = Modifier.weight(3f),
@@ -207,7 +204,7 @@ private fun ProfileSection(
     onDeleteAccountClick: () -> Unit,
     isAppThemeDark: Boolean,
     onPickUpFromGalleryClick: () -> Unit,
-    isProfileImgUploading: Boolean
+    isProfileImageUploading: Boolean
 ) {
     Box(
         modifier = modifier
@@ -232,7 +229,7 @@ private fun ProfileSection(
                 modifier = Modifier.size(PROFILE_IMG_SIZE),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                if (isProfileImgUploading) {
+                if (isProfileImageUploading) {
                     FullScreenCircularProgressIndicator()
                 } else {
                     AnimatedAsyncImage(

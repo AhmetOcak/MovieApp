@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl.PreferencesKeys.APP_THEME
+import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl.PreferencesKeys.DYNAMIC_COLOR
 import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl.PreferencesKeys.REMEMBER_ME
 import com.ahmetocak.movieapp.utils.DataStoreConstants
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +20,7 @@ class DataStoreDataSourceImpl @Inject constructor(
     private object PreferencesKeys {
         val REMEMBER_ME = booleanPreferencesKey(DataStoreConstants.REMEMBER_ME_KEY)
         val APP_THEME = booleanPreferencesKey(DataStoreConstants.APP_THEME_KEY)
+        val DYNAMIC_COLOR = booleanPreferencesKey(DataStoreConstants.DYNAMIC_COLOR)
     }
 
     override suspend fun getRememberMe(): Boolean {
@@ -39,9 +41,21 @@ class DataStoreDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateAppTheme(isDarkMode: Boolean) {
+    override suspend fun updateAppTheme(darkMode: Boolean) {
         datastore.edit { settings ->
-            settings[APP_THEME] = isDarkMode
+            settings[APP_THEME] = darkMode
+        }
+    }
+
+    override suspend fun getDynamicColor(): Flow<Boolean> {
+        return datastore.data.map { preferences ->
+            preferences[DYNAMIC_COLOR] ?: false
+        }
+    }
+
+    override suspend fun updateDynamicColor(dynamicColor: Boolean) {
+        datastore.edit { settings ->
+            settings[DYNAMIC_COLOR] = dynamicColor
         }
     }
 }

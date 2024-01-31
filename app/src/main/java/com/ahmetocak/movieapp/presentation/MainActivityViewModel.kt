@@ -23,6 +23,7 @@ class MainActivityViewModel @Inject constructor(
 
     init {
         getTheme()
+        getDynamicColor()
     }
 
     private fun getTheme() {
@@ -34,8 +35,19 @@ class MainActivityViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getDynamicColor() {
+        viewModelScope.launch(ioDispatcher) {
+            dataStoreRepository.getDynamicColor().collect { dynamicColor ->
+                _uiState.update {
+                    it.copy(isDynamicColorOn = dynamicColor)
+                }
+            }
+        }
+    }
 }
 
 data class MainUiState(
-    val isDarkModeOn: Boolean = true
+    val isDarkModeOn: Boolean = true,
+    val isDynamicColorOn: Boolean = false
 )

@@ -38,6 +38,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         getTheme()
+        getDynamicColor()
         getUserProfileImage()
         _uiState.update {
             it.copy(userEmail = firebaseAuth.currentUser?.email ?: "")
@@ -227,6 +228,25 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
+    fun setDynamicColor(dynamicColor: Boolean) {
+        viewModelScope.launch(ioDispatcher) {
+            dataStoreRepository.updateDynamicColor(dynamicColor)
+            _uiState.update {
+                it.copy(isDynamicColorOn = dynamicColor)
+            }
+        }
+    }
+
+    private fun getDynamicColor() {
+        viewModelScope.launch(ioDispatcher) {
+            dataStoreRepository.getDynamicColor().collect { dynamicColor ->
+                _uiState.update {
+                    it.copy(isDynamicColorOn = dynamicColor)
+                }
+            }
+        }
+    }
 }
 
 data class ProfileUiState(
@@ -235,5 +255,6 @@ data class ProfileUiState(
     val userMessages: List<UiText> = emptyList(),
     val deleteAccountDialogUiEvent: DialogUiEvent = DialogUiEvent.InActive,
     val isProfileImageUploading: Boolean = false,
-    val isDarkModeOn: Boolean = false
+    val isDarkModeOn: Boolean = false,
+    val isDynamicColorOn: Boolean = false
 )
