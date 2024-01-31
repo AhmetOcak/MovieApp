@@ -141,9 +141,9 @@ fun ProfileScreen(
             profileImageUrl = uiState.profileImgUri?.toString() ?: "",
             userEmail = uiState.userEmail,
             onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },
-            onDarkThemeSwitchChange = {},
+            onDarkThemeSwitchChange = remember(viewModel) { viewModel::setTheme },
             onLanguageSelect = {},
-            isAppThemeDark = isSystemInDarkTheme(),
+            isAppThemeDark = uiState.isDarkModeOn,
             onDynamicColorSwitchChange = {},
             isDynamicColorActive = false,
             onPickUpFromGalleryClick = remember {

@@ -5,7 +5,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl.PreferencesKeys.APP_THEME
+import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourceImpl.PreferencesKeys.REMEMBER_ME
 import com.ahmetocak.movieapp.utils.DataStoreConstants
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,18 +17,31 @@ class DataStoreDataSourceImpl @Inject constructor(
 ): DataStoreDataSource {
 
     private object PreferencesKeys {
+        val REMEMBER_ME = booleanPreferencesKey(DataStoreConstants.REMEMBER_ME_KEY)
         val APP_THEME = booleanPreferencesKey(DataStoreConstants.APP_THEME_KEY)
     }
 
     override suspend fun getRememberMe(): Boolean {
         return datastore.data.map { preferences ->
-            preferences[APP_THEME] ?: false
+            preferences[REMEMBER_ME] ?: false
         }.first()
     }
 
     override suspend fun updateRememberMe(value: Boolean) {
         datastore.edit { settings ->
-            settings[APP_THEME] = value
+            settings[REMEMBER_ME] = value
+        }
+    }
+
+    override suspend fun getAppTheme(): Flow<Boolean> {
+        return datastore.data.map { preferences ->
+            preferences[APP_THEME] ?: true
+        }
+    }
+
+    override suspend fun updateAppTheme(isDarkMode: Boolean) {
+        datastore.edit { settings ->
+            settings[APP_THEME] = isDarkMode
         }
     }
 }

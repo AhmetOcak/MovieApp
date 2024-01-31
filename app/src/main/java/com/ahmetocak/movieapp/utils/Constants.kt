@@ -8,6 +8,7 @@ object TMDB {
 object DataStoreConstants {
     const val FILE_NAME = "movie_app_preferences"
     const val APP_THEME_KEY = "app_theme_preference"
+    const val REMEMBER_ME_KEY = "remember_me_preference"
 }
 
 object Network {

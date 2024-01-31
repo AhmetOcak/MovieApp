@@ -1,5 +1,6 @@
 package com.ahmetocak.movieapp.presentation
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,8 +23,8 @@ import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
 import com.ahmetocak.movieapp.utils.SeeAllType
 
 @Composable
-fun MovieApp(startDestination: String) {
-    MovieAppTheme {
+fun MovieApp(startDestination: String, darkTheme: Boolean = isSystemInDarkTheme()) {
+    MovieAppTheme(darkTheme = darkTheme) {
         Surface {
             val movieAppNavController = rememberMovieAppNavController()
             NavHost(

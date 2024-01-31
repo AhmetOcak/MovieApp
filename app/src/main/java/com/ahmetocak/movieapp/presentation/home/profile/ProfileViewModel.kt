@@ -10,6 +10,7 @@ import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.DialogUiEvent
 import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.helpers.UiText
+import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.model.firebase.auth.Auth
@@ -28,13 +29,15 @@ class ProfileViewModel @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
     private val ioDispatcher: CoroutineDispatcher,
     private val movieRepository: MovieRepository,
-    firebaseAuth: FirebaseAuth
+    firebaseAuth: FirebaseAuth,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     init {
+        getTheme()
         getUserProfileImage()
         _uiState.update {
             it.copy(userEmail = firebaseAuth.currentUser?.email ?: "")
@@ -205,6 +208,25 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
+    fun setTheme(darkTheme: Boolean) {
+        viewModelScope.launch(ioDispatcher) {
+            dataStoreRepository.updateAppTheme(darkTheme)
+            _uiState.update {
+                it.copy(isDarkModeOn = darkTheme)
+            }
+        }
+    }
+
+    private fun getTheme() {
+        viewModelScope.launch(ioDispatcher) {
+            dataStoreRepository.getAppTheme().collect { darkMode ->
+                _uiState.update {
+                    it.copy(isDarkModeOn = darkMode)
+                }
+            }
+        }
+    }
 }
 
 data class ProfileUiState(
@@ -212,5 +234,6 @@ data class ProfileUiState(
     val userEmail: String = "",
     val userMessages: List<UiText> = emptyList(),
     val deleteAccountDialogUiEvent: DialogUiEvent = DialogUiEvent.InActive,
-    val isProfileImageUploading: Boolean = false
+    val isProfileImageUploading: Boolean = false,
+    val isDarkModeOn: Boolean = false
 )
