@@ -2,6 +2,9 @@ package com.ahmetocak.movieapp.presentation.home.profile
 
 import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -64,6 +67,7 @@ import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
 import com.ahmetocak.movieapp.presentation.ui.components.ButtonCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.movieapp.presentation.ui.components.MovieDialog
 import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
 import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
@@ -92,13 +96,20 @@ fun ProfileScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            viewModel.uploadUserProfileImage(uri)
+        }
+
     if (uiState.deleteAccountDialogUiEvent != DialogUiEvent.InActive) {
         DeleteAccountDialog(
             onDismissRequest = viewModel::endDeleteAccountDialog,
             onCancelClick = viewModel::endDeleteAccountDialog,
-            onDeleteClick = remember(viewModel) { {
-                viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
-            } },
+            onDeleteClick = remember(viewModel) {
+                {
+                    viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
+                }
+            },
             password = viewModel.password,
             onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
             isLoading = uiState.deleteAccountDialogUiEvent == DialogUiEvent.Loading
@@ -127,7 +138,7 @@ fun ProfileScreen(
         ProfileScreenContent(
             modifier = Modifier.padding(paddingValues),
             onLogOutClick = onLogOutClick,
-            profileImageUrl = "https://picsum.photos/200/300",
+            profileImageUrl = uiState.profileImgUri?.toString() ?: "",
             userEmail = uiState.userEmail,
             onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },
             onDarkThemeSwitchChange = {},
@@ -135,7 +146,16 @@ fun ProfileScreen(
             isAppThemeDark = isSystemInDarkTheme(),
             onDynamicColorSwitchChange = {},
             isDynamicColorActive = false,
-            onPickUpFromGalleryClick = {}
+            onPickUpFromGalleryClick = remember {
+                {
+                    pickMedia.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                }
+            },
+            isProfileImgUploading = uiState.isProfileImgUploading
         )
     }
 }
@@ -152,7 +172,8 @@ private fun ProfileScreenContent(
     isAppThemeDark: Boolean,
     onDynamicColorSwitchChange: (Boolean) -> Unit,
     isDynamicColorActive: Boolean,
-    onPickUpFromGalleryClick: () -> Unit
+    onPickUpFromGalleryClick: () -> Unit,
+    isProfileImgUploading: Boolean
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ProfileSection(
@@ -162,7 +183,8 @@ private fun ProfileScreenContent(
             userEmail = userEmail,
             onDeleteAccountClick = onDeleteAccountClick,
             isAppThemeDark = isAppThemeDark,
-            onPickUpFromGalleryClick = onPickUpFromGalleryClick
+            onPickUpFromGalleryClick = onPickUpFromGalleryClick,
+            isProfileImgUploading = isProfileImgUploading
         )
         SettingsSection(
             modifier = Modifier.weight(3f),
@@ -184,7 +206,8 @@ private fun ProfileSection(
     userEmail: String,
     onDeleteAccountClick: () -> Unit,
     isAppThemeDark: Boolean,
-    onPickUpFromGalleryClick: () -> Unit
+    onPickUpFromGalleryClick: () -> Unit,
+    isProfileImgUploading: Boolean
 ) {
     Box(
         modifier = modifier
@@ -209,25 +232,30 @@ private fun ProfileSection(
                 modifier = Modifier.size(PROFILE_IMG_SIZE),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                AnimatedAsyncImage(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape),
-                    imageUrl = profileImageUrl,
-                    borderShape = CircleShape,
-                    borderStroke = BorderStroke(
-                        width = 2.dp,
-                        brush = Brush.linearGradient(
-                            listOf(Color(0xFF00C3FF), Color(0xFFFFFF1C))
-                        )
+                if (isProfileImgUploading) {
+                    FullScreenCircularProgressIndicator()
+                } else {
+                    AnimatedAsyncImage(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        imageUrl = profileImageUrl,
+                        borderShape = CircleShape,
+                        borderStroke = BorderStroke(
+                            width = 2.dp,
+                            brush = Brush.linearGradient(
+                                listOf(Color(0xFF00C3FF), Color(0xFFFFFF1C))
+                            )
+                        ),
+                        errorImageDrawableId = R.drawable.blank_profile_image
                     )
-                )
-                IconButton(
-                    modifier = Modifier.size(48.dp),
-                    onClick = onPickUpFromGalleryClick,
-                    colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
-                ) {
-                    Icon(imageVector = Icons.Filled.Image, contentDescription = null)
+                    IconButton(
+                        modifier = Modifier.size(48.dp),
+                        onClick = onPickUpFromGalleryClick,
+                        colors = IconButtonDefaults.iconButtonColors(containerColor = MaterialTheme.colorScheme.background)
+                    ) {
+                        Icon(imageVector = Icons.Filled.Image, contentDescription = null)
+                    }
                 }
             }
             Text(

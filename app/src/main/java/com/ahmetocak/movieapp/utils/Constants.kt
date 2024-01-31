@@ -40,3 +40,7 @@ object Firestore {
 object Database {
     const val WATCH_LIST_DB_NAME =  "watch_list_db"
 }
+
+object Firestorage {
+    const val USER_PROFILE_IMG_PATH = "user_profile_images"
+}

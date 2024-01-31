@@ -4,6 +4,7 @@ import com.ahmetocak.movieapp.data.datasource.local.datastore.DataStoreDataSourc
 import com.ahmetocak.movieapp.data.datasource.local.watch_list.WatchListLocalDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.firestore.FirebaseFirestoreDataSource
+import com.ahmetocak.movieapp.data.datasource.remote.firebase.storage.FirebaseStorageDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
@@ -26,9 +27,14 @@ object RepositoryModule {
     @Provides
     fun provideFirebaseRepository(
         firebaseAuthDataSource: FirebaseAuthDataSource,
-        firebaseFirestoreDataSource: FirebaseFirestoreDataSource
+        firebaseFirestoreDataSource: FirebaseFirestoreDataSource,
+        firebaseStorageDataSource: FirebaseStorageDataSource
     ): FirebaseRepository {
-        return FirebaseRepositoryImpl(firebaseAuthDataSource, firebaseFirestoreDataSource)
+        return FirebaseRepositoryImpl(
+            firebaseAuthDataSource,
+            firebaseFirestoreDataSource,
+            firebaseStorageDataSource
+        )
     }
 
     @Singleton

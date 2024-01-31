@@ -32,7 +32,8 @@ import com.ahmetocak.movieapp.R
 fun AnimatedAsyncImage(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    imageUrl: String
+    imageUrl: String,
+    errorImageDrawableId: Int = R.drawable.no_image_available
 ) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -74,7 +75,7 @@ fun AnimatedAsyncImage(
         else -> {
             Image(
                 modifier = modifier,
-                painter = painterResource(id = R.drawable.no_image_available),
+                painter = painterResource(id = errorImageDrawableId),
                 contentDescription = null,
                 contentScale = contentScale
             )
@@ -88,7 +89,8 @@ fun AnimatedAsyncImage(
     contentScale: ContentScale = ContentScale.Crop,
     imageUrl: String,
     borderStroke: BorderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
-    borderShape: Shape = RoundedCornerShape(4.dp)
+    borderShape: Shape = RoundedCornerShape(4.dp),
+    errorImageDrawableId: Int = R.drawable.no_image_available
 ) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -131,7 +133,7 @@ fun AnimatedAsyncImage(
         else -> {
             Image(
                 modifier = modifier,
-                painter = painterResource(id = R.drawable.no_image_available),
+                painter = painterResource(id = errorImageDrawableId),
                 contentDescription = null,
                 contentScale = contentScale
             )

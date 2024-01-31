@@ -1,5 +1,6 @@
 package com.ahmetocak.movieapp.presentation.home.profile
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -113,7 +114,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-     private fun clearMovieLocalDatabase(onSuccess: () -> Unit) {
+    private fun clearMovieLocalDatabase(onSuccess: () -> Unit) {
         viewModelScope.launch(ioDispatcher) {
             when (val response = movieRepository.deleteWatchList()) {
                 is Response.Success -> {
@@ -146,11 +147,45 @@ class ProfileViewModel @Inject constructor(
             it.copy(userMessages = emptyList())
         }
     }
+
+    fun uploadUserProfileImage(imageUri: Uri?) {
+        viewModelScope.launch(ioDispatcher) {
+            _uiState.update {
+                it.copy(isProfileImgUploading = true)
+            }
+            imageUri?.let { uri ->
+                firebaseRepository.uploadProfileImage(uri).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        _uiState.update {
+                            it.copy(profileImgUri = uri, isProfileImgUploading = false)
+                        }
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                userMessages = listOf(task.exception?.message?.let { message ->
+                                    UiText.DynamicString(message)
+                                } ?: kotlin.run { UiText.StringResource(R.string.unknown_error) }),
+                                isProfileImgUploading = false
+                            )
+                        }
+                    }
+                }
+            } ?: kotlin.run {
+                _uiState.update {
+                    it.copy(
+                        userMessages = listOf(UiText.StringResource(R.string.unknown_error)),
+                        isProfileImgUploading = false
+                    )
+                }
+            }
+        }
+    }
 }
 
 data class ProfileUiState(
-    val profileImgUrl: String = "",
+    val profileImgUri: Uri? = null,
     val userEmail: String = "",
     val userMessages: List<UiText> = emptyList(),
-    val deleteAccountDialogUiEvent: DialogUiEvent = DialogUiEvent.InActive
+    val deleteAccountDialogUiEvent: DialogUiEvent = DialogUiEvent.InActive,
+    val isProfileImgUploading: Boolean = false
 )

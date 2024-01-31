@@ -11,11 +11,14 @@ import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthD
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.auth.FirebaseAuthDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.firestore.FirebaseFirestoreDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.firebase.firestore.FirebaseFirestoreDataSourceImpl
+import com.ahmetocak.movieapp.data.datasource.remote.firebase.storage.FirebaseStorageDataSource
+import com.ahmetocak.movieapp.data.datasource.remote.firebase.storage.FirebaseStorageDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSourceImpl
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageReference
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,5 +60,14 @@ object DataSourceModule {
     @Provides
     fun provideWatchListLocalDataSource(dao: WatchListDao): WatchListLocalDataSource {
         return WatchListLocalDataSourceImpl(dao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseStorageDataSource(
+        storageReference: StorageReference,
+        auth: FirebaseAuth
+    ): FirebaseStorageDataSource {
+        return FirebaseStorageDataSourceImpl(storageReference, auth)
     }
 }
