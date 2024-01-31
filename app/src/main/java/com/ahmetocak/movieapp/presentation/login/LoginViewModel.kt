@@ -7,12 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.DialogUiEvent
+import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.helpers.LoginInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.common.helpers.isValidEmail
 import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
+import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
+import com.ahmetocak.movieapp.domain.mapper.toWatchListEntity
 import com.ahmetocak.movieapp.model.firebase.auth.Auth
+import com.ahmetocak.movieapp.model.firebase.firestore.WatchList
+import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +31,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
     private val dataStoreRepository: DataStoreRepository,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val movieRepository: MovieRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -110,6 +116,7 @@ class LoginViewModel @Inject constructor(
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             handleRememberMe()
+                            saveUserWatchListDataToLocalDatabase()
                             onSuccess()
                         } else {
                             _uiState.update {
@@ -171,6 +178,50 @@ class LoginViewModel @Inject constructor(
         } else {
             _uiState.update {
                 it.copy(passwordResetFieldErrorMessage = UiText.StringResource(R.string.unvalid_email))
+            }
+        }
+    }
+
+    private fun saveUserWatchListDataToLocalDatabase() {
+        viewModelScope.launch(ioDispatcher) {
+            firebaseRepository.getMovieData().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val document = task.result
+                    if (document.exists()) {
+                        val watchList = document.toObject(WatchList::class.java)?.watchList
+                        watchList?.forEach {
+                            addMovieToWatchList(it.toWatchListEntity())
+                        }
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            errorMessages = listOf(
+                                task.exception?.message?.let { message ->
+                                    UiText.DynamicString(message)
+                                } ?: kotlin.run {
+                                    UiText.StringResource(
+                                        R.string.watch_list_get_error
+                                    )
+                                }
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addMovieToWatchList(watchListEntity: WatchListEntity) {
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = movieRepository.addMovieToWatchList(watchListEntity)) {
+                is Response.Success -> {}
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(errorMessages = listOf(response.errorMessage))
+                    }
+                }
             }
         }
     }

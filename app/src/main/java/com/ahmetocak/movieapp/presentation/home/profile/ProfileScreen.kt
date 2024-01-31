@@ -81,7 +81,7 @@ import com.ahmetocak.movieapp.utils.Dimens
 private val PROFILE_IMG_SIZE = 144.dp
 private val APP_ICON_SIZE = 96.dp
 
-private enum class Languages {
+enum class Languages {
     ENGLISH,
     TURKISH
 }
@@ -136,7 +136,10 @@ fun ProfileScreen(
     ) { paddingValues ->
         ProfileScreenContent(
             modifier = Modifier.padding(paddingValues),
-            onLogOutClick = onLogOutClick,
+            onLogOutClick = remember(viewModel) { {
+                viewModel.clearMovieLocalDatabase()
+                onLogOutClick()
+            }},
             profileImageUrl = uiState.profileImgUri?.toString() ?: "",
             userEmail = uiState.userEmail,
             onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },

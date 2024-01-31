@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
             val uiState by viewModel.uiState.collectAsState()
 
             MovieApp(
-                startDestination = MainDestinations.HOME_ROUTE,
+                startDestination = MainDestinations.LOGIN_ROUTE,
                 darkTheme = uiState.isDarkModeOn,
                 dynamicColor = uiState.isDynamicColorOn
             )

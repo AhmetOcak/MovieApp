@@ -131,7 +131,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun clearMovieLocalDatabase(onSuccess: () -> Unit) {
+    fun clearMovieLocalDatabase(onSuccess: () -> Unit = {}) {
         viewModelScope.launch(ioDispatcher) {
             when (val response = movieRepository.deleteWatchList()) {
                 is Response.Success -> {
