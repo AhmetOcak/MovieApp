@@ -48,7 +48,7 @@ class SignUpViewModel @Inject constructor(
         confirmPasswordValue = value
     }
 
-    fun signUp(upPress: () -> Unit) {
+    fun signUp(onNavigateHome: () -> Unit) {
         val isEmailOk = SignUpInputChecker.checkEmailField(
             email = emailValue,
             onBlank = {
@@ -115,7 +115,7 @@ class SignUpViewModel @Inject constructor(
                 firebaseRepository.signUp(auth = Auth(email = emailValue, password = passwordValue))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            upPress()
+                            onNavigateHome()
                         } else {
                             _uiState.update {
                                 it.copy(

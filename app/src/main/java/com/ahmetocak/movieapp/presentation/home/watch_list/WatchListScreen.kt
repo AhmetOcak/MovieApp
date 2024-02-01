@@ -54,6 +54,7 @@ import com.ahmetocak.movieapp.presentation.ui.theme.TransparentWhite
 import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
+import com.ahmetocak.movieapp.utils.roundToDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -238,7 +239,7 @@ private fun WatchListItem(
                         tint = RatingStarColor
                     )
                     Text(
-                        text = "$voteAverage ($voteCount)",
+                        text = "${voteAverage.roundToDecimal()} ($voteCount)",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

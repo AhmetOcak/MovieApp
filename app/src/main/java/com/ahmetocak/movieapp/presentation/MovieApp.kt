@@ -42,7 +42,8 @@ fun MovieApp(
                     onSeeAllClick = movieAppNavController::navigateSeeAll,
                     onCreateAccountClick = movieAppNavController::navigateSignUp,
                     onLoginClick = movieAppNavController::navigateToHome,
-                    onLogOutClick = movieAppNavController::navigateLogin
+                    onLogOutClick = movieAppNavController::navigateLogin,
+                    onSignUpClick = movieAppNavController::navigateToHome
                 )
             }
         }
@@ -56,7 +57,8 @@ private fun NavGraphBuilder.movieAppNavGraph(
     onSeeAllClick: (SeeAllType, NavBackStackEntry) -> Unit,
     onCreateAccountClick: (NavBackStackEntry) -> Unit,
     onLoginClick: (NavBackStackEntry) -> Unit,
-    onLogOutClick: (NavBackStackEntry) -> Unit
+    onLogOutClick: (NavBackStackEntry) -> Unit,
+    onSignUpClick: (NavBackStackEntry) -> Unit
 ) {
     navigation(
         route = MainDestinations.HOME_ROUTE,
@@ -75,8 +77,8 @@ private fun NavGraphBuilder.movieAppNavGraph(
             onLoginClick = remember { { onLoginClick(from) } }
         )
     }
-    composable(route = MainDestinations.SIGN_UP_ROUTE) {
-        SignUpScreen(upPress = upPress)
+    composable(route = MainDestinations.SIGN_UP_ROUTE) { from ->
+        SignUpScreen(onSignUpClick = remember { { onSignUpClick(from) } })
     }
     composable(
         route = "${MainDestinations.MOVIE_DETAILS_ROUTE}/{${MainDestinations.MOVIE_DETAILS_ID_KEY}}",

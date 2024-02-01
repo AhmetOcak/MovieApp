@@ -136,10 +136,12 @@ fun ProfileScreen(
     ) { paddingValues ->
         ProfileScreenContent(
             modifier = Modifier.padding(paddingValues),
-            onLogOutClick = remember(viewModel) { {
-                viewModel.clearMovieLocalDatabase()
-                onLogOutClick()
-            }},
+            onLogOutClick = remember(viewModel) {
+                {
+                    viewModel.handleOnLogOutClick()
+                    onLogOutClick()
+                }
+            },
             profileImageUrl = uiState.profileImgUri?.toString() ?: "",
             userEmail = uiState.userEmail,
             onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },

@@ -31,7 +31,7 @@ import com.ahmetocak.movieapp.utils.Dimens
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
-    upPress: () -> Unit,
+    onSignUpClick: () -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -69,7 +69,7 @@ fun SignUpScreen(
                 confirmPasswordFieldError = uiState.confirmPasswordFieldErrorMessage != null,
                 confirmPasswordLabel = uiState.confirmPasswordFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.password_confirm_label),
-                onSignUpClick = remember(viewModel) { { viewModel.signUp(upPress) } }
+                onSignUpClick = remember(viewModel) { { viewModel.signUp(onSignUpClick) } }
             )
         }
     }

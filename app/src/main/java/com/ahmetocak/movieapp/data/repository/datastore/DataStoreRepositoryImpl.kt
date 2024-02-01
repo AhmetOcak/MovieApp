@@ -8,11 +8,6 @@ class DataStoreRepositoryImpl @Inject constructor(
     private val dataStoreDataSource: DataStoreDataSource
 ) : DataStoreRepository {
 
-    override suspend fun getRememberMe(): Boolean = dataStoreDataSource.getRememberMe()
-
-    override suspend fun updateRememberMe(value: Boolean) =
-        dataStoreDataSource.updateRememberMe(value)
-
     override suspend fun getAppTheme(): Flow<Boolean> = dataStoreDataSource.getAppTheme()
 
     override suspend fun updateAppTheme(isDarkMode: Boolean) =

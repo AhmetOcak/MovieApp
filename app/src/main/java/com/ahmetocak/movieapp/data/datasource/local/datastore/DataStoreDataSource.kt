@@ -4,10 +4,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface DataStoreDataSource {
 
-    suspend fun getRememberMe(): Boolean
-
-    suspend fun updateRememberMe(value: Boolean)
-
     suspend fun getAppTheme(): Flow<Boolean>
 
     suspend fun updateAppTheme(darkMode: Boolean)

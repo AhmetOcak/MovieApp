@@ -15,6 +15,7 @@ import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.model.firebase.auth.Auth
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.StorageException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,7 @@ class ProfileViewModel @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
     private val ioDispatcher: CoroutineDispatcher,
     private val movieRepository: MovieRepository,
-    firebaseAuth: FirebaseAuth,
+    private val firebaseAuth: FirebaseAuth,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
@@ -125,13 +126,17 @@ class ProfileViewModel @Inject constructor(
         firebaseRepository.deleteUserProfileImage().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 onSuccess()
+            } else if (task.exception is StorageException) {
+                if ((task.exception as StorageException).errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                    onSuccess()
+                }
             } else {
                 handleDeleteAccountError(task.exception)
             }
         }
     }
 
-    fun clearMovieLocalDatabase(onSuccess: () -> Unit = {}) {
+    private fun clearMovieLocalDatabase(onSuccess: () -> Unit = {}) {
         viewModelScope.launch(ioDispatcher) {
             when (val response = movieRepository.deleteWatchList()) {
                 is Response.Success -> {
@@ -246,6 +251,11 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun handleOnLogOutClick() {
+        clearMovieLocalDatabase()
+        firebaseAuth.signOut()
     }
 }
 

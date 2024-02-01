@@ -11,7 +11,6 @@ import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.helpers.LoginInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.common.helpers.isValidEmail
-import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.domain.mapper.toWatchListEntity
@@ -30,7 +29,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val firebaseRepository: FirebaseRepository,
-    private val dataStoreRepository: DataStoreRepository,
     private val ioDispatcher: CoroutineDispatcher,
     private val movieRepository: MovieRepository
 ) : ViewModel() {
@@ -47,9 +45,6 @@ class LoginViewModel @Inject constructor(
     var passwordResetEmailValue by mutableStateOf("")
         private set
 
-    var rememberMeValue by mutableStateOf(false)
-        private set
-
     fun updateEmailValue(value: String) {
         emailValue = value
     }
@@ -60,10 +55,6 @@ class LoginViewModel @Inject constructor(
 
     fun updatePasswordResetMail(value: String) {
         passwordResetEmailValue = value
-    }
-
-    fun updateRememberMeValue(value: Boolean) {
-        rememberMeValue = value
     }
 
     fun startResetPasswordDialog() {
@@ -115,9 +106,7 @@ class LoginViewModel @Inject constructor(
                 firebaseRepository.login(auth = Auth(emailValue, passwordValue))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            handleRememberMe()
-                            saveUserWatchListDataToLocalDatabase()
-                            onSuccess()
+                            saveUserWatchListDataToLocalDatabase(onSuccess)
                         } else {
                             _uiState.update {
                                 it.copy(
@@ -133,14 +122,6 @@ class LoginViewModel @Inject constructor(
                             }
                         }
                     }
-            }
-        }
-    }
-
-    private fun handleRememberMe() {
-        if (rememberMeValue) {
-            viewModelScope.launch(ioDispatcher) {
-                dataStoreRepository.updateRememberMe(true)
             }
         }
     }
@@ -182,7 +163,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun saveUserWatchListDataToLocalDatabase() {
+    private fun saveUserWatchListDataToLocalDatabase(onSuccess: () -> Unit) {
         viewModelScope.launch(ioDispatcher) {
             firebaseRepository.getMovieData().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -192,6 +173,7 @@ class LoginViewModel @Inject constructor(
                         watchList?.forEach {
                             addMovieToWatchList(it.toWatchListEntity())
                         }
+                        onSuccess()
                     }
                 } else {
                     _uiState.update {

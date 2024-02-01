@@ -12,16 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -106,10 +102,8 @@ fun LoginScreen(
                 passwordFieldLabel = uiState.passwordFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.password_label),
                 onLoginClick = remember(viewModel) { { viewModel.login(onLoginClick) } },
-                onRememberCheckedChange = remember(viewModel) { viewModel::updateRememberMeValue },
                 onCreateAccountClick = onCreateAccountClick,
-                onForgotPasswordClick = remember(viewModel) { viewModel::startResetPasswordDialog },
-                rememberMeValue = viewModel.rememberMeValue
+                onForgotPasswordClick = remember(viewModel) { viewModel::startResetPasswordDialog }
             )
         }
     }
@@ -127,10 +121,8 @@ private fun LoginScreenContent(
     passwordFieldError: Boolean,
     passwordFieldLabel: String,
     onLoginClick: () -> Unit,
-    onRememberCheckedChange: (Boolean) -> Unit,
     onCreateAccountClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit,
-    rememberMeValue: Boolean
+    onForgotPasswordClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -153,9 +145,9 @@ private fun LoginScreenContent(
             isError = passwordFieldError,
             labelText = passwordFieldLabel
         )
-        RememberMeBox(checked = rememberMeValue, onRememberCheckedChange = onRememberCheckedChange)
         MovieButton(
             modifier = Modifier
+                .padding(top = Dimens.twoLevelPadding)
                 .height(ComponentDimens.buttonHeight)
                 .fillMaxWidth(),
             text = stringResource(id = R.string.login_button_text),
@@ -184,23 +176,6 @@ private fun SignUpNow(onCreateAccountClick: () -> Unit) {
             fontWeight = FontWeight.Bold,
             contentPadding = PaddingValues(0.dp)
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun RememberMeBox(checked: Boolean, onRememberCheckedChange: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = Dimens.twoLevelPadding),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
-            Checkbox(checked = checked, onCheckedChange = onRememberCheckedChange)
-        }
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(text = stringResource(id = R.string.remember_me_text))
     }
 }
 
