@@ -332,15 +332,12 @@ private fun SettingsSection(
 
 @Composable
 private fun DarkThemePicker(onDarkThemeSwitchChange: (Boolean) -> Unit, isAppThemeDark: Boolean) {
-    var checked by remember { mutableStateOf(isAppThemeDark) }
-
     SettingItem {
         Text(text = stringResource(id = R.string.dark_theme_text))
         Switch(
-            checked = checked,
+            checked = isAppThemeDark,
             onCheckedChange = {
                 onDarkThemeSwitchChange(it)
-                checked = !checked
             }
         )
     }
