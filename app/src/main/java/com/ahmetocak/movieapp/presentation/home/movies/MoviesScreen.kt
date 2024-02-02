@@ -152,7 +152,7 @@ private fun MovieSection(
                             modifier = movieItemModifier,
                             id = movie.id,
                             name = movie.movieName ?: "*",
-                            categories = buildString { append(movie.genreIds.joinToString(", ")) },
+                            releaseDate = movie.releaseDate ?: "",
                             imageUrl = "${TMDB.IMAGE_URL}${if (usePosterImage) movie.posterImagePath else movie.backdropImagePath}",
                             voteAverage = movie.voteAverage ?: 0.0,
                             voteCount = movie.voteCount ?: 0,

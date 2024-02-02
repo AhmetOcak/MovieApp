@@ -351,7 +351,11 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
 
 @Composable
 private fun ActorItem(imageUrl: String, actorName: String, characterName: String) {
-    ElevatedCard(modifier = Modifier.height(ACTOR_ITEM_HEIGHT)) {
+    ElevatedCard(
+        modifier = Modifier
+            .height(ACTOR_ITEM_HEIGHT)
+            .width((LocalConfiguration.current.screenWidthDp.dp / 1.33.dp).dp)
+    ) {
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             AnimatedAsyncImage(
                 modifier = Modifier.fillMaxHeight(), imageUrl = imageUrl

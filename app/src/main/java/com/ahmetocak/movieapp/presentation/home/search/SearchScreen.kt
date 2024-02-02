@@ -129,7 +129,7 @@ private fun SearchScreenContent(
                         MovieItem(
                             id = movie.id,
                             name = movie.movieName ?: "",
-                            categories = movie.genreIds.joinToString(),
+                            releaseDate = movie.releaseDate ?: "",
                             imageUrl = "${TMDB.IMAGE_URL}${movie.posterImagePath}",
                             voteAverage = movie.voteAverage ?: 0.0,
                             voteCount = movie.voteCount ?: 0,

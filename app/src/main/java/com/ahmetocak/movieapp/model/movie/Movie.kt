@@ -22,8 +22,8 @@ data class MovieContent(
     @SerializedName("poster_path")
     val posterImagePath: String?,
 
-    @SerializedName("genre_ids")
-    val genreIds: List<Int>,
+    @SerializedName("release_date")
+    val releaseDate: String?,
 
     @SerializedName("original_title")
     val movieName: String?,

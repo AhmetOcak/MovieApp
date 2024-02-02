@@ -54,7 +54,7 @@ fun SeeAllScreen(
         SeeAllScreenContent(
             modifier = Modifier.padding(paddingValues),
             onMovieClick = onMovieClick,
-            movieList = uiState.movieList?.collectAsLazyPagingItems()
+            movieList = uiState.movieList.collectAsLazyPagingItems()
         )
     }
 }
@@ -78,7 +78,7 @@ private fun SeeAllScreenContent(
                     MovieItem(
                         id = movie.id,
                         name = movie.movieName ?: "",
-                        categories = buildString { append(movie.genreIds.joinToString(", ")) },
+                        releaseDate = movie.releaseDate ?: "",
                         imageUrl = "${TMDB.IMAGE_URL}${movie.posterImagePath}",
                         voteAverage = movie.voteAverage ?: 0.0,
                         voteCount = movie.voteCount ?: 0,

@@ -57,26 +57,17 @@ class WatchListViewModel @Inject constructor(
     }
 
     fun deleteMovieFromWatchList(watchListMovie: WatchListMovie) {
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
         viewModelScope.launch(ioDispatcher) {
             deleteMovieFromWatchListUseCase.invoke(
                 watchListMovie = watchListMovie,
                 onTaskSuccess = {
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            userMessages = listOf(UiText.StringResource(R.string.movie_remove_watch_list))
-                        )
+                        it.copy(userMessages = listOf(UiText.StringResource(R.string.movie_remove_watch_list)))
                     }
                 },
                 onTaskError = { errorMessage ->
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            userMessages = listOf(errorMessage)
-                        )
+                        it.copy(userMessages = listOf(errorMessage))
                     }
                 }
             )
