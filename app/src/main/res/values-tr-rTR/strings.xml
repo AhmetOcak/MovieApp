@@ -58,6 +58,7 @@
     <string name="unknown_error">Lütfen daha sonra tekrar deneyin</string>
     <string name="internet_error">Lütfen internet bağlantınızı kontrol ediniz</string>
     <string name="watch_list_get_error">İzleme listesiniz yüklenemedi. Lütfen daha sonra tekrar deneyin.</string>
+    <string name="internet_lost_error">İnternet bağlantısı koptu. Lütfen internet bağlantınızı kontrol edin.</string>
 
     <!-- User Messages -->
     <string name="password_reset_mail_sent">Şifre sıfırlama maili gönderildi. Lütfen mail kutunu kontrol et</string>

@@ -1,6 +1,7 @@
 package com.ahmetocak.movieapp.di
 
 import android.content.Context
+import android.net.ConnectivityManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
@@ -58,5 +59,11 @@ object AppModule {
     @Provides
     fun provideFirebaseStorageReference(): FirebaseStorage {
         return Firebase.storage
+    }
+
+    @Singleton
+    @Provides
+    fun provideNetworkConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 }

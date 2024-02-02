@@ -2,6 +2,7 @@ package com.ahmetocak.movieapp.presentation
 
 import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -33,6 +34,15 @@ class MainActivity : ComponentActivity() {
                 darkTheme = uiState.isDarkModeOn,
                 dynamicColor = uiState.isDynamicColorOn
             )
+
+            if (uiState.userMessages.isNotEmpty()) {
+                Toast.makeText(
+                    this.applicationContext,
+                    uiState.userMessages.first().asString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+                viewModel.consumedUserMessage()
+            }
         }
     }
 

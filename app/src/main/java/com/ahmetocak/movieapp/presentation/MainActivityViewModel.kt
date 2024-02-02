@@ -1,8 +1,13 @@
 package com.ahmetocak.movieapp.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
+import com.ahmetocak.movieapp.utils.ConnectivityObserver
+import com.ahmetocak.movieapp.utils.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val networkConnectivityObserver: NetworkConnectivityObserver
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
@@ -24,6 +30,7 @@ class MainActivityViewModel @Inject constructor(
     init {
         getTheme()
         getDynamicColor()
+        checkIsDeviceOnline()
     }
 
     private fun getTheme() {
@@ -45,9 +52,39 @@ class MainActivityViewModel @Inject constructor(
             }
         }
     }
+
+    private fun checkIsDeviceOnline() {
+        viewModelScope.launch(ioDispatcher) {
+            networkConnectivityObserver.observer().collect { networkStatus ->
+                when (networkStatus) {
+                    ConnectivityObserver.Status.Available -> {}
+
+                    ConnectivityObserver.Status.Unavailable -> {
+                        _uiState.update {
+                            it.copy(userMessages = listOf(UiText.StringResource(R.string.internet_error)))
+                        }
+                    }
+
+                    ConnectivityObserver.Status.Lost -> {
+                        _uiState.update {
+                            it.copy(userMessages = listOf(UiText.StringResource(R.string.internet_lost_error)))
+                        }
+                    }
+                }
+                Log.d("NETWORK", networkConnectivityObserver.isNetworkAvailable().toString())
+            }
+        }
+    }
+
+    fun consumedUserMessage() {
+        _uiState.update {
+            it.copy(userMessages = emptyList())
+        }
+    }
 }
 
 data class MainUiState(
     val isDarkModeOn: Boolean = true,
-    val isDynamicColorOn: Boolean = false
+    val isDynamicColorOn: Boolean = false,
+    val userMessages: List<UiText> = emptyList()
 )
