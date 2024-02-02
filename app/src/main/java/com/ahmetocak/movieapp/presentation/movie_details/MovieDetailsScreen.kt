@@ -31,6 +31,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -49,6 +51,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.UiState
 import com.ahmetocak.movieapp.domain.model.MovieCredit
@@ -375,17 +380,36 @@ private fun ActorItem(imageUrl: String, actorName: String, characterName: String
 }
 
 @Composable
-private fun TrailerItem(videoId: String, title: String) {
+private fun TrailerItem(
+    videoId: String,
+    title: String,
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+) {
     ElevatedCard(
         modifier = Modifier
             .width(LocalConfiguration.current.screenWidthDp.dp)
             .height(256.dp)
     ) {
+        val youtubeView = YouTubePlayerView(LocalContext.current)
+
+        DisposableEffect(lifecycleOwner) {
+            val observer = LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_STOP) {
+                    youtubeView.release()
+                }
+            }
+
+            lifecycleOwner.lifecycle.addObserver(observer)
+
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
+
         Column {
             AndroidView(
                 factory = {
-                    val view = YouTubePlayerView(it)
-                    view.addYouTubePlayerListener(
+                    youtubeView.addYouTubePlayerListener(
                         object : AbstractYouTubePlayerListener() {
                             override fun onReady(youTubePlayer: YouTubePlayer) {
                                 super.onReady(youTubePlayer)
@@ -393,7 +417,7 @@ private fun TrailerItem(videoId: String, title: String) {
                             }
                         }
                     )
-                    view
+                    youtubeView
                 }
             )
             Text(
