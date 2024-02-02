@@ -46,6 +46,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +78,11 @@ import com.ahmetocak.movieapp.presentation.ui.theme.primaryContainerLight
 import com.ahmetocak.movieapp.presentation.ui.theme.primaryDark
 import com.ahmetocak.movieapp.presentation.ui.theme.primaryLight
 import com.ahmetocak.movieapp.utils.Dimens
+import com.ahmetocak.movieapp.utils.LanguageCodes
+import com.ahmetocak.movieapp.utils.LocaleManager
+import com.ahmetocak.movieapp.utils.findActivity
+import kotlinx.coroutines.launch
+import java.util.Locale
 
 private val PROFILE_IMG_SIZE = 144.dp
 private val APP_ICON_SIZE = 96.dp
@@ -94,6 +100,10 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
 
     val pickMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -146,7 +156,17 @@ fun ProfileScreen(
             userEmail = uiState.userEmail,
             onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },
             onDarkThemeSwitchChange = remember(viewModel) { viewModel::setTheme },
-            onLanguageSelect = {},
+            onLanguageSelect = remember { { selectedLanguage ->
+                val localeManager = LocaleManager(context)
+                coroutineScope.launch {
+                    if (selectedLanguage == Languages.ENGLISH) {
+                        localeManager.setAppLanguage(LanguageCodes.EN)
+                    } else {
+                        localeManager.setAppLanguage(LanguageCodes.TR)
+                    }
+                    context.findActivity()?.recreate()
+                }
+            } },
             isAppThemeDark = uiState.isDarkModeOn,
             onDynamicColorSwitchChange = remember(viewModel) { viewModel::setDynamicColor },
             isDynamicColorActive = uiState.isDynamicColorOn,
@@ -157,7 +177,8 @@ fun ProfileScreen(
                     )
                 }
             },
-            isProfileImageUploading = uiState.isProfileImageUploading
+            isProfileImageUploading = uiState.isProfileImageUploading,
+            currentLanguage = Locale.getDefault().displayLanguage
         )
     }
 }
@@ -175,7 +196,8 @@ private fun ProfileScreenContent(
     onDynamicColorSwitchChange: (Boolean) -> Unit,
     isDynamicColorActive: Boolean,
     onPickUpFromGalleryClick: () -> Unit,
-    isProfileImageUploading: Boolean
+    isProfileImageUploading: Boolean,
+    currentLanguage: String
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         ProfileSection(
@@ -194,7 +216,8 @@ private fun ProfileScreenContent(
             onLanguageSelect = onLanguageSelect,
             isAppThemeDark = isAppThemeDark,
             onDynamicColorSwitchChange = onDynamicColorSwitchChange,
-            isDynamicColorActive = isDynamicColorActive
+            isDynamicColorActive = isDynamicColorActive,
+            currentLanguage = currentLanguage
         )
     }
     AppIcon(modifier = modifier.fillMaxSize())
@@ -276,7 +299,8 @@ private fun SettingsSection(
     onLanguageSelect: (Languages) -> Unit,
     isAppThemeDark: Boolean,
     onDynamicColorSwitchChange: (Boolean) -> Unit,
-    isDynamicColorActive: Boolean
+    isDynamicColorActive: Boolean,
+    currentLanguage: String
 ) {
     Column(
         modifier = modifier
@@ -296,7 +320,7 @@ private fun SettingsSection(
             onDarkThemeSwitchChange = onDarkThemeSwitchChange,
             isAppThemeDark = isAppThemeDark
         )
-        LanguagePicker(onLanguageSelect = onLanguageSelect)
+        LanguagePicker(onLanguageSelect = onLanguageSelect, currentLanguage = currentLanguage)
         if (Build.VERSION.SDK_INT >= 31) {
             DynamicColorPicker(
                 onDynamicColorSwitchChange = onDynamicColorSwitchChange,
@@ -324,7 +348,7 @@ private fun DarkThemePicker(onDarkThemeSwitchChange: (Boolean) -> Unit, isAppThe
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LanguagePicker(onLanguageSelect: (Languages) -> Unit) {
+private fun LanguagePicker(onLanguageSelect: (Languages) -> Unit, currentLanguage: String) {
     SettingItem(height = 64.dp) {
         var expanded by remember { mutableStateOf(false) }
 
@@ -334,7 +358,7 @@ private fun LanguagePicker(onLanguageSelect: (Languages) -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "English")
+                Text(text = currentLanguage)
                 CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
                     IconButton(
                         modifier = Modifier.size(24.dp),

@@ -1,5 +1,8 @@
 package com.ahmetocak.movieapp.utils
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.ahmetocak.movieapp.R
@@ -10,3 +13,9 @@ fun Int.convertToDurationTime(): String =
 
 @Composable
 fun Float.roundToDecimal(): String = String.format("%.1f", this)
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
