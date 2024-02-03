@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +12,9 @@ android {
     namespace = "com.ahmetocak.movieapp"
     compileSdk = 34
 
+    val p = Properties()
+    p.load(project.rootProject.file("local.properties").inputStream())
+
     defaultConfig {
         applicationId = "com.ahmetocak.movieapp"
         minSdk = 26
@@ -21,6 +26,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "API_KEY", p.getProperty("API_KEY"))
     }
 
     buildTypes {
@@ -41,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.5"
