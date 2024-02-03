@@ -1,6 +1,5 @@
 package com.ahmetocak.movieapp.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.R
@@ -71,7 +70,6 @@ class MainActivityViewModel @Inject constructor(
                         }
                     }
                 }
-                Log.d("NETWORK", networkConnectivityObserver.isNetworkAvailable().toString())
             }
         }
     }

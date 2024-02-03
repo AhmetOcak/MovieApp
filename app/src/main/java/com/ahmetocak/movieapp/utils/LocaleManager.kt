@@ -1,17 +1,10 @@
 package com.ahmetocak.movieapp.utils
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import android.content.SharedPreferences
+import androidx.core.content.edit
+import com.ahmetocak.movieapp.R
 import java.util.Locale
-
-private val Context.datastore: DataStore<Preferences>
-    by preferencesDataStore(DataStoreConstants.APP_LANGUAGE_FILE_NAME)
 
 object LanguageCodes {
     const val TR = "tr"
@@ -19,19 +12,23 @@ object LanguageCodes {
 }
 
 class LocaleManager(private val context: Context) {
-    companion object {
-        private val LANGUAGE_CODE = stringPreferencesKey("language_code")
+
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(
+        context.getString(R.string.preference_file_key),
+        Context.MODE_PRIVATE
+    )
+
+    private val languageKey = "language"
+
+    fun getAppLanguage(): String {
+        return sharedPreferences.getString(languageKey, Locale.getDefault().language)
+            ?: Locale.getDefault().language
     }
 
-    suspend fun getAppLanguage(): String {
-        return context.datastore.data.map { preference ->
-            preference[LANGUAGE_CODE] ?: Locale.getDefault().language
-        }.first()
-    }
-
-    suspend fun setAppLanguage(languageCode: String) {
-        context.datastore.edit { settings ->
-            settings[LANGUAGE_CODE] = languageCode
+    fun setAppLanguage(languageCode: String) {
+        sharedPreferences.edit {
+            putString(languageKey, languageCode)
+            apply()
         }
     }
 

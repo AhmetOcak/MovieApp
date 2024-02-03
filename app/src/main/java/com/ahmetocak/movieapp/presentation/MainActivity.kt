@@ -12,7 +12,6 @@ import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import com.ahmetocak.movieapp.utils.LocaleManager
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,12 +46,10 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase: Context?) {
-        runBlocking {
-            newBase?.let { context ->
-                val localeManager = LocaleManager(context)
-                val languageCode: String = localeManager.getAppLanguage()
-                super.attachBaseContext(localeManager.getLocale(languageCode))
-            }
+        newBase?.let { context ->
+            val localeManager = LocaleManager(context)
+            val languageCode: String = localeManager.getAppLanguage()
+            super.attachBaseContext(localeManager.getLocale(languageCode))
         }
     }
 }

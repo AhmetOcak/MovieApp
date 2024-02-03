@@ -66,4 +66,7 @@
     <string name="movie_add_watch_list">Movie added to watch list.</string>
     <string name="movie_remove_watch_list">The movie removed from the watch list.</string>
     <string name="watch_list_empty">It looks like there are no movies here. You can add new films to spice up your watchlist!</string>
+
+    <!-- Preference Keys -->
+    <string name="preference_file_key" translatable="false">"com.ahmetocak.movieapp.PREFERENCE_FILE_KEY"</string>
 </resources>
