@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.R
-import com.ahmetocak.movieapp.common.helpers.SignUpInputChecker
+import com.ahmetocak.movieapp.utils.SignUpInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.model.firebase.auth.Auth

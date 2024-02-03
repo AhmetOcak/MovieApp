@@ -9,7 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
-import com.ahmetocak.movieapp.utils.LocaleManager
+import com.ahmetocak.movieapp.common.helpers.LocaleManager
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

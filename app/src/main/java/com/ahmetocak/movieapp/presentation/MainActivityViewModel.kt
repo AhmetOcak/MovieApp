@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
-import com.ahmetocak.movieapp.utils.ConnectivityObserver
-import com.ahmetocak.movieapp.utils.NetworkConnectivityObserver
+import com.ahmetocak.movieapp.common.helpers.connectivity.ConnectivityObserver
+import com.ahmetocak.movieapp.common.helpers.connectivity.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -4,7 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.ahmetocak.movieapp.common.Response
-import com.ahmetocak.movieapp.common.mapResponse
+import com.ahmetocak.movieapp.domain.mapper.mapResponse
 import com.ahmetocak.movieapp.data.datasource.local.watch_list.WatchListLocalDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi

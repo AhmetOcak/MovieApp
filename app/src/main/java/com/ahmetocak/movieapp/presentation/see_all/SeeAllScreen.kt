@@ -21,10 +21,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.movieapp.model.movie.MovieContent
-import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.components.ui.MovieItem
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
+import com.ahmetocak.movieapp.utils.onLoadStateAppend
+import com.ahmetocak.movieapp.utils.onLoadStateRefresh
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +69,9 @@ private fun SeeAllScreenContent(
 ) {
     if (movieList != null) {
         LazyVerticalGrid(
-            modifier = modifier.fillMaxSize().padding(horizontal = Dimens.twoLevelPadding),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = Dimens.twoLevelPadding),
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(vertical = Dimens.twoLevelPadding),
             horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
@@ -85,6 +89,11 @@ private fun SeeAllScreenContent(
                         onClick = onMovieClick
                     )
                 }
+            }
+
+            movieList.loadState.apply {
+                onLoadStateRefresh(loadState = refresh)
+                onLoadStateAppend(loadState = append, isResultEmpty = movieList.itemCount == 0)
             }
         }
     }

@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -47,7 +47,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -60,12 +59,12 @@ import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
-import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
-import com.ahmetocak.movieapp.presentation.ui.components.ErrorView
-import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
-import com.ahmetocak.movieapp.presentation.ui.components.TmdbLogo
-import com.ahmetocak.movieapp.presentation.ui.theme.TransparentWhite
+import com.ahmetocak.movieapp.presentation.components.designsystem.AnimatedAsyncImage
+import com.ahmetocak.movieapp.presentation.components.designsystem.ErrorView
+import com.ahmetocak.movieapp.presentation.components.designsystem.FullScreenCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
+import com.ahmetocak.movieapp.presentation.components.ui.TmdbLogo
+import com.ahmetocak.movieapp.presentation.theme.TransparentWhite
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
 import com.ahmetocak.movieapp.utils.convertToDurationTime
@@ -76,8 +75,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
-private val TRAILER_LIST_HEIGHT = 512.dp
-private val ACTOR_ITEM_HEIGHT = 128.dp
+private val ACTOR_IMAGE_SIZE = 128.dp
 
 private val errorModifier = Modifier
     .fillMaxWidth()
@@ -155,9 +153,6 @@ private fun MovieSection(
     directorName: String,
     isWatchlistButtonInProgress: Boolean
 ) {
-    val movieImageHeight: Dp =
-        (LocalConfiguration.current.screenHeightDp.dp / 2) + LocalConfiguration.current.screenHeightDp.dp / 8
-
     when (detailUiState) {
         is UiState.Loading -> {
             FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
@@ -169,7 +164,7 @@ private fun MovieSection(
                     AnimatedAsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(movieImageHeight),
+                            .aspectRatio(2f / 3f),
                         imageUrl = "${TMDB.IMAGE_URL}${imageUrlPath}"
                     )
                     TopAppBar(
@@ -326,7 +321,7 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
 
         is UiState.OnDataLoaded -> {
             LazyColumn(
-                modifier = Modifier.height(TRAILER_LIST_HEIGHT),
+                modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp),
                 contentPadding = PaddingValues(Dimens.twoLevelPadding),
                 verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
             ) {
@@ -336,7 +331,7 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                     )
                 }
-                items(trailerUiState.data.trailers) { trailer ->
+                items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
                     TrailerItem(
                         videoId = trailer.key,
                         title = trailer.name
@@ -356,20 +351,19 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
 
 @Composable
 private fun ActorItem(imageUrl: String, actorName: String, characterName: String) {
-    ElevatedCard(
-        modifier = Modifier
-            .height(ACTOR_ITEM_HEIGHT)
-            .width((LocalConfiguration.current.screenWidthDp.dp / 1.33.dp).dp)
-    ) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+    ElevatedCard {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             AnimatedAsyncImage(
-                modifier = Modifier.fillMaxHeight(), imageUrl = imageUrl
+                modifier = Modifier
+                    .size(ACTOR_IMAGE_SIZE)
+                    .aspectRatio(1f),
+                imageUrl = imageUrl
             )
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(Dimens.oneLevelPadding),
-                verticalArrangement = Arrangement.Center
+                modifier = Modifier.padding(Dimens.oneLevelPadding)
             ) {
                 Text(text = actorName, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(Dimens.oneLevelPadding))
@@ -385,11 +379,7 @@ private fun TrailerItem(
     title: String,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
-    ElevatedCard(
-        modifier = Modifier
-            .width(LocalConfiguration.current.screenWidthDp.dp)
-            .height(256.dp)
-    ) {
+    ElevatedCard(modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp)) {
         val youtubeView = YouTubePlayerView(LocalContext.current)
 
         DisposableEffect(lifecycleOwner) {
@@ -418,7 +408,8 @@ private fun TrailerItem(
                         }
                     )
                     youtubeView
-                }
+                },
+                modifier = Modifier.aspectRatio(16f / 9f)
             )
             Text(
                 modifier = Modifier.padding(Dimens.oneLevelPadding),

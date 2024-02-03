@@ -16,12 +16,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.helpers.UiText
-import com.ahmetocak.movieapp.presentation.ui.components.ErrorView
-import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.components.designsystem.ErrorView
+import com.ahmetocak.movieapp.presentation.components.designsystem.FullScreenCircularProgressIndicator
 
 fun LazyGridScope.onLoadStateRefresh(loadState: LoadState) {
     when (loadState) {
@@ -44,7 +43,7 @@ fun LazyGridScope.onLoadStateRefresh(loadState: LoadState) {
     }
 }
 
-fun LazyGridScope.onLoadStateAppend(loadState: LoadState, isSearchResultEmpty: Boolean) {
+fun LazyGridScope.onLoadStateAppend(loadState: LoadState, isResultEmpty: Boolean) {
     when (loadState) {
         is LoadState.Error -> {
             items(1, span = { GridItemSpan(maxLineSpan) }) {
@@ -62,7 +61,7 @@ fun LazyGridScope.onLoadStateAppend(loadState: LoadState, isSearchResultEmpty: B
         }
 
         is LoadState.NotLoading -> {
-            if (isSearchResultEmpty && loadState.endOfPaginationReached) {
+            if (isResultEmpty && loadState.endOfPaginationReached) {
                 items(1, span = { GridItemSpan(maxLineSpan) }) {
                     Column(
                         modifier = Modifier.fillMaxSize(),

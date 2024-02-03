@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.presentation.ui.components
+package com.ahmetocak.movieapp.presentation.components.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ahmetocak.movieapp.presentation.ui.theme.RatingStarColor
+import com.ahmetocak.movieapp.presentation.components.designsystem.AnimatedAsyncImage
+import com.ahmetocak.movieapp.presentation.theme.RatingStarColor
 import com.ahmetocak.movieapp.utils.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)

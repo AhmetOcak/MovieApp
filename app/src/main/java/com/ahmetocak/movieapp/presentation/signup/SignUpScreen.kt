@@ -19,12 +19,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
-import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthBackground
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedTextField
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieButton
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthBackground
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthEmailOutlinedTextField
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthPasswordOutlinedTextField
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthWelcomeMessage
 import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
 

@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.utils
+package com.ahmetocak.movieapp.common.helpers.connectivity
 
 import kotlinx.coroutines.flow.Flow
 

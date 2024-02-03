@@ -1,9 +1,8 @@
-package com.ahmetocak.movieapp.utils
+package com.ahmetocak.movieapp.common.helpers.connectivity
 
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.util.Log
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -37,7 +36,6 @@ class NetworkConnectivityObserver @Inject constructor(
             connectivityManager.registerDefaultNetworkCallback(callback)
             awaitClose {
                 connectivityManager.unregisterNetworkCallback(callback)
-                Log.d("NETWORK", "UNREGISTERED")
             }
         }.distinctUntilChanged()
     }

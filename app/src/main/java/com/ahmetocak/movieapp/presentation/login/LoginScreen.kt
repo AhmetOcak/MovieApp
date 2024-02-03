@@ -30,15 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.DialogUiEvent
-import com.ahmetocak.movieapp.presentation.ui.components.ButtonCircularProgressIndicator
-import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
-import com.ahmetocak.movieapp.presentation.ui.components.MovieDialog
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
-import com.ahmetocak.movieapp.presentation.ui.components.MovieTextButton
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthBackground
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthEmailOutlinedTextField
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthWelcomeMessage
+import com.ahmetocak.movieapp.presentation.components.designsystem.ButtonCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieButton
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieDialog
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieTextButton
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthBackground
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthEmailOutlinedTextField
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthPasswordOutlinedTextField
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthWelcomeMessage
 import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
 

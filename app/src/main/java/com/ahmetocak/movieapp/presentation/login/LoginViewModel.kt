@@ -8,15 +8,15 @@ import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.DialogUiEvent
 import com.ahmetocak.movieapp.common.Response
-import com.ahmetocak.movieapp.common.helpers.LoginInputChecker
+import com.ahmetocak.movieapp.utils.LoginInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
-import com.ahmetocak.movieapp.common.helpers.isValidEmail
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.domain.mapper.toWatchListEntity
 import com.ahmetocak.movieapp.model.firebase.auth.Auth
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchList
 import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
+import com.ahmetocak.movieapp.utils.isValidEmail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow

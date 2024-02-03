@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.presentation.ui.components
+package com.ahmetocak.movieapp.presentation.components.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.movieapp.R
-import com.ahmetocak.movieapp.presentation.ui.theme.TmdbBlue
+import com.ahmetocak.movieapp.presentation.theme.TmdbBlue
 
 @Composable
 fun TmdbLogo(modifier: Modifier = Modifier, logoSize: Dp = 96.dp) {

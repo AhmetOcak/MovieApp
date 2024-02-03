@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.presentation.ui.components.auth
+package com.ahmetocak.movieapp.presentation.components.designsystem.auth
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,18 +29,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
-import com.ahmetocak.movieapp.presentation.ui.components.ErrorView
-import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
-import com.ahmetocak.movieapp.presentation.ui.components.MovieButton
-import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
-import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
+import com.ahmetocak.movieapp.presentation.components.designsystem.ErrorView
+import com.ahmetocak.movieapp.presentation.components.designsystem.FullScreenCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieButton
+import com.ahmetocak.movieapp.presentation.components.ui.MovieItem
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
+import com.ahmetocak.movieapp.presentation.theme.MovieAppTheme
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.ScreenPreview
 import com.ahmetocak.movieapp.utils.SeeAllType
 import com.ahmetocak.movieapp.utils.TMDB
-
-private val POPULAR_MOVIE_ITEM_WIDTH = 196.dp
 
 @Composable
 fun MoviesScreen(
@@ -100,7 +99,7 @@ private fun MoviesScreenContent(
         )
         MovieSection(
             modifier = Modifier.weight(1f),
-            movieItemModifier = Modifier.width(POPULAR_MOVIE_ITEM_WIDTH),
+            movieItemModifier = Modifier.aspectRatio(2f / 3f),
             listContentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
             horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
             onSeeAllClick = onSeeAllClick,

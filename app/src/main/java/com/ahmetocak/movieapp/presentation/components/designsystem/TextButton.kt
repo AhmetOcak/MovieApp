@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.presentation.ui.components
+package com.ahmetocak.movieapp.presentation.components.designsystem
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource

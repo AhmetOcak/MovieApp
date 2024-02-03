@@ -1,5 +1,6 @@
 package com.ahmetocak.movieapp.presentation.home.movies
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.movieapp.common.Response
@@ -72,6 +73,7 @@ data class MoviesUiState(
     val errorMessage: List<UiText> = emptyList()
 )
 
+@Immutable
 sealed class MovieState {
     data object Loading : MovieState()
     data class OnDataLoaded(val movieList: List<MovieContent> = emptyList()) : MovieState()

@@ -19,7 +19,7 @@ import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import com.ahmetocak.movieapp.presentation.navigation.rememberMovieAppNavController
 import com.ahmetocak.movieapp.presentation.see_all.SeeAllScreen
 import com.ahmetocak.movieapp.presentation.signup.SignUpScreen
-import com.ahmetocak.movieapp.presentation.ui.theme.MovieAppTheme
+import com.ahmetocak.movieapp.presentation.theme.MovieAppTheme
 import com.ahmetocak.movieapp.utils.SeeAllType
 
 @Composable

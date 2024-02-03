@@ -3,6 +3,7 @@ package com.ahmetocak.movieapp.presentation.home.search
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,8 +36,8 @@ import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.model.movie.MovieContent
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
-import com.ahmetocak.movieapp.presentation.ui.components.MovieItem
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
+import com.ahmetocak.movieapp.presentation.components.ui.MovieItem
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
 import com.ahmetocak.movieapp.utils.onLoadStateAppend
@@ -133,7 +134,8 @@ private fun SearchScreenContent(
                             imageUrl = "${TMDB.IMAGE_URL}${movie.posterImagePath}",
                             voteAverage = movie.voteAverage ?: 0.0,
                             voteCount = movie.voteCount ?: 0,
-                            onClick = onMovieItemClick
+                            onClick = onMovieItemClick,
+                            modifier = Modifier.aspectRatio(2f / 3f)
                         )
                     }
                 }
@@ -142,7 +144,7 @@ private fun SearchScreenContent(
                     onLoadStateRefresh(loadState = refresh)
                     onLoadStateAppend(
                         loadState = append,
-                        isSearchResultEmpty = searchResult.itemCount == 0
+                        isResultEmpty = searchResult.itemCount == 0
                     )
                 }
             }

@@ -65,21 +65,20 @@ import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.DialogUiEvent
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
-import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
-import com.ahmetocak.movieapp.presentation.ui.components.ButtonCircularProgressIndicator
-import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
-import com.ahmetocak.movieapp.presentation.ui.components.MovieDialog
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
-import com.ahmetocak.movieapp.presentation.ui.components.auth.AuthPasswordOutlinedTextField
-import com.ahmetocak.movieapp.presentation.ui.theme.backgroundDark
-import com.ahmetocak.movieapp.presentation.ui.theme.backgroundLight
-import com.ahmetocak.movieapp.presentation.ui.theme.primaryContainerDark
-import com.ahmetocak.movieapp.presentation.ui.theme.primaryContainerLight
-import com.ahmetocak.movieapp.presentation.ui.theme.primaryDark
-import com.ahmetocak.movieapp.presentation.ui.theme.primaryLight
+import com.ahmetocak.movieapp.presentation.components.designsystem.AnimatedAsyncImage
+import com.ahmetocak.movieapp.presentation.components.designsystem.ButtonCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.components.designsystem.FullScreenCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieDialog
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
+import com.ahmetocak.movieapp.presentation.components.designsystem.auth.AuthPasswordOutlinedTextField
+import com.ahmetocak.movieapp.presentation.theme.backgroundDark
+import com.ahmetocak.movieapp.presentation.theme.backgroundLight
+import com.ahmetocak.movieapp.presentation.theme.primaryContainerDark
+import com.ahmetocak.movieapp.presentation.theme.primaryContainerLight
+import com.ahmetocak.movieapp.presentation.theme.primaryDark
+import com.ahmetocak.movieapp.presentation.theme.primaryLight
 import com.ahmetocak.movieapp.utils.Dimens
-import com.ahmetocak.movieapp.utils.LanguageCodes
-import com.ahmetocak.movieapp.utils.LocaleManager
+import com.ahmetocak.movieapp.common.helpers.LocaleManager
 import com.ahmetocak.movieapp.utils.findActivity
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -90,6 +89,11 @@ private val APP_ICON_SIZE = 96.dp
 enum class Languages {
     ENGLISH,
     TURKISH
+}
+
+private object LanguageCodes {
+    const val TR = "tr"
+    const val EN = "en"
 }
 
 @Composable
@@ -136,12 +140,14 @@ fun ProfileScreen(
 
     MovieScaffold(
         modifier = modifier,
-        bottomBar = {
-            MovieNavigationBar(
-                tabs = HomeSections.entries.toTypedArray(),
-                currentRoute = HomeSections.PROFILE.route,
-                navigateToRoute = onNavigateToRoute
-            )
+        bottomBar = remember {
+            {
+                MovieNavigationBar(
+                    tabs = HomeSections.entries.toTypedArray(),
+                    currentRoute = HomeSections.PROFILE.route,
+                    navigateToRoute = onNavigateToRoute
+                )
+            }
         }
     ) { paddingValues ->
         ProfileScreenContent(

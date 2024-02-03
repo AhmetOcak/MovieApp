@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.presentation.ui.components
+package com.ahmetocak.movieapp.presentation.components.designsystem
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.width

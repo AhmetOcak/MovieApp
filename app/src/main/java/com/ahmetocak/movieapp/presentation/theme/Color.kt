@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.presentation.ui.theme
+package com.ahmetocak.movieapp.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

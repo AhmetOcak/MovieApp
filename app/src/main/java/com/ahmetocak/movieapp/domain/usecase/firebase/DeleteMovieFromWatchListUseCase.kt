@@ -6,7 +6,7 @@ import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
-import com.ahmetocak.movieapp.utils.NetworkConnectivityObserver
+import com.ahmetocak.movieapp.common.helpers.connectivity.NetworkConnectivityObserver
 import javax.inject.Inject
 
 class DeleteMovieFromWatchListUseCase @Inject constructor(

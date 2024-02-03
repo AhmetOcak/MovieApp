@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -38,19 +38,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.domain.mapper.toWatchListMovie
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
+import com.ahmetocak.movieapp.presentation.components.designsystem.AnimatedAsyncImage
+import com.ahmetocak.movieapp.presentation.components.designsystem.FullScreenCircularProgressIndicator
+import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
 import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
-import com.ahmetocak.movieapp.presentation.ui.components.AnimatedAsyncImage
-import com.ahmetocak.movieapp.presentation.ui.components.FullScreenCircularProgressIndicator
-import com.ahmetocak.movieapp.presentation.ui.components.MovieScaffold
-import com.ahmetocak.movieapp.presentation.ui.theme.RatingStarColor
-import com.ahmetocak.movieapp.presentation.ui.theme.TransparentWhite
+import com.ahmetocak.movieapp.presentation.theme.RatingStarColor
+import com.ahmetocak.movieapp.presentation.theme.TransparentWhite
 import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
@@ -115,17 +114,15 @@ private fun WatchListScreenContent(
     } else {
         if (watchList.isNotEmpty()) {
             Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(horizontal = Dimens.twoLevelPadding)
+                modifier = modifier.fillMaxSize()
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(vertical = Dimens.twoLevelPadding),
+                    contentPadding = PaddingValues(Dimens.twoLevelPadding),
                     horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
                     verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
                 ) {
-                    items(watchList) { movie ->
+                    items(watchList, key = { item -> item.movieId }) { movie ->
                         WatchListItem(
                             imageUrl = "${TMDB.IMAGE_URL}${movie.imageUrlPath}",
                             movieName = movie.movieName,
@@ -184,16 +181,12 @@ private fun WatchListItem(
     onRemoveFromWatchListClick: () -> Unit
 ) {
     ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(360.dp),
+        modifier = Modifier.fillMaxWidth(),
         onClick = { onClick(movieId) }
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
             Box(
-                modifier = Modifier
-                    .weight(5f)
-                    .fillMaxSize(),
+                modifier = Modifier.aspectRatio(2f / 3f),
                 contentAlignment = Alignment.TopEnd
             ) {
                 AnimatedAsyncImage(
@@ -213,9 +206,8 @@ private fun WatchListItem(
             }
             Column(
                 modifier = Modifier
-                    .weight(2f)
                     .fillMaxSize()
-                    .padding(horizontal = Dimens.oneLevelPadding),
+                    .padding(Dimens.oneLevelPadding),
                 verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)
             ) {
                 Text(

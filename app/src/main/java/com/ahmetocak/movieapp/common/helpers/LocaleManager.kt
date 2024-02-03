@@ -1,15 +1,10 @@
-package com.ahmetocak.movieapp.utils
+package com.ahmetocak.movieapp.common.helpers
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.ahmetocak.movieapp.R
 import java.util.Locale
-
-object LanguageCodes {
-    const val TR = "tr"
-    const val EN = "en"
-}
 
 class LocaleManager(private val context: Context) {
 

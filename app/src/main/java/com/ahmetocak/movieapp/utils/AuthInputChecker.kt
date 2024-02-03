@@ -1,8 +1,4 @@
-package com.ahmetocak.movieapp.common.helpers
-
-import android.util.Patterns.EMAIL_ADDRESS
-
-fun String.isValidEmail(): Boolean = EMAIL_ADDRESS.matcher(this).matches()
+package com.ahmetocak.movieapp.utils
 
 object SignUpInputChecker {
 

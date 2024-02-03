@@ -1,7 +1,7 @@
 package com.ahmetocak.movieapp.data.datasource.local.watch_list
 
 import com.ahmetocak.movieapp.common.Response
-import com.ahmetocak.movieapp.common.helpers.dbCall
+import com.ahmetocak.movieapp.common.dbCall
 import com.ahmetocak.movieapp.data.datasource.local.watch_list.db.WatchListDao
 import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
 import kotlinx.coroutines.flow.Flow
