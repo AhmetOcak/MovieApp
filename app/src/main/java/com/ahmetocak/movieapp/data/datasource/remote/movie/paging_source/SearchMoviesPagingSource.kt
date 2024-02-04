@@ -13,7 +13,7 @@ class SearchMoviesPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieContent> {
         return try {
             val currentPageNumber = params.key ?: 1
-            val response = api.searchMovie(query = query)
+            val response = api.searchMovie(query = query, page = currentPageNumber)
             LoadResult.Page(
                 data = response.movies,
                 prevKey = null,

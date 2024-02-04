@@ -50,6 +50,7 @@ interface MovieApi {
 
     @GET(Network.EndPoints.SEARCH_MOVIE)
     suspend fun searchMovie(
+        @Query(Network.Queries.PAGE) page: Int = 1,
         @Query(Network.Queries.SEARCH_QUERY) query: String,
         @Query(Network.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
         @Query(Network.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()
