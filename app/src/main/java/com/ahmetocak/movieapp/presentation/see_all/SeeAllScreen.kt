@@ -2,6 +2,7 @@ package com.ahmetocak.movieapp.presentation.see_all
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -86,7 +87,8 @@ private fun SeeAllScreenContent(
                         imageUrl = "${TMDB.IMAGE_URL}${movie.posterImagePath}",
                         voteAverage = movie.voteAverage ?: 0.0,
                         voteCount = movie.voteCount ?: 0,
-                        onClick = onMovieClick
+                        onClick = onMovieClick,
+                        modifier = Modifier.aspectRatio(2f / 3f)
                     )
                 }
             }
