@@ -1,6 +1,9 @@
 package com.ahmetocak.movieapp.presentation.movie_details
 
+import android.view.View
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +37,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,9 +55,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.UiState
 import com.ahmetocak.movieapp.domain.model.MovieCredit
@@ -71,6 +73,7 @@ import com.ahmetocak.movieapp.utils.convertToDurationTime
 import com.ahmetocak.movieapp.utils.roundToDecimal
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -312,6 +315,7 @@ private fun ActorListSection(castUiState: UiState<MovieCredit>) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
     when (trailerUiState) {
@@ -320,23 +324,32 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
         }
 
         is UiState.OnDataLoaded -> {
-            LazyColumn(
-                modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp),
-                contentPadding = PaddingValues(Dimens.twoLevelPadding),
-                verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-            ) {
-                item {
-                    Text(
-                        text = stringResource(id = R.string.trailers_text),
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
+            if (trailerUiState.data.trailers.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .height((LocalConfiguration.current.screenHeightDp.dp / 1.33.dp).dp)
+                        .padding(horizontal = Dimens.twoLevelPadding),
+                    contentPadding = PaddingValues(bottom = Dimens.twoLevelPadding),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+                ) {
+                    stickyHeader {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.background),
+                            text = stringResource(id = R.string.trailers_text),
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                    items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
+                        TrailerItem(
+                            videoId = trailer.key,
+                            title = trailer.name
+                        )
+                    }
                 }
-                items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
-                    TrailerItem(
-                        videoId = trailer.key,
-                        title = trailer.name
-                    )
-                }
+            } else {
+                Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
             }
         }
 
@@ -376,39 +389,69 @@ private fun ActorItem(imageUrl: String, actorName: String, characterName: String
 @Composable
 private fun TrailerItem(
     videoId: String,
-    title: String,
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    title: String
 ) {
-    ElevatedCard(modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp)) {
-        val youtubeView = YouTubePlayerView(LocalContext.current)
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var player: YouTubePlayer? by remember { mutableStateOf(null) }
+    val view: View = View.inflate(LocalContext.current, R.layout.youtube_trailer_item, null)
+    val overlayView: View = view.findViewById(R.id.overlay_view)
 
-        DisposableEffect(lifecycleOwner) {
-            val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_STOP) {
-                    youtubeView.release()
-                }
-            }
+    overlayView.setOnClickListener {
+        player?.play()
+    }
 
-            lifecycleOwner.lifecycle.addObserver(observer)
+    val youTubePlayerView: YouTubePlayerView by remember {
+        mutableStateOf(
+            view.findViewById<YouTubePlayerView?>(R.id.youtube_player_view).apply {
+                enableAutomaticInitialization = false
+                initialize(
+                    youTubePlayerListener = object : AbstractYouTubePlayerListener() {
+                        override fun onReady(youTubePlayer: YouTubePlayer) {
+                            super.onReady(youTubePlayer)
+                            player = youTubePlayer
+                            youTubePlayer.cueVideo(videoId, 0f)
+                        }
 
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
-        }
+                        override fun onStateChange(
+                            youTubePlayer: YouTubePlayer,
+                            state: PlayerConstants.PlayerState
+                        ) {
+                            super.onStateChange(youTubePlayer, state)
+                            when (state) {
+                                PlayerConstants.PlayerState.VIDEO_CUED -> {
+                                    overlayView.visibility = View.VISIBLE
+                                }
 
-        Column {
-            AndroidView(
-                factory = {
-                    youtubeView.addYouTubePlayerListener(
-                        object : AbstractYouTubePlayerListener() {
-                            override fun onReady(youTubePlayer: YouTubePlayer) {
-                                super.onReady(youTubePlayer)
-                                youTubePlayer.cueVideo(videoId, 0f)
+                                PlayerConstants.PlayerState.PAUSED -> {
+                                    overlayView.visibility = View.VISIBLE
+                                }
+
+                                else -> {
+                                    overlayView.visibility = View.GONE
+                                }
                             }
                         }
-                    )
-                    youtubeView
-                },
+                    }
+                )
+                lifecycleOwner.lifecycle.addObserver(this)
+            }
+        )
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            player?.pause()
+            youTubePlayerView.apply {
+                release()
+                lifecycleOwner.lifecycle.removeObserver(this)
+            }
+        }
+    }
+
+    ElevatedCard(modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp)) {
+        Column {
+            AndroidView(
+                factory = { view },
                 modifier = Modifier.aspectRatio(16f / 9f)
             )
             Text(
