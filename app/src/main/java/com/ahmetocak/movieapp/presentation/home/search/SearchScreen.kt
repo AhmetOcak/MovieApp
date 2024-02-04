@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.model.movie.MovieContent
 import com.ahmetocak.movieapp.presentation.home.HomeSections
@@ -122,10 +121,7 @@ private fun SearchScreenContent(
                 verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
                 horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
             ) {
-                items(
-                    searchResult.itemCount,
-                    key = searchResult.itemKey { movie -> movie.id }
-                ) { index ->
+                items(searchResult.itemCount) { index ->
                     searchResult[index]?.let { movie ->
                         MovieItem(
                             id = movie.id,
