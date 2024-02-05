@@ -82,7 +82,7 @@ fun LoginScreen(
         )
     }
 
-    MovieScaffold(modifier = modifier) { paddingValues ->
+    MovieScaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         AuthBackground()
         if (uiState.isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

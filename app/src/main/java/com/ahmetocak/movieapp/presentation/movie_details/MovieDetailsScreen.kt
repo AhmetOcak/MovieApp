@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -103,7 +104,7 @@ fun MovieDetailsScreen(
         viewModel.consumedUserMessage()
     }
 
-    MovieScaffold(modifier = modifier) { paddingValues ->
+    MovieScaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         MovieDetailsScreenContent(
             modifier = Modifier.padding(paddingValues),
             upPress = upPress,

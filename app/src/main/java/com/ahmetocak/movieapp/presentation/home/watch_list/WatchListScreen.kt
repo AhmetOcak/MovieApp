@@ -75,7 +75,7 @@ fun WatchListScreen(
     }
 
     MovieScaffold(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = {

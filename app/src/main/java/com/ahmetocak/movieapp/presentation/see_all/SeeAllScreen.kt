@@ -40,7 +40,7 @@ fun SeeAllScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     MovieScaffold(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
                 title = {

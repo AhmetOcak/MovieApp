@@ -1,9 +1,11 @@
 package com.ahmetocak.movieapp.presentation
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -32,6 +34,7 @@ fun MovieApp(
         Surface {
             val movieAppNavController = rememberMovieAppNavController()
             NavHost(
+                modifier = Modifier.fillMaxSize(),
                 navController = movieAppNavController.navController,
                 startDestination = startDestination
             ) {

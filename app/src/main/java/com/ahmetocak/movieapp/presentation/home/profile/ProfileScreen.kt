@@ -139,7 +139,7 @@ fun ProfileScreen(
     }
 
     MovieScaffold(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         bottomBar = remember {
             {
                 MovieNavigationBar(

@@ -51,7 +51,7 @@ fun MoviesScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     MovieScaffold(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         bottomBar = {
             MovieNavigationBar(
                 tabs = HomeSections.entries.toTypedArray(),

@@ -5,10 +5,9 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.utils.SeeAllType
 
 object MainDestinations {
@@ -41,7 +40,7 @@ class MovieAppNavController(val navController: NavHostController) {
     fun navigateToNavigationBar(route: String) {
         if (route != currentRoute) {
             navController.navigate(route) {
-                popUpTo(findStartDestination(navController.graph).id) {
+                popUpTo(HomeSections.MOVIES.route) {
                     saveState = true
                 }
                 launchSingleTop = true
@@ -89,10 +88,3 @@ private fun shouldNavigate(from: NavBackStackEntry): Boolean = from.isLifecycleR
 
 private fun NavBackStackEntry.isLifecycleResumed() =
     this.lifecycle.currentState == Lifecycle.State.RESUMED
-
-private val NavGraph.startDestination: NavDestination?
-    get() = findNode(startDestinationId)
-
-private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
-    return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
-}

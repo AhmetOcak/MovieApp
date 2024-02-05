@@ -45,7 +45,7 @@ fun SignUpScreen(
         viewModel.consumedErrorMessage()
     }
 
-    MovieScaffold(modifier = modifier) { paddingValues ->
+    MovieScaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         AuthBackground()
         if (uiState.isLoading) {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
