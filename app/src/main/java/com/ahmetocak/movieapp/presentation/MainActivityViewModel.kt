@@ -12,8 +12,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,22 +29,34 @@ class MainActivityViewModel @Inject constructor(
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     init {
-        getTheme()
-        getDynamicColor()
+        initializeTheme()
+        observeTheme()
+        observeDynamicColor()
         checkIsDeviceOnline()
     }
 
-    private fun getTheme() {
+    private fun initializeTheme() {
+        runBlocking(ioDispatcher) {
+            _uiState.update {
+                it.copy(
+                    isDarkModeOn = dataStoreRepository.getAppTheme().first(),
+                    isDynamicColorOn = dataStoreRepository.getDynamicColor().first()
+                )
+            }
+        }
+    }
+
+    private fun observeTheme() {
         viewModelScope.launch(ioDispatcher) {
-            dataStoreRepository.getAppTheme().collect { darkMode ->
+            dataStoreRepository.getAppTheme().collect { isDarkMode ->
                 _uiState.update {
-                    it.copy(isDarkModeOn = darkMode)
+                    it.copy(isDarkModeOn = isDarkMode)
                 }
             }
         }
     }
 
-    private fun getDynamicColor() {
+    private fun observeDynamicColor() {
         viewModelScope.launch(ioDispatcher) {
             dataStoreRepository.getDynamicColor().collect { dynamicColor ->
                 _uiState.update {
