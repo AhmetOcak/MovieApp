@@ -14,6 +14,11 @@ class NetworkConnectivityObserver @Inject constructor(
     private val connectivityManager: ConnectivityManager
 ) : ConnectivityObserver {
 
+    /**
+     * Creates a Flow to observe changes in network connectivity status.
+     *
+     * @return A Flow emitting [ConnectivityObserver.Status] values representing network connectivity status changes.
+     */
     override fun observer(): Flow<ConnectivityObserver.Status> {
         return callbackFlow {
             val callback = object : ConnectivityManager.NetworkCallback() {
@@ -40,6 +45,11 @@ class NetworkConnectivityObserver @Inject constructor(
         }.distinctUntilChanged()
     }
 
+    /**
+     * Checks if the device has an active network connection.
+     *
+     * @return `true` if there is an active network connection, `false` otherwise.
+     */
     override fun isNetworkAvailable(): Boolean {
         val networkCapabilities = connectivityManager.activeNetwork ?: return false
         val activeNetwork =

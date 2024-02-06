@@ -5,8 +5,23 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 
+/**
+ * Sealed class representing different types of UI text resources.
+ */
 sealed class UiText {
+    /**
+     * Represents a dynamic string value.
+     *
+     * @param value The dynamic string value.
+     */
     data class DynamicString(val value: String) : UiText()
+
+    /**
+     * Represents a string resource with optional format arguments.
+     *
+     * @param resId The resource ID of the string.
+     * @param args Optional format arguments for the string resource.
+     */
     class StringResource(
         @StringRes val resId: Int,
         vararg val args: Any

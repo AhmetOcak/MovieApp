@@ -22,6 +22,11 @@ import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.presentation.components.designsystem.ErrorView
 import com.ahmetocak.movieapp.presentation.components.designsystem.FullScreenCircularProgressIndicator
 
+/**
+ * Extension function for LazyGridScope to handle different LoadState scenarios and display corresponding UI elements.
+ *
+ * @param loadState The current LoadState to determine the UI representation.
+ */
 fun LazyGridScope.onLoadStateRefresh(loadState: LoadState) {
     when (loadState) {
         is LoadState.Error -> {
@@ -43,6 +48,13 @@ fun LazyGridScope.onLoadStateRefresh(loadState: LoadState) {
     }
 }
 
+/**
+ * Extension function for LazyGridScope to handle different LoadState scenarios for appending items
+ * and display corresponding UI elements.
+ *
+ * @param loadState The current LoadState to determine the UI representation.
+ * @param isResultEmpty An indicator indicating whether the list is empty.
+ */
 fun LazyGridScope.onLoadStateAppend(loadState: LoadState, isResultEmpty: Boolean) {
     when (loadState) {
         is LoadState.Error -> {
