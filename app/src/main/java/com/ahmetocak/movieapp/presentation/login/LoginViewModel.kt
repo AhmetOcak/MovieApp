@@ -172,8 +172,8 @@ class LoginViewModel @Inject constructor(
                         watchList?.forEach {
                             addMovieToWatchList(it.toWatchListEntity())
                         }
-                        onSuccess()
                     }
+                    onSuccess()
                 } else {
                     _uiState.update {
                         it.copy(
