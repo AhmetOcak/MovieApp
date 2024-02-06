@@ -25,7 +25,10 @@ data class MovieDetailDto(
     val releaseDate: String?,
 
     @SerializedName("runtime")
-    val duration: Int?
+    val duration: Int?,
+
+    @SerializedName("original_title")
+    val originalMovieName: String?
 )
 
 @Immutable

@@ -12,5 +12,6 @@ data class MovieDetail(
     val voteAverage: Float,
     val voteCount: Int,
     val releaseDate: String,
-    val duration: Int
+    val duration: Int,
+    val originalMovieName: String
 )

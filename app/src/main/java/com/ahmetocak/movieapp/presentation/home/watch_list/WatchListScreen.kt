@@ -127,7 +127,6 @@ private fun WatchListScreenContent(
                             imageUrl = "${TMDB.IMAGE_URL}${movie.imageUrlPath}",
                             movieName = movie.movieName,
                             releaseYear = movie.releaseYear,
-                            genres = movie.genres,
                             voteAverage = movie.voteAverage,
                             voteCount = movie.voteCount,
                             movieId = movie.movieId,
@@ -173,7 +172,6 @@ private fun WatchListItem(
     imageUrl: String,
     movieName: String,
     releaseYear: String,
-    genres: String,
     voteAverage: Float,
     voteCount: Int,
     movieId: Int,
@@ -217,7 +215,7 @@ private fun WatchListItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "$releaseYear $genres",
+                    text = releaseYear,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

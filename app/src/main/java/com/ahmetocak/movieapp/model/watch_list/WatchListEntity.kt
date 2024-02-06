@@ -19,9 +19,6 @@ data class WatchListEntity(
     @ColumnInfo("release_year")
     val releaseYear: String,
 
-    @ColumnInfo("genres")
-    val genres: String,
-
     @ColumnInfo("vote_average")
     val voteAverage: Float,
 

@@ -7,8 +7,7 @@ fun WatchListMovie.toWatchListEntity(): WatchListEntity {
     return WatchListEntity(
         movieId = id ?: 0,
         movieName = name ?: "",
-        releaseYear = releaseYear?.take(4) ?: "",
-        genres = genres.joinToString(),
+        releaseYear = releaseYear ?: "",
         voteAverage = voteAverage ?: 0f,
         voteCount = voteCount ?: 0,
         imageUrlPath = imageUrlPath ?: ""
@@ -20,7 +19,6 @@ fun WatchListEntity.toWatchListMovie(): WatchListMovie {
         id = movieId,
         name = movieName,
         releaseYear = releaseYear,
-        genres = genres.split(", "),
         voteAverage = voteAverage,
         voteCount = voteCount,
         imageUrlPath = imageUrlPath

@@ -178,9 +178,8 @@ private fun MovieSection(
                             onWatchListClick(
                                 WatchListMovie(
                                     id = id,
-                                    name = movieName,
-                                    releaseYear = releaseDate.take(4),
-                                    genres = genres,
+                                    name = originalMovieName,
+                                    releaseYear = releaseDate,
                                     voteAverage = voteAverage,
                                     voteCount = voteCount,
                                     imageUrlPath = imageUrlPath
@@ -198,7 +197,8 @@ private fun MovieSection(
                     movieDuration = duration.convertToDurationTime(),
                     directorName = directorName,
                     movieName = movieName,
-                    overview = overview
+                    overview = overview,
+                    movieOriginalName = originalMovieName
                 )
             }
         }
@@ -221,7 +221,8 @@ private fun MovieDetails(
     movieDuration: String,
     directorName: String,
     movieName: String,
-    overview: String
+    overview: String,
+    movieOriginalName: String
 ) {
     Column(
         modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
@@ -235,7 +236,7 @@ private fun MovieDetails(
                 verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
             ) {
                 Text(
-                    text = movieName,
+                    text = if (movieName == movieOriginalName) movieName else "$movieName ($movieOriginalName)",
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
                 )
                 Row(

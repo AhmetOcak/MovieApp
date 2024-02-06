@@ -13,6 +13,7 @@ fun MovieDetailDto.toMovieDetail(): MovieDetail {
         voteAverage = voteAverage?.toFloat() ?: 0f,
         voteCount = voteCount ?: 0,
         releaseDate = releaseDate ?: "",
-        duration = duration?: 0
+        duration = duration?: 0,
+        originalMovieName = originalMovieName ?: ""
     )
 }
