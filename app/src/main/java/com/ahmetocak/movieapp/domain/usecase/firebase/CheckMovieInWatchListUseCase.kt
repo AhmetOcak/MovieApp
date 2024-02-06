@@ -1,9 +1,9 @@
 package com.ahmetocak.movieapp.domain.usecase.firebase
 
-import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchList
+import com.ahmetocak.movieapp.utils.taskHandler
 import javax.inject.Inject
 
 class CheckMovieInWatchListUseCase @Inject constructor(private val repository: FirebaseRepository) {
@@ -13,10 +13,10 @@ class CheckMovieInWatchListUseCase @Inject constructor(private val repository: F
         onError: (UiText) -> Unit,
         onSuccess: (Boolean) -> Unit
     ) {
-        repository.getMovieData().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                if (document.exists()) {
+        taskHandler(
+            taskCall = repository.getMovieData(),
+            onTaskSuccess = { document ->
+                if (document != null && document.exists()) {
                     val watchList =
                         document.toObject(WatchList::class.java)?.watchList ?: emptyList()
 
@@ -28,12 +28,8 @@ class CheckMovieInWatchListUseCase @Inject constructor(private val repository: F
                 } else {
                     onSuccess(false)
                 }
-            } else {
-                onError(
-                    task.exception?.message?.let { message -> UiText.DynamicString(message) }
-                        ?: UiText.StringResource(R.string.unknown_error)
-                )
-            }
-        }
+            },
+            onTaskError = onError::invoke
+        )
     }
 }

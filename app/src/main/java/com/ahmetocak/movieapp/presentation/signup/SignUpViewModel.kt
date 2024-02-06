@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ahmetocak.movieapp.R
-import com.ahmetocak.movieapp.utils.SignUpInputChecker
 import com.ahmetocak.movieapp.common.helpers.UiText
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.model.firebase.auth.Auth
+import com.ahmetocak.movieapp.utils.AuthInputChecker
+import com.ahmetocak.movieapp.utils.handleTaskError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,16 +49,16 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun signUp(onNavigateHome: () -> Unit) {
-        val isEmailOk = SignUpInputChecker.checkEmailField(
+        val isEmailOk = AuthInputChecker.checkEmailField(
             email = emailValue,
-            onBlank = {
+            onBlank = { errorMessage ->
                 _uiState.update {
-                    it.copy(emailFieldErrorMessage = UiText.StringResource(R.string.blank_field))
+                    it.copy(emailFieldErrorMessage = errorMessage)
                 }
             },
-            onUnValid = {
+            onUnValid = { errorMessage ->
                 _uiState.update {
-                    it.copy(emailFieldErrorMessage = UiText.StringResource(R.string.unvalid_email))
+                    it.copy(emailFieldErrorMessage = errorMessage)
                 }
             },
             onSuccess = {
@@ -68,16 +68,16 @@ class SignUpViewModel @Inject constructor(
             }
         )
 
-        val isPasswordOk = SignUpInputChecker.checkPasswordField(
+        val isPasswordOk = AuthInputChecker.checkPasswordField(
             password = passwordValue,
-            onBlank = {
+            onBlank = { errorMessage ->
                 _uiState.update {
-                    it.copy(passwordFieldErrorMessage = UiText.StringResource(R.string.blank_field))
+                    it.copy(passwordFieldErrorMessage = errorMessage)
                 }
             },
-            onUnValid = {
+            onUnValid = { errorMessage ->
                 _uiState.update {
-                    it.copy(passwordFieldErrorMessage = UiText.StringResource(R.string.password_length))
+                    it.copy(passwordFieldErrorMessage = errorMessage)
                 }
             },
             onSuccess = {
@@ -87,17 +87,17 @@ class SignUpViewModel @Inject constructor(
             }
         )
 
-        val isConfirmPasswordOk = SignUpInputChecker.checkConfirmPasswordField(
+        val isConfirmPasswordOk = AuthInputChecker.checkConfirmPasswordField(
             confirmPassword = confirmPasswordValue,
             password = passwordValue,
-            onBlank = {
+            onBlank = { errorMessage ->
                 _uiState.update {
-                    it.copy(confirmPasswordFieldErrorMessage = UiText.StringResource(R.string.blank_field))
+                    it.copy(confirmPasswordFieldErrorMessage = errorMessage)
                 }
             },
-            onUnValid = {
+            onUnValid = { errorMessage ->
                 _uiState.update {
-                    it.copy(confirmPasswordFieldErrorMessage = UiText.StringResource(R.string.passwords_dont_match))
+                    it.copy(confirmPasswordFieldErrorMessage = errorMessage)
                 }
             },
             onSuccess = {
@@ -120,13 +120,7 @@ class SignUpViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    errorMessages = listOf(
-                                        task.exception?.message?.let { message ->
-                                            UiText.DynamicString(message)
-                                        } ?: kotlin.run {
-                                            UiText.StringResource(R.string.unknown_error)
-                                        }
-                                    )
+                                    errorMessages = listOf(handleTaskError(e = task.exception))
                                 )
                             }
                         }

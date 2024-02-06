@@ -18,6 +18,7 @@ import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
 import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
+import com.ahmetocak.movieapp.utils.handleTaskError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -127,13 +128,7 @@ class MovieDetailsViewModel @Inject constructor(
                 } else {
                     _uiState.update {
                         it.copy(
-                            userMessages = listOf(
-                                task.exception?.message?.let { message ->
-                                    UiText.DynamicString(message)
-                                } ?: kotlin.run {
-                                    UiText.StringResource(R.string.unknown_error)
-                                }
-                            ),
+                            userMessages = listOf(handleTaskError(task.exception)),
                             isWatchlistButtonInProgress = false
                         )
                     }

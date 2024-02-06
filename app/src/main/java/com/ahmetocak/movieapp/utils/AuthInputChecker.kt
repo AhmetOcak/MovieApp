@@ -1,9 +1,12 @@
 package com.ahmetocak.movieapp.utils
 
+import com.ahmetocak.movieapp.R
+import com.ahmetocak.movieapp.common.helpers.UiText
+
 /**
  * Object containing utility functions for checking input fields related to sign-up operations.
  */
-object SignUpInputChecker {
+object AuthInputChecker {
 
     /**
      * Checks the validity of the email field.
@@ -16,15 +19,15 @@ object SignUpInputChecker {
      */
     fun checkEmailField(
         email: String,
-        onBlank: () -> Unit,
-        onUnValid: () -> Unit,
+        onBlank: (UiText) -> Unit,
+        onUnValid: (UiText) -> Unit,
         onSuccess: () -> Unit
     ): Boolean {
         return if (email.isBlank()) {
-            onBlank()
+            onBlank(UiText.StringResource(R.string.blank_field))
             false
         } else if (!email.isValidEmail()) {
-            onUnValid()
+            onUnValid(UiText.StringResource(R.string.unvalid_email))
             false
         } else {
             onSuccess()
@@ -43,15 +46,15 @@ object SignUpInputChecker {
      */
     fun checkPasswordField(
         password: String,
-        onBlank: () -> Unit,
-        onUnValid: () -> Unit,
+        onBlank: (UiText) -> Unit,
+        onUnValid: (UiText) -> Unit,
         onSuccess: () -> Unit
     ): Boolean {
         return if (password.isBlank()) {
-            onBlank()
+            onBlank(UiText.StringResource(R.string.blank_field))
             false
         } else if (password.length < 6) {
-            onUnValid()
+            onUnValid(UiText.StringResource(R.string.password_length))
             false
         } else {
             onSuccess()
@@ -72,65 +75,15 @@ object SignUpInputChecker {
     fun checkConfirmPasswordField(
         confirmPassword: String,
         password: String,
-        onBlank: () -> Unit,
-        onUnValid: () -> Unit,
+        onBlank: (UiText) -> Unit,
+        onUnValid: (UiText) -> Unit,
         onSuccess: () -> Unit
     ): Boolean {
         return if (password.isBlank()) {
-            onBlank()
+            onBlank(UiText.StringResource(R.string.blank_field))
             false
         } else if (confirmPassword != password) {
-            onUnValid()
-            false
-        } else {
-            onSuccess()
-            true
-        }
-    }
-}
-
-/**
- * Object containing utility functions for checking input fields related to login operations.
- */
-object LoginInputChecker {
-
-    /**
-     * Checks the validity of the email field for login.
-     *
-     * @param email The email input to be validated.
-     * @param onBlank Callback to be executed if the email is blank.
-     * @param onSuccess Callback to be executed if the email is valid.
-     * @return `true` if the email is valid, `false` otherwise.
-     */
-    fun checkEmailField(
-        email: String,
-        onBlank: () -> Unit,
-        onSuccess: () -> Unit
-    ): Boolean {
-        return if (email.isBlank()) {
-            onBlank()
-            false
-        } else {
-            onSuccess()
-            true
-        }
-    }
-
-    /**
-     * Checks the validity of the password field for login.
-     *
-     * @param password The password input to be validated.
-     * @param onBlank Callback to be executed if the password is blank.
-     * @param onSuccess Callback to be executed if the password is valid.
-     * @return `true` if the password is valid, `false` otherwise.
-     */
-    fun checkPasswordField(
-        password: String,
-        onBlank: () -> Unit,
-        onSuccess: () -> Unit
-    ): Boolean {
-        return if (password.isBlank()) {
-            onBlank()
+            onUnValid(UiText.StringResource(R.string.passwords_dont_match))
             false
         } else {
             onSuccess()

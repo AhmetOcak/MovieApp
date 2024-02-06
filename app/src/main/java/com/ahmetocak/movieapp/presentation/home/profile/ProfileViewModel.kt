@@ -14,6 +14,7 @@ import com.ahmetocak.movieapp.data.repository.datastore.DataStoreRepository
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.model.firebase.auth.Auth
+import com.ahmetocak.movieapp.utils.handleTaskError
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.StorageException
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -155,10 +156,7 @@ class ProfileViewModel @Inject constructor(
     private fun handleDeleteAccountError(exception: Exception?) {
         _uiState.update {
             it.copy(
-                userMessages = listOf(
-                    exception?.message?.let { message ->
-                        UiText.DynamicString(message)
-                    } ?: UiText.StringResource(R.string.unknown_error)),
+                userMessages = listOf(handleTaskError(e = exception)),
                 deleteAccountDialogUiEvent = DialogUiEvent.Active
             )
         }
@@ -184,21 +182,17 @@ class ProfileViewModel @Inject constructor(
                     } else {
                         _uiState.update {
                             it.copy(
-                                userMessages = listOf(task.exception?.message?.let { message ->
-                                    UiText.DynamicString(message)
-                                } ?: kotlin.run { UiText.StringResource(R.string.unknown_error) }),
+                                userMessages = listOf(handleTaskError(e = task.exception)),
                                 isProfileImageUploading = false
                             )
                         }
                     }
                 }
-            } ?: kotlin.run {
-                _uiState.update {
-                    it.copy(
-                        userMessages = listOf(UiText.StringResource(R.string.unknown_error)),
-                        isProfileImageUploading = false
-                    )
-                }
+            } ?: _uiState.update {
+                it.copy(
+                    userMessages = listOf(UiText.StringResource(R.string.unknown_error)),
+                    isProfileImageUploading = false
+                )
             }
         }
     }
