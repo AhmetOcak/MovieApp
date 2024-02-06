@@ -24,10 +24,10 @@ class FirebaseFirestoreDataSourceImpl @Inject constructor(
             )
     }
 
-    override fun removeMovieData(watchListMovie: WatchListMovie): Task<Void> {
+    override fun updateMovieData(watchListMovie: List<WatchListMovie>): Task<Void> {
         return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
             .document(firebaseAuth.currentUser?.uid ?: "")
-            .update(mapOf(Firestore.WATCH_LIST_ARRAY_NAME to FieldValue.arrayRemove(watchListMovie)))
+            .update(mapOf(Firestore.WATCH_LIST_ARRAY_NAME to watchListMovie))
     }
 
     override fun getMovieData(): Task<DocumentSnapshot> {

@@ -3,10 +3,12 @@ package com.ahmetocak.movieapp.domain.usecase.firebase
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.helpers.UiText
+import com.ahmetocak.movieapp.common.helpers.connectivity.NetworkConnectivityObserver
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
+import com.ahmetocak.movieapp.model.firebase.firestore.WatchList
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
-import com.ahmetocak.movieapp.common.helpers.connectivity.NetworkConnectivityObserver
+import com.ahmetocak.movieapp.utils.taskHandler
 import javax.inject.Inject
 
 class DeleteMovieFromWatchListUseCase @Inject constructor(
@@ -23,20 +25,29 @@ class DeleteMovieFromWatchListUseCase @Inject constructor(
             watchListMovie.id?.let { movieId ->
                 when (val response = movieRepository.removeMovieFromWatchList(movieId)) {
                     is Response.Success -> {
-                        firebaseRepository.removeMovieData(watchListMovie)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    onTaskSuccess()
-                                } else {
-                                    onTaskError(
-                                        task.exception?.message?.let { message ->
-                                            UiText.DynamicString(message)
-                                        } ?: kotlin.run {
-                                            UiText.StringResource(R.string.unknown_error)
-                                        }
+                        taskHandler(
+                            taskCall = firebaseRepository.getMovieData(),
+                            onTaskSuccess = { document ->
+                                if (document != null) {
+                                    val watchList =
+                                        document.toObject(WatchList::class.java)?.watchList
+                                            ?: emptyList()
+                                    val updatedWatchList = watchList.filter { movie ->
+                                        movie.id != watchListMovie.id
+                                    }
+                                    taskHandler(
+                                        taskCall = firebaseRepository.updateMovieData(
+                                            updatedWatchList
+                                        ),
+                                        onTaskSuccess = { onTaskSuccess() },
+                                        onTaskError = onTaskError::invoke
                                     )
+                                } else {
+                                    onTaskError(UiText.StringResource(R.string.unknown_error))
                                 }
-                            }
+                            },
+                            onTaskError = onTaskError::invoke
+                        )
                     }
 
                     is Response.Error -> {

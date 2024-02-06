@@ -33,8 +33,8 @@ class FirebaseRepositoryImpl @Inject constructor(
     override fun addMovieToFirestore(watchListMovie: WatchListMovie): Task<Void> =
         firebaseFirestoreDataSource.addMovieData(watchListMovie)
 
-    override fun removeMovieData(watchListMovie: WatchListMovie): Task<Void> =
-        firebaseFirestoreDataSource.removeMovieData(watchListMovie)
+    override fun updateMovieData(watchListMovie: List<WatchListMovie>): Task<Void> =
+        firebaseFirestoreDataSource.updateMovieData(watchListMovie)
 
     override fun getMovieData(): Task<DocumentSnapshot> = firebaseFirestoreDataSource.getMovieData()
 

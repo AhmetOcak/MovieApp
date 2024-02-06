@@ -8,7 +8,7 @@ interface FirebaseFirestoreDataSource {
 
     fun addMovieData(watchListMovie: WatchListMovie): Task<Void>
 
-    fun removeMovieData(watchListMovie: WatchListMovie): Task<Void>
+    fun updateMovieData(watchListMovie: List<WatchListMovie>): Task<Void>
 
     fun getMovieData(): Task<DocumentSnapshot>
 
