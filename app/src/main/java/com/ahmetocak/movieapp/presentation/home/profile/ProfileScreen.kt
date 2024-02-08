@@ -79,14 +79,13 @@ import com.ahmetocak.movieapp.presentation.theme.primaryDark
 import com.ahmetocak.movieapp.presentation.theme.primaryLight
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.common.helpers.LocaleManager
+import com.ahmetocak.movieapp.utils.ComponentDimens
+import com.ahmetocak.movieapp.utils.PACKAGE_NAME
 import com.ahmetocak.movieapp.utils.findActivity
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-private val PROFILE_IMG_SIZE = 144.dp
-private val APP_ICON_SIZE = 96.dp
-
-enum class Languages {
+private enum class Languages {
     ENGLISH,
     TURKISH
 }
@@ -120,11 +119,9 @@ fun ProfileScreen(
         DeleteAccountDialog(
             onDismissRequest = viewModel::endDeleteAccountDialog,
             onCancelClick = viewModel::endDeleteAccountDialog,
-            onDeleteClick = remember(viewModel) {
-                {
-                    viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
-                }
-            },
+            onDeleteClick = remember(viewModel) { {
+                viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
+            } },
             password = viewModel.password,
             onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
             isLoading = uiState.deleteAccountDialogUiEvent == DialogUiEvent.Loading
@@ -133,7 +130,7 @@ fun ProfileScreen(
 
     if (uiState.userMessages.isNotEmpty()) {
         Toast.makeText(
-            LocalContext.current,
+            context,
             uiState.userMessages.first().asString(),
             Toast.LENGTH_SHORT
         ).show()
@@ -154,12 +151,10 @@ fun ProfileScreen(
     ) { paddingValues ->
         ProfileScreenContent(
             modifier = Modifier.padding(paddingValues),
-            onLogOutClick = remember(viewModel) {
-                {
-                    viewModel.handleOnLogOutClick()
-                    onLogOutClick()
-                }
-            },
+            onLogOutClick = remember(viewModel) { {
+                viewModel.handleOnLogOutClick()
+                onLogOutClick()
+            } },
             profileImageUrl = uiState.profileImgUri?.toString() ?: "",
             userEmail = uiState.userEmail,
             onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },
@@ -178,13 +173,11 @@ fun ProfileScreen(
             isAppThemeDark = uiState.isDarkModeOn,
             onDynamicColorSwitchChange = remember(viewModel) { viewModel::setDynamicColor },
             isDynamicColorActive = uiState.isDynamicColorOn,
-            onPickUpFromGalleryClick = remember {
-                {
-                    pickMedia.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }
-            },
+            onPickUpFromGalleryClick = remember { {
+                pickMedia.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            } },
             isProfileImageUploading = uiState.isProfileImageUploading,
             currentLanguage = Locale.getDefault().displayLanguage
         )
@@ -262,7 +255,7 @@ private fun ProfileSection(
             verticalArrangement = Arrangement.Center
         ) {
             Box(
-                modifier = Modifier.size(PROFILE_IMG_SIZE),
+                modifier = Modifier.size(ComponentDimens.profileImageSize),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 if (isProfileImageUploading) {
@@ -440,8 +433,8 @@ private fun AppIcon(modifier: Modifier) {
             Image(
                 modifier = Modifier
                     .padding(Dimens.twoLevelPadding)
-                    .size(APP_ICON_SIZE),
-                bitmap = LocalContext.current.packageManager.getApplicationIcon("com.ahmetocak.movieapp")
+                    .size(ComponentDimens.appIconSize),
+                bitmap = LocalContext.current.packageManager.getApplicationIcon(PACKAGE_NAME)
                     .toBitmap().asImageBitmap(),
                 contentDescription = null
             )

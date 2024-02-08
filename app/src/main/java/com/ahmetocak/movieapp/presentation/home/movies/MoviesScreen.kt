@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,16 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmetocak.movieapp.R
-import com.ahmetocak.movieapp.presentation.home.HomeSections
-import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.components.designsystem.ErrorView
 import com.ahmetocak.movieapp.presentation.components.designsystem.FullScreenCircularProgressIndicator
 import com.ahmetocak.movieapp.presentation.components.designsystem.MovieButton
-import com.ahmetocak.movieapp.presentation.components.ui.MovieItem
 import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
-import com.ahmetocak.movieapp.presentation.theme.MovieAppTheme
+import com.ahmetocak.movieapp.presentation.components.ui.MovieItem
+import com.ahmetocak.movieapp.presentation.home.HomeSections
+import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.utils.Dimens
-import com.ahmetocak.movieapp.utils.ScreenPreview
 import com.ahmetocak.movieapp.utils.SeeAllType
 import com.ahmetocak.movieapp.utils.TMDB
 
@@ -118,8 +115,7 @@ private fun MovieSection(
     movieItemModifier: Modifier = Modifier,
     listContentPadding: PaddingValues = PaddingValues(0.dp),
     reverseLayout: Boolean = false,
-    horizontalArrangement: Arrangement.Horizontal =
-        if (!reverseLayout) Arrangement.Start else Arrangement.End,
+    horizontalArrangement: Arrangement.Horizontal = if (!reverseLayout) Arrangement.Start else Arrangement.End,
     onSeeAllClick: (SeeAllType) -> Unit,
     onMovieClick: (Int) -> Unit,
     movieState: MovieState,
@@ -146,11 +142,11 @@ private fun MovieSection(
                     contentPadding = listContentPadding,
                     horizontalArrangement = horizontalArrangement
                 ) {
-                    items(movieState.movieList, key = { it.id }) { movie ->
+                    items(movieState.movieList, key = { movie -> movie.id }) { movie ->
                         MovieItem(
                             modifier = movieItemModifier,
                             id = movie.id,
-                            name = movie.movieName ?: "*",
+                            name = movie.movieName ?: "",
                             releaseDate = movie.releaseDate ?: "",
                             imageUrl = "${TMDB.IMAGE_URL}${if (usePosterImage) movie.posterImagePath else movie.backdropImagePath}",
                             voteAverage = movie.voteAverage ?: 0.0,
@@ -195,15 +191,5 @@ private fun ContentTitleSection(
             onClick = { onSeeAllClick(type) },
             fontSize = 16.sp
         )
-    }
-}
-
-@ScreenPreview
-@Composable
-private fun MoviesScreenPreview() {
-    MovieAppTheme {
-        Surface {
-            MoviesScreen(onMovieClick = {}, onSeeAllClick = {}, onNavigateToRoute = {})
-        }
     }
 }

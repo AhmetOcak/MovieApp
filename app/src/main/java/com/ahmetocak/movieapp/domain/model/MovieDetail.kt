@@ -5,7 +5,7 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class MovieDetail(
     val id: Int,
-    val genres: List<String>,
+    val genres: String,
     val overview: String,
     val imageUrlPath: String,
     val movieName: String,

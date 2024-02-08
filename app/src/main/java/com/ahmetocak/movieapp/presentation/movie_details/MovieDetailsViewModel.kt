@@ -162,32 +162,34 @@ class MovieDetailsViewModel @Inject constructor(
     }
 
     private fun removeMovieFromTheWatchList(watchListMovie: WatchListMovie) {
-        _uiState.update {
-            it.copy(isWatchlistButtonInProgress = true)
-        }
-        viewModelScope.launch(ioDispatcher) {
-            deleteMovieFromWatchListUseCase(
-                watchListMovie = watchListMovie,
-                onTaskSuccess = {
-                    _uiState.update {
-                        it.copy(
-                            isWatchlistButtonInProgress = false,
-                            isMovieInWatchList = false,
-                            userMessages = listOf(
-                                UiText.StringResource(R.string.movie_remove_watch_list)
+        watchListMovie.id?.let { movieId ->
+            _uiState.update {
+                it.copy(isWatchlistButtonInProgress = true)
+            }
+            viewModelScope.launch(ioDispatcher) {
+                deleteMovieFromWatchListUseCase(
+                    movieId = movieId,
+                    onTaskSuccess = {
+                        _uiState.update {
+                            it.copy(
+                                isWatchlistButtonInProgress = false,
+                                isMovieInWatchList = false,
+                                userMessages = listOf(
+                                    UiText.StringResource(R.string.movie_remove_watch_list)
+                                )
                             )
-                        )
+                        }
+                    },
+                    onTaskError = { errorMessage ->
+                        _uiState.update {
+                            it.copy(
+                                isWatchlistButtonInProgress = false,
+                                userMessages = listOf(errorMessage)
+                            )
+                        }
                     }
-                },
-                onTaskError = { errorMessage ->
-                    _uiState.update {
-                        it.copy(
-                            isWatchlistButtonInProgress = false,
-                            userMessages = listOf(errorMessage)
-                        )
-                    }
-                }
-            )
+                )
+            }
         }
     }
 

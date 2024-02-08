@@ -10,11 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ahmetocak.movieapp.utils.ComponentDimens
 
 @Composable
 fun ButtonCircularProgressIndicator() {
     CircularProgressIndicator(
-        modifier = Modifier.size(24.dp),
+        modifier = Modifier.size(ComponentDimens.buttonCircularProgressIndicatorSize),
         strokeWidth = 2.dp
     )
 }

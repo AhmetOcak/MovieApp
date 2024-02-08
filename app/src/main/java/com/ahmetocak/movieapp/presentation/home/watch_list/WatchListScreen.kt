@@ -113,9 +113,7 @@ private fun WatchListScreenContent(
         FullScreenCircularProgressIndicator()
     } else {
         if (watchList.isNotEmpty()) {
-            Column(
-                modifier = modifier.fillMaxSize()
-            ) {
+            Column(modifier = modifier.fillMaxSize()) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(Dimens.twoLevelPadding),

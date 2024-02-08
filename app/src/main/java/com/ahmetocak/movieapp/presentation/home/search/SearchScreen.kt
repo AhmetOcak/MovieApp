@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -37,12 +36,11 @@ import com.ahmetocak.movieapp.presentation.home.HomeSections
 import com.ahmetocak.movieapp.presentation.home.MovieNavigationBar
 import com.ahmetocak.movieapp.presentation.components.ui.MovieItem
 import com.ahmetocak.movieapp.presentation.components.designsystem.MovieScaffold
+import com.ahmetocak.movieapp.utils.ComponentDimens
 import com.ahmetocak.movieapp.utils.Dimens
 import com.ahmetocak.movieapp.utils.TMDB
 import com.ahmetocak.movieapp.utils.onLoadStateAppend
 import com.ahmetocak.movieapp.utils.onLoadStateRefresh
-
-private val ViewIconsSize = 112.dp
 
 @Composable
 fun SearchScreen(
@@ -52,6 +50,8 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val searchResult = uiState.searchResult.collectAsLazyPagingItems()
 
     MovieScaffold(
         modifier = modifier.fillMaxSize(),
@@ -71,7 +71,7 @@ fun SearchScreen(
             searchLabelText = uiState.queryFieldErrorMessage?.asString()
                 ?: stringResource(id = R.string.search_label_text),
             onSearchClick = remember(viewModel) { viewModel::searchMovie },
-            searchResult = uiState.searchResult.collectAsLazyPagingItems(),
+            searchResult = searchResult,
             onMovieItemClick = onMovieClick,
             isSearchDone = uiState.isSearchDone
         )
@@ -158,7 +158,7 @@ private fun SearchSomethingView() {
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            modifier = Modifier.size(ViewIconsSize),
+            modifier = Modifier.size(ComponentDimens.searchSomethingViewSize),
             imageVector = Icons.Filled.Search,
             contentDescription = null
         )

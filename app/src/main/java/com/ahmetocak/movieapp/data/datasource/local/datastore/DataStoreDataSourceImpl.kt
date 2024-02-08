@@ -17,7 +17,7 @@ class DataStoreDataSourceImpl @Inject constructor(
 
     private object PreferencesKeys {
         val APP_THEME = booleanPreferencesKey(DataStoreConstants.APP_THEME_KEY)
-        val DYNAMIC_COLOR = booleanPreferencesKey(DataStoreConstants.DYNAMIC_COLOR)
+        val DYNAMIC_COLOR = booleanPreferencesKey(DataStoreConstants.DYNAMIC_COLOR_KEY)
     }
 
     override suspend fun getAppTheme(): Flow<Boolean> {
@@ -27,8 +27,8 @@ class DataStoreDataSourceImpl @Inject constructor(
     }
 
     override suspend fun updateAppTheme(darkMode: Boolean) {
-        datastore.edit { settings ->
-            settings[APP_THEME] = darkMode
+        datastore.edit { preferences ->
+            preferences[APP_THEME] = darkMode
         }
     }
 
@@ -39,8 +39,8 @@ class DataStoreDataSourceImpl @Inject constructor(
     }
 
     override suspend fun updateDynamicColor(dynamicColor: Boolean) {
-        datastore.edit { settings ->
-            settings[DYNAMIC_COLOR] = dynamicColor
+        datastore.edit { preferences ->
+            preferences[DYNAMIC_COLOR] = dynamicColor
         }
     }
 }

@@ -6,14 +6,14 @@ import com.ahmetocak.movieapp.model.movie_detail.MovieDetailDto
 fun MovieDetailDto.toMovieDetail(): MovieDetail {
     return MovieDetail(
         id = id,
-        genres = genres.map { it.name },
+        genres = genres.joinToString { it.name },
         overview = overview ?: "",
         imageUrlPath = imageUrlPath ?: "",
         movieName = movieName ?: "",
         voteAverage = voteAverage?.toFloat() ?: 0f,
         voteCount = voteCount ?: 0,
         releaseDate = releaseDate ?: "",
-        duration = duration?: 0,
+        duration = duration ?: 0,
         originalMovieName = originalMovieName ?: ""
     )
 }

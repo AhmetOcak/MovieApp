@@ -5,7 +5,9 @@ import androidx.paging.PagingState
 import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
 
-class MoviesPagingSource(private val apiCall: suspend (Int) -> Movie) : PagingSource<Int, MovieContent>() {
+class MoviesPagingSource(
+    private val apiCall: suspend (Int) -> Movie
+) : PagingSource<Int, MovieContent>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieContent> {
         return try {

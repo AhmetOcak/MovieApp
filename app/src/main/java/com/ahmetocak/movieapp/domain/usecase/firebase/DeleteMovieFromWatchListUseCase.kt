@@ -7,7 +7,6 @@ import com.ahmetocak.movieapp.common.helpers.connectivity.NetworkConnectivityObs
 import com.ahmetocak.movieapp.data.repository.firebase.FirebaseRepository
 import com.ahmetocak.movieapp.data.repository.movie.MovieRepository
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchList
-import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
 import com.ahmetocak.movieapp.utils.taskHandler
 import javax.inject.Inject
 
@@ -17,42 +16,38 @@ class DeleteMovieFromWatchListUseCase @Inject constructor(
     private val networkConnectivityObserver: NetworkConnectivityObserver
 ) {
     suspend operator fun invoke(
-        watchListMovie: WatchListMovie,
+        movieId: Int,
         onTaskSuccess: () -> Unit,
         onTaskError: (UiText) -> Unit
     ) {
         if (networkConnectivityObserver.isNetworkAvailable()) {
-            watchListMovie.id?.let { movieId ->
-                when (val response = movieRepository.removeMovieFromWatchList(movieId)) {
-                    is Response.Success -> {
-                        taskHandler(
-                            taskCall = firebaseRepository.getMovieData(),
-                            onTaskSuccess = { document ->
-                                if (document != null) {
-                                    val watchList =
-                                        document.toObject(WatchList::class.java)?.watchList
-                                            ?: emptyList()
-                                    val updatedWatchList = watchList.filter { movie ->
-                                        movie.id != watchListMovie.id
-                                    }
-                                    taskHandler(
-                                        taskCall = firebaseRepository.updateMovieData(
-                                            updatedWatchList
-                                        ),
-                                        onTaskSuccess = { onTaskSuccess() },
-                                        onTaskError = onTaskError::invoke
-                                    )
-                                } else {
-                                    onTaskError(UiText.StringResource(R.string.unknown_error))
+            when (val response = movieRepository.removeMovieFromWatchList(movieId)) {
+                is Response.Success -> {
+                    taskHandler(
+                        taskCall = firebaseRepository.getMovieData(),
+                        onTaskSuccess = { document ->
+                            if (document != null) {
+                                val watchList = document.toObject(WatchList::class.java)?.watchList ?: emptyList()
+                                val updatedWatchList = watchList.filter { movie ->
+                                    movie.id != movieId
                                 }
-                            },
-                            onTaskError = onTaskError::invoke
-                        )
-                    }
+                                taskHandler(
+                                    taskCall = firebaseRepository.updateMovieData(
+                                        updatedWatchList
+                                    ),
+                                    onTaskSuccess = { onTaskSuccess() },
+                                    onTaskError = onTaskError::invoke
+                                )
+                            } else {
+                                onTaskError(UiText.StringResource(R.string.unknown_error))
+                            }
+                        },
+                        onTaskError = onTaskError::invoke
+                    )
+                }
 
-                    is Response.Error -> {
-                        onTaskError(response.errorMessage)
-                    }
+                is Response.Error -> {
+                    onTaskError(response.errorMessage)
                 }
             }
         }

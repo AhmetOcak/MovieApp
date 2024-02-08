@@ -39,6 +39,8 @@ fun SeeAllScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val movieList = uiState.movieList.collectAsLazyPagingItems()
+
     MovieScaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -57,7 +59,7 @@ fun SeeAllScreen(
         SeeAllScreenContent(
             modifier = Modifier.padding(paddingValues),
             onMovieClick = onMovieClick,
-            movieList = uiState.movieList.collectAsLazyPagingItems()
+            movieList = movieList
         )
     }
 }

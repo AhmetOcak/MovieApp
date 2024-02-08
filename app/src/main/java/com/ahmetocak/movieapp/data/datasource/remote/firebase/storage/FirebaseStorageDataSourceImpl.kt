@@ -15,22 +15,21 @@ class FirebaseStorageDataSourceImpl @Inject constructor(
 
     private val storageRef = firebaseStorage.reference
 
-
     override fun uploadProfileImage(imageUri: Uri): UploadTask {
         val profileImageRef =
-            storageRef.child("${Firestorage.USER_PROFILE_IMG_PATH}/${firebaseAuth.currentUser?.uid}")
+            storageRef.child("${Firestorage.USER_PROFILE_IMG_DIRECTORY_NAME}/${firebaseAuth.currentUser?.uid}")
         return profileImageRef.putFile(imageUri)
     }
 
     override fun getUserProfileImage(): Task<Uri> {
         val profileImageRef =
-            storageRef.child("${Firestorage.USER_PROFILE_IMG_PATH}/${firebaseAuth.currentUser?.uid}")
+            storageRef.child("${Firestorage.USER_PROFILE_IMG_DIRECTORY_NAME}/${firebaseAuth.currentUser?.uid}")
         return profileImageRef.downloadUrl
     }
 
     override fun deleteUserProfileImage(): Task<Void> {
         val profileImageRef =
-            storageRef.child("${Firestorage.USER_PROFILE_IMG_PATH}/${firebaseAuth.currentUser?.uid}")
+            storageRef.child("${Firestorage.USER_PROFILE_IMG_DIRECTORY_NAME}/${firebaseAuth.currentUser?.uid}")
         return profileImageRef.delete()
     }
 }

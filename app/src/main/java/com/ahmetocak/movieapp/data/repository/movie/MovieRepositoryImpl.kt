@@ -10,7 +10,7 @@ import com.ahmetocak.movieapp.data.datasource.remote.movie.MovieRemoteDataSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.api.MovieApi
 import com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source.MoviesPagingSource
 import com.ahmetocak.movieapp.data.datasource.remote.movie.paging_source.SearchMoviesPagingSource
-import com.ahmetocak.movieapp.domain.mapper.toMovieCast
+import com.ahmetocak.movieapp.domain.mapper.toMovieCredit
 import com.ahmetocak.movieapp.domain.mapper.toMovieDetail
 import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.domain.model.MovieDetail
@@ -18,6 +18,7 @@ import com.ahmetocak.movieapp.model.movie.Movie
 import com.ahmetocak.movieapp.model.movie.MovieContent
 import com.ahmetocak.movieapp.model.movie_detail.MovieTrailer
 import com.ahmetocak.movieapp.model.watch_list.WatchListEntity
+import com.ahmetocak.movieapp.utils.Network
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -26,6 +27,7 @@ class MovieRepositoryImpl @Inject constructor(
     private val api: MovieApi,
     private val watchListLocalDataSource: WatchListLocalDataSource
 ) : MovieRepository {
+
     override suspend fun getNowPlayingMoviesFirstPage(): Response<Movie> =
         movieRemoteDataSource.getNowPlayingMoviesFirstPage()
 
@@ -39,7 +41,7 @@ class MovieRepositoryImpl @Inject constructor(
             }
         )
         return Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = Network.Paging.PAGE_SIZE),
             pagingSourceFactory = { moviesPagingSource }
         ).flow
     }
@@ -51,7 +53,7 @@ class MovieRepositoryImpl @Inject constructor(
             }
         )
         return Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = Network.Paging.PAGE_SIZE),
             pagingSourceFactory = { moviesPagingSource }
         ).flow
     }
@@ -60,7 +62,7 @@ class MovieRepositoryImpl @Inject constructor(
         movieRemoteDataSource.getMovieDetails(movieId).mapResponse { it.toMovieDetail() }
 
     override suspend fun getMovieCredits(movieId: Int): Response<MovieCredit> =
-        movieRemoteDataSource.getMovieCredits(movieId).mapResponse { it.toMovieCast() }
+        movieRemoteDataSource.getMovieCredits(movieId).mapResponse { it.toMovieCredit() }
 
     override suspend fun getMovieTrailers(movieId: Int): Response<MovieTrailer> =
         movieRemoteDataSource.getMovieTrailers(movieId)
@@ -71,7 +73,7 @@ class MovieRepositoryImpl @Inject constructor(
             api = api
         )
         return Pager(
-            config = PagingConfig(pageSize = 20),
+            config = PagingConfig(pageSize = Network.Paging.PAGE_SIZE),
             pagingSourceFactory = { searchMoviePagingSource }
         ).flow
     }

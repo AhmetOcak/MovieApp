@@ -16,4 +16,9 @@ object Dimens {
 object ComponentDimens {
     val buttonHeight = 56.dp
     val emptyWarningImageSize = 112.dp
+    val buttonCircularProgressIndicatorSize = 24.dp
+    val errorViewIconSize = 64.dp
+    val appIconSize = 96.dp
+    val profileImageSize = 144.dp
+    val searchSomethingViewSize = 112.dp
 }

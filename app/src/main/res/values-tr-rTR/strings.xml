@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="login_welcome_message">Merhaba, Film Dünyasına Hoş Geldiniz!</string>
-
     <!-- App Strings -->
+    <string name="login_welcome_message">Merhaba, Film Dünyasına Hoş Geldiniz!</string>
     <string name="password_label">Şifre</string>
     <string name="password_confirm_label">Şifreyi doğrula</string>
     <string name="login_button_text">Giriş</string>

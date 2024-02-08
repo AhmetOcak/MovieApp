@@ -192,7 +192,7 @@ private fun MovieSection(
                 MovieDetails(
                     voteAverage = voteAverage,
                     voteCount = voteCount,
-                    categories = genres.joinToString(),
+                    categories = genres,
                     releaseDate = releaseDate,
                     movieDuration = duration.convertToDurationTime(),
                     directorName = directorName,

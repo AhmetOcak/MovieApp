@@ -16,7 +16,7 @@ class FirebaseFirestoreDataSourceImpl @Inject constructor(
 ) : FirebaseFirestoreDataSource {
 
     override fun addMovieData(watchListMovie: WatchListMovie): Task<Void> {
-        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
+        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_NAME)
             .document(firebaseAuth.currentUser?.uid ?: "")
             .set(
                 hashMapOf(Firestore.WATCH_LIST_ARRAY_NAME to FieldValue.arrayUnion(watchListMovie)),
@@ -25,19 +25,19 @@ class FirebaseFirestoreDataSourceImpl @Inject constructor(
     }
 
     override fun updateMovieData(watchListMovie: List<WatchListMovie>): Task<Void> {
-        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
+        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_NAME)
             .document(firebaseAuth.currentUser?.uid ?: "")
             .update(mapOf(Firestore.WATCH_LIST_ARRAY_NAME to watchListMovie))
     }
 
     override fun getMovieData(): Task<DocumentSnapshot> {
-        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
+        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_NAME)
             .document(firebaseAuth.currentUser?.uid ?: "")
             .get()
     }
 
     override fun deleteMovieDocument(): Task<Void> {
-        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_KEY)
+        return firestoreDb.collection(Firestore.WATCH_LIST_COLLECTION_NAME)
             .document(firebaseAuth.currentUser?.uid ?: "")
             .delete()
     }

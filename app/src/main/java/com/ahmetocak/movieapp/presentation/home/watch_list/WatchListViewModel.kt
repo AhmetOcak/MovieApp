@@ -34,7 +34,7 @@ class WatchListViewModel @Inject constructor(
     }
 
     private fun getWatchList() {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             when (val response = movieRepository.getWatchList()) {
                 is Response.Success -> {
                     response.data.flowOn(ioDispatcher).collect { watchList ->
@@ -57,20 +57,22 @@ class WatchListViewModel @Inject constructor(
     }
 
     fun deleteMovieFromWatchList(watchListMovie: WatchListMovie) {
-        viewModelScope.launch(ioDispatcher) {
-            deleteMovieFromWatchListUseCase.invoke(
-                watchListMovie = watchListMovie,
-                onTaskSuccess = {
-                    _uiState.update {
-                        it.copy(userMessages = listOf(UiText.StringResource(R.string.movie_remove_watch_list)))
+        watchListMovie.id?.let { movieId ->
+            viewModelScope.launch(ioDispatcher) {
+                deleteMovieFromWatchListUseCase.invoke(
+                    movieId = movieId,
+                    onTaskSuccess = {
+                        _uiState.update {
+                            it.copy(userMessages = listOf(UiText.StringResource(R.string.movie_remove_watch_list)))
+                        }
+                    },
+                    onTaskError = { errorMessage ->
+                        _uiState.update {
+                            it.copy(userMessages = listOf(errorMessage))
+                        }
                     }
-                },
-                onTaskError = { errorMessage ->
-                    _uiState.update {
-                        it.copy(userMessages = listOf(errorMessage))
-                    }
-                }
-            )
+                )
+            }
         }
     }
 

@@ -32,7 +32,7 @@ class MainActivityViewModel @Inject constructor(
         initializeTheme()
         observeTheme()
         observeDynamicColor()
-        checkIsDeviceOnline()
+        observeNetworkConnectivity()
     }
 
     private fun initializeTheme() {
@@ -66,7 +66,7 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    private fun checkIsDeviceOnline() {
+    private fun observeNetworkConnectivity() {
         viewModelScope.launch(ioDispatcher) {
             networkConnectivityObserver.observer().collect { networkStatus ->
                 when (networkStatus) {

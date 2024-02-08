@@ -1,5 +1,7 @@
 package com.ahmetocak.movieapp.utils
 
+const val PACKAGE_NAME = "com.ahmetocak.movieapp"
+
 object TMDB {
     const val IMAGE_URL = "https://image.tmdb.org/t/p/w500"
     const val JOB_DIRECTOR_KEY = "Director"
@@ -8,7 +10,7 @@ object TMDB {
 object DataStoreConstants {
     const val FILE_NAME = "movie_app_preferences"
     const val APP_THEME_KEY = "app_theme_preference"
-    const val DYNAMIC_COLOR = "dynamic_color_preference"
+    const val DYNAMIC_COLOR_KEY = "dynamic_color_preference"
 }
 
 object Network {
@@ -32,17 +34,21 @@ object Network {
     object Paths {
         const val MOVIE_ID = "movie_id"
     }
+
+    object Paging {
+        const val PAGE_SIZE = 20
+    }
 }
 
 object Firestore {
-    const val WATCH_LIST_COLLECTION_KEY = "movie_watch_lists"
+    const val WATCH_LIST_COLLECTION_NAME = "movie_watch_lists"
     const val WATCH_LIST_ARRAY_NAME = "watchList"
 }
 
 object Database {
-    const val WATCH_LIST_DB_NAME =  "watch_list_db"
+    const val WATCH_LIST_DB_NAME = "watch_list_db"
 }
 
 object Firestorage {
-    const val USER_PROFILE_IMG_PATH = "user_profile_images"
+    const val USER_PROFILE_IMG_DIRECTORY_NAME = "user_profile_images"
 }

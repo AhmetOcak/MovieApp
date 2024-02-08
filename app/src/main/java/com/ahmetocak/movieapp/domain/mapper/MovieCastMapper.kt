@@ -5,7 +5,7 @@ import com.ahmetocak.movieapp.domain.model.MovieCredit
 import com.ahmetocak.movieapp.model.movie_detail.MovieCreditDto
 import com.ahmetocak.movieapp.utils.TMDB
 
-fun MovieCreditDto.toMovieCast(): MovieCredit {
+fun MovieCreditDto.toMovieCredit(): MovieCredit {
     return MovieCredit(
         cast = cast.map { castDto ->
             Cast(
