@@ -111,7 +111,9 @@ fun ProfileScreen(
 
     val pickMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            viewModel.uploadUserProfileImage(uri)
+            if (uri != null) {
+                viewModel.uploadUserProfileImage(uri)
+            }
         }
 
     if (uiState.deleteAccountDialogUiEvent != DialogUiEvent.InActive) {

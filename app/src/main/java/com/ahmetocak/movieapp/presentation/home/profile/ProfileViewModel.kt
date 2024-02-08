@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.common.DialogUiEvent
 import com.ahmetocak.movieapp.common.Response
 import com.ahmetocak.movieapp.common.helpers.UiText
@@ -168,31 +167,24 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun uploadUserProfileImage(imageUri: Uri?) {
+    fun uploadUserProfileImage(imageUri: Uri) {
         _uiState.update {
             it.copy(isProfileImageUploading = true)
         }
         viewModelScope.launch(ioDispatcher) {
-            imageUri?.let { uri ->
-                firebaseRepository.uploadProfileImage(uri).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        _uiState.update {
-                            it.copy(profileImgUri = uri, isProfileImageUploading = false)
-                        }
-                    } else {
-                        _uiState.update {
-                            it.copy(
-                                userMessages = listOf(handleTaskError(e = task.exception)),
-                                isProfileImageUploading = false
-                            )
-                        }
+            firebaseRepository.uploadProfileImage(imageUri).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _uiState.update {
+                        it.copy(profileImgUri = imageUri, isProfileImageUploading = false)
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            userMessages = listOf(handleTaskError(e = task.exception)),
+                            isProfileImageUploading = false
+                        )
                     }
                 }
-            } ?: _uiState.update {
-                it.copy(
-                    userMessages = listOf(UiText.StringResource(R.string.unknown_error)),
-                    isProfileImageUploading = false
-                )
             }
         }
     }
