@@ -129,4 +129,15 @@ dependencies {
 
     // Youtube View Player
     implementation(libs.core)
+
+    // Coroutine Test
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Turbine
+    testImplementation(libs.turbine)
+
+    // Mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
 }
