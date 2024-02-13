@@ -136,7 +136,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun clearMovieLocalDatabase(onSuccess: () -> Unit = {}) {
+    private fun clearMovieLocalDatabase(onSuccess: () -> Unit) {
         viewModelScope.launch(ioDispatcher) {
             when (val response = movieRepository.deleteWatchList()) {
                 is Response.Success -> {
@@ -240,8 +240,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun handleOnLogOutClick() {
-        clearMovieLocalDatabase()
-        firebaseAuth.signOut()
+        clearMovieLocalDatabase(onSuccess = firebaseAuth::signOut)
     }
 }
 

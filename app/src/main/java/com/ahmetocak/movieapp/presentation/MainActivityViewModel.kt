@@ -58,9 +58,9 @@ class MainActivityViewModel @Inject constructor(
 
     private fun observeDynamicColor() {
         viewModelScope.launch(ioDispatcher) {
-            dataStoreRepository.getDynamicColor().collect { dynamicColor ->
+            dataStoreRepository.getDynamicColor().collect { isDynamicColorOn ->
                 _uiState.update {
-                    it.copy(isDynamicColorOn = dynamicColor)
+                    it.copy(isDynamicColorOn = isDynamicColorOn)
                 }
             }
         }

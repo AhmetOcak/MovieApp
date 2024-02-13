@@ -1,9 +1,7 @@
 package com.ahmetocak.movieapp.model.movie_detail
 
-import androidx.compose.runtime.Immutable
 import com.google.gson.annotations.SerializedName
 
-@Immutable
 data class MovieCreditDto(
     val cast: List<CastDto>,
 
@@ -11,7 +9,6 @@ data class MovieCreditDto(
     val crew: List<CrewDto>
 )
 
-@Immutable
 data class CastDto(
     val id: Int,
     val name: String?,
@@ -23,7 +20,6 @@ data class CastDto(
     val imageUrlPath: String?
 )
 
-@Immutable
 data class CrewDto(
     val name: String?,
     val job: String?

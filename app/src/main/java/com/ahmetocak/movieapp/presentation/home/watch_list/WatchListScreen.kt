@@ -26,7 +26,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.movieapp.domain.mapper.toWatchListMovie
 import com.ahmetocak.movieapp.model.firebase.firestore.WatchListMovie
@@ -63,7 +63,7 @@ fun WatchListScreen(
     onNavigateToRoute: (String) -> Unit,
     viewModel: WatchListViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState.userMessages.isNotEmpty()) {
         Toast.makeText(
@@ -83,12 +83,14 @@ fun WatchListScreen(
                 }
             )
         },
-        bottomBar = {
-            MovieNavigationBar(
-                tabs = HomeSections.entries.toTypedArray(),
-                currentRoute = HomeSections.WATCH_LIST.route,
-                navigateToRoute = onNavigateToRoute
-            )
+        bottomBar = remember {
+            {
+                MovieNavigationBar(
+                    tabs = HomeSections.entries.toTypedArray(),
+                    currentRoute = HomeSections.WATCH_LIST.route,
+                    navigateToRoute = onNavigateToRoute
+                )
+            }
         }
     ) { paddingValues ->
         WatchListScreenContent(

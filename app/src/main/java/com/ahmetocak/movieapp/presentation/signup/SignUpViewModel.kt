@@ -108,23 +108,27 @@ class SignUpViewModel @Inject constructor(
         )
 
         if (isEmailOk && isPasswordOk && isConfirmPasswordOk) {
+            _uiState.update {
+                it.copy(isLoading = true)
+            }
             viewModelScope.launch(Dispatchers.IO) {
-                _uiState.update {
-                    it.copy(isLoading = true)
-                }
-                firebaseRepository.signUp(auth = Auth(email = emailValue, password = passwordValue))
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            onNavigateHome()
-                        } else {
-                            _uiState.update {
-                                it.copy(
-                                    isLoading = false,
-                                    errorMessages = listOf(handleTaskError(e = task.exception))
-                                )
-                            }
+                firebaseRepository.signUp(
+                    auth = Auth(
+                        email = emailValue,
+                        password = passwordValue
+                    )
+                ).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onNavigateHome()
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                errorMessages = listOf(handleTaskError(e = task.exception))
+                            )
                         }
                     }
+                }
             }
         }
     }

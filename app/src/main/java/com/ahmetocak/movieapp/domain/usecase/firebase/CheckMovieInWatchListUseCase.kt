@@ -17,8 +17,7 @@ class CheckMovieInWatchListUseCase @Inject constructor(private val repository: F
             taskCall = repository.getMovieData(),
             onTaskSuccess = { document ->
                 if (document != null && document.exists()) {
-                    val watchList =
-                        document.toObject(WatchList::class.java)?.watchList ?: emptyList()
+                    val watchList = document.toObject(WatchList::class.java)?.watchList ?: emptyList()
 
                     val movieInWatchList = watchList.firstOrNull { movie ->
                         movie.id == movieId

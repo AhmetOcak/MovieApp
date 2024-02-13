@@ -1,9 +1,7 @@
 package com.ahmetocak.movieapp.model.movie_detail
 
-import androidx.compose.runtime.Immutable
 import com.google.gson.annotations.SerializedName
 
-@Immutable
 data class MovieDetailDto(
     val id: Int,
     val genres: List<MovieGenreDto>,
@@ -31,7 +29,6 @@ data class MovieDetailDto(
     val originalMovieName: String?
 )
 
-@Immutable
 data class MovieGenreDto(
     val name: String
 )
