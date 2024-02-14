@@ -66,11 +66,11 @@ fun SearchScreen(
         SearchScreenContent(
             modifier = Modifier.padding(paddingValues),
             searchValue = viewModel.query,
-            onSearchValueChange = remember(viewModel) { viewModel::updateQueryValue },
+            onSearchValueChange = remember { viewModel::updateQueryValue },
             searchError = uiState.queryFieldErrorMessage != null,
             searchLabelText = uiState.queryFieldErrorMessage?.asString()
                 ?: stringResource(id = R.string.search_label_text),
-            onSearchClick = remember(viewModel) { viewModel::searchMovie },
+            onSearchClick = remember { viewModel::searchMovie },
             searchResult = searchResult,
             onMovieItemClick = onMovieClick,
             isSearchDone = uiState.isSearchDone

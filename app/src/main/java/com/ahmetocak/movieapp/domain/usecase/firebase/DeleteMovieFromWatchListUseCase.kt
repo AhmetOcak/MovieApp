@@ -32,9 +32,7 @@ class DeleteMovieFromWatchListUseCase @Inject constructor(
                                     movie.id != movieId
                                 }
                                 taskHandler(
-                                    taskCall = firebaseRepository.updateMovieData(
-                                        updatedWatchList
-                                    ),
+                                    taskCall = firebaseRepository.updateMovieData(updatedWatchList),
                                     onTaskSuccess = { onTaskSuccess() },
                                     onTaskError = onTaskError::invoke
                                 )

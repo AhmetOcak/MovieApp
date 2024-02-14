@@ -71,13 +71,13 @@ fun LoginScreen(
 
     if (uiState.dialogUiEvent != DialogUiEvent.InActive) {
         ForgotPasswordDialog(
-            onDismissRequest = remember(viewModel) { viewModel::endResetPasswordDialog },
-            onSendClick = remember(viewModel) { viewModel::sendPasswordResetMail },
+            onDismissRequest = remember { viewModel::endResetPasswordDialog },
+            onSendClick = remember { viewModel::sendPasswordResetMail },
             isLoading = uiState.dialogUiEvent == DialogUiEvent.Loading,
             emailLabelText = uiState.passwordResetFieldErrorMessage?.asString()
                 ?: stringResource(id = R.string.email_address_text),
             emailValue = viewModel.passwordResetEmailValue,
-            onEmailValueChange = remember(viewModel) { viewModel::updatePasswordResetMail },
+            onEmailValueChange = remember { viewModel::updatePasswordResetMail },
             isEmailFieldError = uiState.passwordResetFieldErrorMessage != null
         )
     }
@@ -92,18 +92,18 @@ fun LoginScreen(
             LoginScreenContent(
                 modifier = Modifier.padding(paddingValues),
                 emailValue = viewModel.emailValue,
-                onEmailValueChange = remember(viewModel) { viewModel::updateEmailValue },
+                onEmailValueChange = remember { viewModel::updateEmailValue },
                 emailFieldError = uiState.emailFieldErrorMessage != null,
                 emailFieldLabel = uiState.emailFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.email_label),
                 passwordValue = viewModel.passwordValue,
-                onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
+                onPasswordValueChange = remember { viewModel::updatePasswordValue },
                 passwordFieldError = uiState.passwordFieldErrorMessage != null,
                 passwordFieldLabel = uiState.passwordFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.password_label),
-                onLoginClick = remember(viewModel) { { viewModel.login(onLoginClick) } },
+                onLoginClick = remember { { viewModel.login(onLoginClick) } },
                 onCreateAccountClick = onCreateAccountClick,
-                onForgotPasswordClick = remember(viewModel) { viewModel::startResetPasswordDialog }
+                onForgotPasswordClick = remember{ viewModel::startResetPasswordDialog }
             )
         }
     }

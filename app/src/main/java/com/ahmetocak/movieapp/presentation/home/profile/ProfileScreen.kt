@@ -108,22 +108,21 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    val pickMedia =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri != null) {
-                viewModel.uploadUserProfileImage(uri)
-            }
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            viewModel.uploadUserProfileImage(uri)
         }
+    }
 
     if (uiState.deleteAccountDialogUiEvent != DialogUiEvent.InActive) {
         DeleteAccountDialog(
             onDismissRequest = viewModel::endDeleteAccountDialog,
             onCancelClick = viewModel::endDeleteAccountDialog,
-            onDeleteClick = remember(viewModel) { {
+            onDeleteClick = remember { {
                 viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
             } },
             password = viewModel.password,
-            onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
+            onPasswordValueChange = remember { viewModel::updatePasswordValue },
             isLoading = uiState.deleteAccountDialogUiEvent == DialogUiEvent.Loading
         )
     }

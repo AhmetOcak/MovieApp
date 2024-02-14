@@ -204,9 +204,6 @@ class ProfileViewModel @Inject constructor(
     fun setTheme(darkTheme: Boolean) {
         viewModelScope.launch(ioDispatcher) {
             dataStoreRepository.updateAppTheme(darkTheme)
-            _uiState.update {
-                it.copy(isDarkModeOn = darkTheme)
-            }
         }
     }
 
@@ -223,9 +220,6 @@ class ProfileViewModel @Inject constructor(
     fun setDynamicColor(dynamicColor: Boolean) {
         viewModelScope.launch(ioDispatcher) {
             dataStoreRepository.updateDynamicColor(dynamicColor)
-            _uiState.update {
-                it.copy(isDynamicColorOn = dynamicColor)
-            }
         }
     }
 

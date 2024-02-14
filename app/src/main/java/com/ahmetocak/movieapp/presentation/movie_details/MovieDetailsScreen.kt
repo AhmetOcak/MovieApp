@@ -109,7 +109,7 @@ fun MovieDetailsScreen(
             modifier = Modifier.padding(paddingValues),
             upPress = upPress,
             isMovieInWatchList = uiState.isMovieInWatchList,
-            onWatchListClick = remember(viewModel) { viewModel::handleWatchListAction },
+            onWatchListClick = remember { viewModel::handleWatchListAction },
             detailUiState = uiState.detailUiState,
             directorName = uiState.directorName,
             castUiState = uiState.castUiState,

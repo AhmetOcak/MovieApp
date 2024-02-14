@@ -98,7 +98,7 @@ fun WatchListScreen(
             onMovieClick = onMovieClick,
             watchList = uiState.watchList,
             isLoading = uiState.isLoading,
-            onRemoveFromWatchListClick = remember(viewModel) { viewModel::deleteMovieFromWatchList }
+            onRemoveFromWatchListClick = remember { viewModel::deleteMovieFromWatchList }
         )
     }
 }

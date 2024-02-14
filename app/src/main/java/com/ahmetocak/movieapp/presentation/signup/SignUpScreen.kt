@@ -55,21 +55,21 @@ fun SignUpScreen(
             SignUpScreenContent(
                 modifier = Modifier.padding(paddingValues),
                 emailValue = viewModel.emailValue,
-                onEmailValueChange = remember(viewModel) { viewModel::updateEmailValue },
+                onEmailValueChange = remember { viewModel::updateEmailValue },
                 emailFieldError = uiState.emailFieldErrorMessage != null,
                 emailFieldLabel = uiState.emailFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.email_label),
                 passwordValue = viewModel.passwordValue,
-                onPasswordValueChange = remember(viewModel) { viewModel::updatePasswordValue },
+                onPasswordValueChange = remember { viewModel::updatePasswordValue },
                 passwordFieldError = uiState.passwordFieldErrorMessage != null,
                 passwordFieldLabel = uiState.passwordFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.password_label),
                 confirmPasswordValue = viewModel.confirmPasswordValue,
-                onConfirmPasswordValueChange = remember(viewModel) { viewModel::updateConfirmPasswordValue },
+                onConfirmPasswordValueChange = remember { viewModel::updateConfirmPasswordValue },
                 confirmPasswordFieldError = uiState.confirmPasswordFieldErrorMessage != null,
                 confirmPasswordLabel = uiState.confirmPasswordFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.password_confirm_label),
-                onSignUpClick = remember(viewModel) { { viewModel.signUp(onSignUpClick) } }
+                onSignUpClick = remember { { viewModel.signUp(onSignUpClick) } }
             )
         }
     }
