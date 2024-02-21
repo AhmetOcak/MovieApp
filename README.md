@@ -27,6 +27,7 @@ the watchlist and profile picture are also deleted from Firebase.
 * [Turbine](https://developer.android.com/kotlin/flow/test#turbine)
 * [Mockito](https://developer.android.com/training/testing/local-tests#mockable-library)
 
+## Outputs 🖼
 
 |                  | Light | Dark |
 |------------------|-------|------|
@@ -40,6 +41,9 @@ the watchlist and profile picture are also deleted from Firebase.
 | Movie Details Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/35ab8f75-6be8-4de7-89a7-436eb641fafd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d7f02f9e-7dbb-4e01-af05-039d9295da6a" width="240" height="480"/> |
 |  Movie Details Screen     |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/5cc2c76c-ee1e-4045-80c0-3d3fa2983e9a" width="240" height="480"/>       |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bd7af4df-c02b-472a-afac-6632a4cebd99" width="240" height="480"/>          |
 
+|                  |              |
+|------------------|--------------|
+| Video from app   | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/cec4846c-026d-44ca-a456-9ee8b8751be7" width="240" height="480" /> |
 
 ## Architecture 🏗
 The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional flow of data, separation of concern, testability, and a lot more.
