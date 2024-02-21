@@ -49,3 +49,8 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 ## API 📦
 [TMDB Movie API](https://developer.themoviedb.org/reference/intro/getting-started)
 
+## API KEY 🔑
+* Generate a new api key from [here](https://www.themoviedb.org/settings/api).
+* Open the page is gradle/local.properties. Define API key.
+* ``` API_KEY="YOUR_API_KEY" ```
+
