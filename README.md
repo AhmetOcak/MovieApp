@@ -55,7 +55,7 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 
 ## Installation 🏗
 * Generate a new api key from [here](https://www.themoviedb.org/settings/api).
-* Open the page is gradle/local.properties. Define API key.
+* Open the local.properties. Define API key.
 * ``` API_KEY="YOUR_API_KEY" ```
 * Create a firebase project.
 * Enable firebase auth, storage and firestore.
