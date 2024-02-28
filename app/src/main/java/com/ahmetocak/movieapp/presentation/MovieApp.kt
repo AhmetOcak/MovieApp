@@ -13,16 +13,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.ahmetocak.movieapp.presentation.home.HomeSections
+import com.ahmetocak.common.constants.SeeAllType
+import com.ahmetocak.login.LoginScreen
+import com.ahmetocak.movie_details.MovieDetailsScreen
 import com.ahmetocak.movieapp.presentation.home.addHomeGraph
-import com.ahmetocak.movieapp.presentation.login.LoginScreen
-import com.ahmetocak.movieapp.presentation.movie_details.MovieDetailsScreen
-import com.ahmetocak.movieapp.presentation.navigation.MainDestinations
 import com.ahmetocak.movieapp.presentation.navigation.rememberMovieAppNavController
-import com.ahmetocak.movieapp.presentation.see_all.SeeAllScreen
-import com.ahmetocak.movieapp.presentation.signup.SignUpScreen
 import com.ahmetocak.movieapp.presentation.theme.MovieAppTheme
-import com.ahmetocak.movieapp.utils.SeeAllType
+import com.ahmetocak.navigation.HomeSections
+import com.ahmetocak.navigation.MainDestinations
+import com.ahmetocak.see_all.SeeAllScreen
+import com.ahmetocak.signup.SignUpScreen
 
 @Composable
 fun MovieApp(

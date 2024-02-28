@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_text">Settings</string>
+    <string name="dark_theme_text">Dark Theme</string>
+    <string name="languages_text">Languages</string>
+    <string name="english_text">English</string>
+    <string name="turkish_text">Turkish</string>
+    <string name="dynamic_color_text">Dynamic Color</string>
+    <string name="send_text">Send</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="delete_account_text">Delete Account</string>
+    <string name="delete_account_description_text">Are you sure you want to delete your account ? When you delete your account, all your user information is also deleted. This process is irreversible.</string>
+    <string name="delete_text">Delete</string>
+    <string name="password_label">Password</string>
+</resources>

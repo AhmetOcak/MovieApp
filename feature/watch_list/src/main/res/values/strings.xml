@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="movie_remove_watch_list">The movie removed from the watch list.</string>
+    <string name="my_watch_list_text">My Watch List</string>
+    <string name="watch_list_empty">It looks like there are no movies here. You can add new films to spice up your watchlist!</string>
+</resources>

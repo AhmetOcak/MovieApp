@@ -37,6 +37,13 @@ room-ktx = "2.6.1"
 room-runtime = "2.6.1"
 constraintlayout = "2.1.4"
 turbine = "0.12.3"
+org-jetbrains-kotlin-jvm = "1.9.20"
+javax-inject = "1"
+play-services-tasks = "18.1.0"
+firebase-storage-ktx = "20.3.0"
+benchmark-common = "1.2.3"
+appcompat = "1.6.1"
+material = "1.11.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -84,9 +91,17 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room-compiler" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
+play-services-tasks = { group = "com.google.android.gms", name = "play-services-tasks", version.ref = "play-services-tasks" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebase-storage-ktx" }
+androidx-benchmark-common = { group = "androidx.benchmark", name = "benchmark-common", version.ref = "benchmark-common" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "jetbrains-kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "google-hilt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-gms" }
+androidLibrary = { id = "com.android.library", version.ref = "android-gradle-plugin" }
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }

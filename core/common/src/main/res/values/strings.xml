@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unknown_error">Something went wrong. Please try again later!</string>
+    <string name="hour_text">h</string>
+    <string name="min_tex">m</string>
+    <string name="movies_text">Movies</string>
+    <string name="search_text">Search</string>
+    <string name="watch_list_text">Watch List</string>
+    <string name="profile_text">Profile</string>
+    <string name="blank_field">Please fill in this field</string>
+    <string name="unvalid_email">Please enter a valid email address</string>
+    <string name="passwords_dont_match">Passwords do not match</string>
+    <string name="password_length">Password must be at least 6 characters in length</string>
+    <string name="search_result_empty_text">The movie you are looking for could not be found.</string>
+</resources>

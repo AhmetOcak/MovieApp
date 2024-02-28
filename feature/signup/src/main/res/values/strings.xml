@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email_label" translatable="false">Email</string>
+    <string name="password_label">Password</string>
+    <string name="password_confirm_label">Confirm Password</string>
+    <string name="sign_up_welcome_message">Join Our Movie World, Enjoy the Experience!</string>
+    <string name="sign_up_button_text">Sign Up</string>
+</resources>

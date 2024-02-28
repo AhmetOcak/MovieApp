@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="password_label">Şifre</string>
+    <string name="password_confirm_label">Şifreyi doğrula</string>
+    <string name="sign_up_welcome_message">Film Dünyamıza Katıl, Keyfini Çıkar!</string>
+    <string name="sign_up_button_text">Hesap Oluştur</string>
+</resources>
