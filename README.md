@@ -28,6 +28,10 @@ the watchlist and profile picture are also deleted from Firebase.
 
 ## Outputs 🖼
 
+|                  |              |
+|------------------|--------------|
+| Video from app   | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/694f560a-e6d3-46b5-a67e-d3e8ccf104df" width="240" height="480" /> |
+
 |                  | Light | Dark |
 |------------------|-------|------|
 | Login Screen     | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/158a2894-cd88-4207-a487-8c14ccf74d5f" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/dde7a4fe-088f-41d7-8e7d-71f51c9c1893" width="240" height="480"/>     |
@@ -42,7 +46,7 @@ the watchlist and profile picture are also deleted from Firebase.
 <!--
 |                  |              |
 |------------------|--------------|
-| Video from app   | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/cec4846c-026d-44ca-a456-9ee8b8751be7" width="240" height="480" /> |
+| Video from app   | <video src="<video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/694f560a-e6d3-46b5-a67e-d3e8ccf104df" />" width="240" height="480" /> |
 
 -->
 
