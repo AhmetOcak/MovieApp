@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AnimatedSplash.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#171216</item>
+        <item name="postSplashScreenTheme">@style/Theme.MovieApp</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_movie_app_icon</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+    </style>
+</resources>

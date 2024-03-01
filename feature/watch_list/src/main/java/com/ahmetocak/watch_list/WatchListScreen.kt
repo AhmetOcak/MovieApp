@@ -49,8 +49,8 @@ import com.ahmetocak.designsystem.dimens.ComponentDimens
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.firebase.WatchListMovie
 import com.ahmetocak.model.watch_list.WatchList
-import com.ahmetocak.movieapp.presentation.theme.RatingStarColor
-import com.ahmetocak.movieapp.presentation.theme.TransparentWhite
+import com.ahmetocak.designsystem.theme.RatingStarColor
+import com.ahmetocak.designsystem.theme.TransparentWhite
 import com.ahmetocak.navigation.HomeSections
 
 @OptIn(ExperimentalMaterial3Api::class)

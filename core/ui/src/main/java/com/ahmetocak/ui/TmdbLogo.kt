@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ahmetocak.movieapp.presentation.theme.TmdbBlue
+import com.ahmetocak.designsystem.theme.TmdbBlue
 
 @Composable
 fun TmdbLogo(modifier: Modifier = Modifier, logoSize: Dp = 96.dp) {

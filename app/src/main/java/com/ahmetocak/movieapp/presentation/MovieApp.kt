@@ -18,7 +18,7 @@ import com.ahmetocak.login.LoginScreen
 import com.ahmetocak.movie_details.MovieDetailsScreen
 import com.ahmetocak.movieapp.presentation.home.addHomeGraph
 import com.ahmetocak.movieapp.presentation.navigation.rememberMovieAppNavController
-import com.ahmetocak.movieapp.presentation.theme.MovieAppTheme
+import com.ahmetocak.designsystem.theme.MovieAppTheme
 import com.ahmetocak.navigation.HomeSections
 import com.ahmetocak.navigation.MainDestinations
 import com.ahmetocak.see_all.SeeAllScreen

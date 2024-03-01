@@ -69,7 +69,7 @@ import com.ahmetocak.model.firebase.WatchListMovie
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
 import com.ahmetocak.model.movie_detail.MovieTrailer
-import com.ahmetocak.movieapp.presentation.theme.TransparentWhite
+import com.ahmetocak.designsystem.theme.TransparentWhite
 import com.ahmetocak.ui.TmdbLogo
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
