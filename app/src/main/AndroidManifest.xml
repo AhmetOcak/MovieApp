@@ -19,7 +19,7 @@
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MovieApp">
+            android:theme="@style/Theme.AnimatedSplash.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

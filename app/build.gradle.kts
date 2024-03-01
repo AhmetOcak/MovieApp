@@ -93,6 +93,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
 
+    // Splash
+    implementation(libs.androidx.core.splashscreen)
+
     implementation(project(":feature:login"))
     implementation(project(":feature:movie_details"))
     implementation(project(":feature:movies"))
