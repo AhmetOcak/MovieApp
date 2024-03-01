@@ -1,5 +1,5 @@
 # Jetpack Compose - Movie App 🎬
-<img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/681bcf7e-d0bb-4c16-b2a9-f521603bff0b" />
+<img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/14c662e4-2bca-4920-af9a-535a9484248c"/>
 
 Movie App is developed with Jetpack Compose. In order to log in to the application, an account must first be created. Authentication is done with Firebase. 
 The app can display movies that are currently playing and popular. On the See all movies page, all selected movies are shown with pagination. 
@@ -35,7 +35,7 @@ the watchlist and profile picture are also deleted from Firebase.
 | Movies Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/c5c524c5-37cc-4b3b-9cdc-5b65b4d3b60a" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/c1302ea7-1a4a-489f-9ceb-f00ee26dd646)357dea" width="240" height="480"/>     |
 | Search Screen    | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/e00edb29-8860-41ba-847e-38fafef7f6ca" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/17327c3f-a1b4-482d-8af0-a65da3263a57" width="240" height="480"/>     |
 | WatchList Screen | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/65b51927-c45a-49c8-ae1a-84144fd7e727" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bb1b8270-29fd-4db8-80d8-c237d67f093d" width="240" height="480"/>     |
-| Profile Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/c42cca3d-cf8f-4db4-8764-5f2026968fc5" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/4f124572-0ee2-413a-8310-6a7239a6aee6" width="240" height="480"/>     |
+| Profile Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/075fe7c7-3215-4300-ae01-28fa74538acd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/372af4a6-fb1e-4929-9bfd-4a410a80f7aa" width="240" height="480"/>     |
 | See All Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/fc0688dc-4798-405e-afa5-4c72d357de37" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ba8a3925-c128-417b-b520-7b9c272937a8" width="240" height="480"/>     |
 | Movie Details Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/35ab8f75-6be8-4de7-89a7-436eb641fafd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d7f02f9e-7dbb-4e01-af05-039d9295da6a" width="240" height="480"/> |
 |  Movie Details Screen     |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/5cc2c76c-ee1e-4045-80c0-3d3fa2983e9a" width="240" height="480"/>       |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bd7af4df-c02b-472a-afac-6632a4cebd99" width="240" height="480"/>          |
