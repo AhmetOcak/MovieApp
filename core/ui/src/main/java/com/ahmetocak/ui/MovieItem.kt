@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.dimens.Dimens
-import com.ahmetocak.movieapp.presentation.theme.RatingStarColor
+import com.ahmetocak.designsystem.theme.RatingStarColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
