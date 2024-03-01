@@ -45,6 +45,134 @@ the watchlist and profile picture are also deleted from Firebase.
 |------------------|--------------|
 | Video from app   | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/cec4846c-026d-44ca-a456-9ee8b8751be7" width="240" height="480" /> |
 
+## Modularization 📦
+![movie_app_modular_graph](https://github.com/AhmetOcak/MovieApp/assets/73544434/fd10aa83-f93e-46d3-a37e-ddc744627538)
+
+<table>
+  <tr>
+   <td><strong>Name</strong>
+   </td>
+   <td><strong>Responsibilities</strong>
+   </td>
+   <td><strong>Key classes</strong>
+   </td>
+  </tr>
+  <tr>
+   <td><code>app</code>
+   </td>
+   <td>Brings everything together required for the app to function correctly. This module responsible for navigation.
+   </td>
+   <td><code>MovieApp, MainActivity</code><br>
+   </td>
+  </tr>
+  <tr>
+   <td><code>feature:1,</code><br>
+   <code>feature:2</code><br>
+   ...
+   </td>
+   <td>Functionality associated with a specific feature or user journey. Typically contains UI components and ViewModels which read data from other modules.<br>
+   Examples include:<br>
+   <ul>
+      <li><a href="https://github.com/AhmetOcak/MovieApp/tree/master/feature/movie_details"><code>feature:movie_details</code></a> Movie details provide comprehensive information about a film, including its title, genre, release date, cast, and plot summary.</li>
+      </ul>
+   </td>
+   <td><code>MovieDetailsScreen</code><br>
+   <code>MovieDetailsViewModel</code>
+   </td>
+  </tr>
+  <tr>
+   <td><code>core:data</code>
+   </td>
+   <td>Fetching app data from multiple sources and sends it to the UI through the <code>core:domain</code> module.
+   </td>
+   <td><code>MovieRepository</code><br>
+   </td>
+  </tr>
+  <tr>
+   <td><code>core:designsystem</code>
+   </td>
+   <td>Design system which includes Core UI components (many of which are customized Material 3 components), app theme and icons.
+   </td>
+   <td>
+   <code>MovieButton</code>    <code>MovieTextButton</code>    <code>MovieAppTheme</code> 
+   </td>
+  </tr>
+  <tr>
+   <td><code>core:ui</code>
+   </td>
+   <td>Composite UI components and resources used by feature modules. Unlike the <code>designsystem</code> module, it is dependent on the data layer since it renders models. 
+   </td>
+   <td> <code>MovieItem</code>
+   </td>
+  </tr>
+  <tr>
+   <td><code>core:common</code>
+   </td>
+   <td>Common classes shared between modules.
+   </td>
+   <td><code>UiText</code><br>
+   <code>Response</code>
+   </td>
+  </tr>
+  <tr>
+   <td><code>core:network</code>
+   </td>
+   <td>Making network requests and handling responses from a remote data source.
+   </td>
+   <td><code>MovieApi</code>    <code>MovieRemoteDataSource</code>
+   </td>
+  </tr>
+  <tr>
+   <td><code>core:datastore</code>
+   </td>
+   <td>Storing persistent data using DataStore.
+   </td>
+   <td><code>MovieAppPreferenceDataSource</code><br>
+   </td>
+  </tr>
+  <tr>
+   <td><code>core:database</code>
+   </td>
+   <td>Local database storage using Room.
+   </td>
+   <td><code>WatchListDatabase</code><br>
+   <code>Dao</code> classes
+   </td>
+  </tr>
+   
+  <tr>
+   <td><code>core:model</code>
+   </td>
+   <td>Model classes used throughout the app.
+   </td>
+   <td><code>Movie</code><br>
+   <code>MovieDetail</code><br>
+   <code>WatchList</code>
+   </td>
+  </tr>
+   
+  <tr>
+   <td><code>core:domain</code>
+   </td>
+   <td> It houses use cases. It serves as a bridge between the data layer's repositories and the UI.
+   </td>  
+     <td> <code>GetMovieTrailersUseCase</code>
+   <code>GetMovieDetailsUseCase</code>
+   </td>
+  </tr>
+
+   
+  <tr>
+   <td><code>core:navigation</code>
+   </td>
+   <td> Contains navigation routes.
+   </td>   
+      <td>    <code>MainDestinations</code>
+   <code>HomeSections</code>
+   </td>
+  </tr>
+</table>
+
 ## Architecture 🏗
 The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional flow of data, separation of concern, testability, and a lot more.
 
