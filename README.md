@@ -24,8 +24,6 @@ the watchlist and profile picture are also deleted from Firebase.
 * [Datastore](https://developer.android.com/topic/libraries/architecture/datastore)
 * [Rating Bar](https://github.com/a914-gowtham/compose-ratingbar)
 * [Youtube Player View](https://github.com/PierfrancescoSoffritti/android-youtube-player)
-* [Turbine](https://developer.android.com/kotlin/flow/test#turbine)
-* [Mockito](https://developer.android.com/training/testing/local-tests#mockable-library)
 
 ## Outputs 🖼
 
