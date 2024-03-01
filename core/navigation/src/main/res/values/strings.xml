@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="movies_text">Movies</string>
+    <string name="search_text">Search</string>
+    <string name="watch_list_text">Watch List</string>
+    <string name="profile_text">Profile</string>
+</resources>

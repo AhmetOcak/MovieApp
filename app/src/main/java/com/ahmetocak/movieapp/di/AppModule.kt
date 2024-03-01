@@ -2,18 +2,9 @@ package com.ahmetocak.movieapp.di
 
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
-import com.ahmetocak.movieapp.utils.DataStoreConstants
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.storage
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,41 +20,19 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideNetworkConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    @Singleton
+    @Provides
     fun provideFirebaseAuth(): FirebaseAuth {
         return Firebase.auth
     }
 
     @Singleton
     @Provides
-    fun provideDatastore(@ApplicationContext context: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create(
-            produceFile = {
-                context.preferencesDataStoreFile(DataStoreConstants.FILE_NAME)
-            }
-        )
-    }
-
-    @Singleton
-    @Provides
     fun provideIoDispatcher(): CoroutineDispatcher {
         return Dispatchers.IO
-    }
-
-    @Singleton
-    @Provides
-    fun provideFirebaseFirestore(): FirebaseFirestore {
-        return Firebase.firestore
-    }
-
-    @Singleton
-    @Provides
-    fun provideFirebaseStorageReference(): FirebaseStorage {
-        return Firebase.storage
-    }
-
-    @Singleton
-    @Provides
-    fun provideNetworkConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
-        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_text">Ayarlar</string>
+    <string name="dark_theme_text">Karanlık Tema</string>
+    <string name="languages_text">Diller</string>
+    <string name="english_text">İngilizce</string>
+    <string name="turkish_text">Türkçe</string>
+    <string name="dynamic_color_text">Dinamik Renk</string>
+    <string name="send_text">Gönder</string>
+    <string name="cancel_text">İptal</string>
+    <string name="delete_account_text">Hesabı Sil</string>
+    <string name="delete_account_description_text">Hesabınızı silmek istediğinizden emin misiniz ? Hesabınızı sildiğinizde tüm kullanıcı bilgileriniz de silinir. Bu süreç geri döndürülemez.</string>
+    <string name="delete_text">Sil</string>
+    <string name="password_label">Şifre</string>
+</resources>

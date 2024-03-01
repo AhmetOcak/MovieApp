@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="movie_add_watch_list">Film izleme listesine eklendi.</string>
+    <string name="movie_remove_watch_list">Film izleme listesinden çıkartıldı.</string>
+    <string name="director_text">Yönetmen</string>
+    <string name="actors_text">Oyuncu Kadrosu</string>
+    <string name="trailers_text">Fragmanlar</string>
+    <string name="review_text">incelemeler</string>
+</resources>

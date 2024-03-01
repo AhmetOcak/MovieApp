@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_welcome_message">Merhaba, Film Dünyasına Hoş Geldiniz!</string>
+    <string name="password_label">Şifre</string>
+    <string name="login_button_text">Giriş</string>
+    <string name="forgot_password_text">Şifremi Unuttum</string>
+    <string name="password_reset_text">Şifre Sıfırlama</string>
+    <string name="password_reset_description_text">Şifrenizi sıfırlamak için uygulamada oturum açarken kullandığınız e-posta adresini girin.</string>
+    <string name="email_address_text">E-mail Adresi</string>
+    <string name="send_text">Gönder</string>
+    <string name="cancel_text">İptal</string>
+    <string name="no_account_text">Hesabın yok mu ?</string>
+    <string name="sign_up_button_text">Hesap Oluştur</string>
+</resources>

@@ -7,18 +7,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.ahmetocak.movieapp.presentation.home.HomeSections
-import com.ahmetocak.movieapp.utils.SeeAllType
-
-object MainDestinations {
-    const val LOGIN_ROUTE = "login"
-    const val SIGN_UP_ROUTE = "signUp"
-    const val MOVIE_DETAILS_ROUTE = "movieDetails"
-    const val MOVIE_DETAILS_ID_KEY = "movieId"
-    const val SEE_ALL_ROUTE = "seeAll"
-    const val SEE_ALL_TYPE_KEY = "seeAllType"
-    const val HOME_ROUTE = "home"
-}
+import com.ahmetocak.common.constants.SeeAllType
+import com.ahmetocak.navigation.HomeSections
+import com.ahmetocak.navigation.MainDestinations
 
 @Composable
 fun rememberMovieAppNavController(

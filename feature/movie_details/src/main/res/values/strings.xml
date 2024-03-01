@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="movie_add_watch_list">Movie added to watch list.</string>
+    <string name="movie_remove_watch_list">The movie removed from the watch list.</string>
+    <string name="director_text">Director</string>
+    <string name="actors_text">Actors</string>
+    <string name="trailers_text">Trailers</string>
+    <string name="review_text">reviews</string>
+</resources>

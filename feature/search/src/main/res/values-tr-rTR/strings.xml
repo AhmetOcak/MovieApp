@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="blank_field">Lütfen bu alanı doldurunuz</string>
+    <string name="search_result_empty_text">Aradığınız film bulunamadı.</string>
+    <string name="search_something_text">"Hey! İlgini çeken bir film mi var? Hemen ara ve keşfet! 🎬"</string>
+    <string name="search_label_text">Ara</string>
+</resources>

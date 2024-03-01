@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="movie_remove_watch_list">Film izleme listesinden çıkartıldı.</string>
+    <string name="my_watch_list_text">İzleme Listem</string>
+    <string name="watch_list_empty">Burada hiç film yok gibi görünüyor. Yeni film ekleyerek izleme listeni renklendirebilirsin!</string>
+</resources>

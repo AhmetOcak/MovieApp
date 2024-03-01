@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,29 +8,24 @@ plugins {
 
 android {
     namespace = "com.ahmetocak.movieapp"
-    compileSdk = 34
-
-    val p = Properties()
-    p.load(project.rootProject.file("local.properties").inputStream())
+    compileSdk = ConfigData.compileSdk
 
     defaultConfig {
-        applicationId = "com.ahmetocak.movieapp"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = ConfigData.applicationId
+        minSdk = ConfigData.minSdk
+        targetSdk = ConfigData.targetSdk
+        versionCode = ConfigData.versionCode
+        versionName = ConfigData.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        buildConfigField("String", "API_KEY", p.getProperty("API_KEY"))
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = BuildTypes.isMinifyEnabled
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -48,10 +41,9 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5"
+        kotlinCompilerExtensionVersion = ComposeOptions.kotlinCompilerExtensionVersion
     }
     packaging {
         resources {
@@ -91,56 +83,27 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
-    // Coil
-    implementation(libs.coil)
-    implementation(libs.coil.compose)
-
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-
-    // Okhttp
-    implementation(libs.okhttp)
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
 
-    // Room
-    implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
-    kapt(libs.room.compiler)
-    implementation(libs.androidx.room.ktx)
+    implementation(project(":feature:login"))
+    implementation(project(":feature:movie_details"))
+    implementation(project(":feature:movies"))
+    implementation(project(":feature:profile"))
+    implementation(project(":feature:search"))
+    implementation(project(":feature:see_all"))
+    implementation(project(":feature:signup"))
+    implementation(project(":feature:watch_list"))
 
-    // Paging 3
-    implementation(libs.androidx.paging.runtime.ktx)
-    implementation(libs.androidx.paging.compose)
-
-    // Datastore
-    implementation(libs.androidx.datastore.preferences)
-
-    // Rating Bar
-    implementation(libs.compose.ratingbar)
-
-    // Youtube View Player
-    implementation(libs.core)
-
-    // Coroutine Test
-    testImplementation(libs.kotlinx.coroutines.test)
-
-    // Turbine
-    testImplementation(libs.turbine)
-
-    // Mockito
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.inline)
-    testImplementation(libs.mockito.kotlin)
-
-    // Lifecycle
-    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(project(":core:domain"))
+    implementation(project(":core:common"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:navigation"))
 }

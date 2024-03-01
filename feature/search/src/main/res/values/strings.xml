@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="blank_field">Please fill in this field</string>
+    <string name="search_label_text">Search</string>
+    <string name="search_result_empty_text">The movie you are looking for could not be found.</string>
+    <string name="search_something_text">Hey! Is there a movie that interests you? Search and discover now! 🎬</string>
+</resources>
