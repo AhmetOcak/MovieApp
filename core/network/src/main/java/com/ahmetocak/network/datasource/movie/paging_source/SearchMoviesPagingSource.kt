@@ -15,7 +15,7 @@ class SearchMoviesPagingSource(
             val currentPageNumber = params.key ?: 1
             val response = api.searchMovie(query = query, page = currentPageNumber)
             LoadResult.Page(
-                data = response.movies,
+                data = response.movies.filter { it.posterImagePath != null },
                 prevKey = null,
                 nextKey = if (currentPageNumber < response.totalPages) currentPageNumber + 1 else null
             )
