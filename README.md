@@ -197,4 +197,3 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 ## Upcoming Features
 * Actor Details
 * Animations
-* TV Series
