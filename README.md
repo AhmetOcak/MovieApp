@@ -193,3 +193,8 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * Create a firebase project.
 * Enable firebase auth, storage and firestore.
 * Add google.services.json file to project.
+
+## Upcoming Features
+* Actor Details
+* Animations
+* TV Series
