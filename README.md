@@ -43,6 +43,7 @@ the watchlist and profile picture are also deleted from Firebase.
 | See All Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/fc0688dc-4798-405e-afa5-4c72d357de37" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ba8a3925-c128-417b-b520-7b9c272937a8" width="240" height="480"/>     |
 | Movie Details Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/35ab8f75-6be8-4de7-89a7-436eb641fafd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d7f02f9e-7dbb-4e01-af05-039d9295da6a" width="240" height="480"/> |
 |  Movie Details Screen     |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/5cc2c76c-ee1e-4045-80c0-3d3fa2983e9a" width="240" height="480"/>       |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bd7af4df-c02b-472a-afac-6632a4cebd99" width="240" height="480"/>          |
+|  Actor Details Screen     |  <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/e23aae75-56e0-40d5-b3cc-80dec79ea34d" width="240" height="480" />       | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/8a686ad1-b45d-4cb5-968b-cc3ba9486813" width="240" height="480" />          |
 <!--
 |                  |              |
 |------------------|--------------|
@@ -195,5 +196,6 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * Add google.services.json file to project.
 
 ## Upcoming Features
-* Actor Details
+* Splash ✔
+* Actor Details ✔
 * Animations
