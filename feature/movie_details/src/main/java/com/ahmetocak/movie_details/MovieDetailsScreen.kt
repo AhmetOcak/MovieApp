@@ -378,7 +378,9 @@ private fun ActorItem(
     characterName: String,
     onClick: (Int) -> Unit
 ) {
-    ElevatedCard(onClick = { onClick(actorId) }) {
+    ElevatedCard(
+        modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp / 1.53f),
+        onClick = { onClick(actorId) }) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -392,9 +394,14 @@ private fun ActorItem(
             Column(
                 modifier = Modifier.padding(Dimens.oneLevelPadding)
             ) {
-                Text(text = actorName, fontWeight = FontWeight.Bold)
+                Text(
+                    text = actorName,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Spacer(modifier = Modifier.height(Dimens.oneLevelPadding))
-                Text(text = characterName)
+                Text(text = characterName, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
         }
     }
