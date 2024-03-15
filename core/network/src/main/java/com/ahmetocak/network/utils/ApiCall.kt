@@ -1,6 +1,5 @@
 package com.ahmetocak.network.utils
 
-import android.util.Log
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.network.R
