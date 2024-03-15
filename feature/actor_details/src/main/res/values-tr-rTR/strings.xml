@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="place_of_birth">Doğum yeri</string>
+    <string name="birthday">Doğum günü</string>
+    <string name="birth_and_death_day">Doğum ve ölüm günü</string>
+    <string name="biography">Biyografi</string>
+    <string name="actor_movies">Oyuncunun Filmleri</string>
+</resources>

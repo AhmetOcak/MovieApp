@@ -9,6 +9,8 @@ object NetworkConstants {
         const val MOVIE_CREDITS = "/3/movie/{${Paths.MOVIE_ID}}/credits"
         const val MOVIE_TRAILERS = "/3/movie/{${Paths.MOVIE_ID}}/videos"
         const val SEARCH_MOVIE = "/3/search/movie"
+        const val ACTOR_DETAILS = "/3/person/{${Paths.ACTOR_ID}}"
+        const val ACTOR_MOVIES = "/3/person/{${Paths.ACTOR_ID}}/movie_credits"
     }
 
     object Queries {
@@ -20,10 +22,7 @@ object NetworkConstants {
 
     object Paths {
         const val MOVIE_ID = "movie_id"
-    }
-
-    object Paging {
-        const val PAGE_SIZE = 20
+        const val ACTOR_ID = "actor_id"
     }
 }
 

@@ -6,6 +6,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.utils.mapResponse
+import com.ahmetocak.data.mapper.toActorDetails
+import com.ahmetocak.data.mapper.toActorMovies
 import com.ahmetocak.data.mapper.toMovie
 import com.ahmetocak.data.mapper.toMovieContent
 import com.ahmetocak.data.mapper.toMovieCredit
@@ -15,6 +17,8 @@ import com.ahmetocak.data.mapper.toWatchListEntity
 import com.ahmetocak.data.mapper.toWatchList
 import com.ahmetocak.database.datasource.WatchListLocalDataSource
 import com.ahmetocak.model.firebase.WatchListMovie
+import com.ahmetocak.model.movie.ActorDetails
+import com.ahmetocak.model.movie.ActorMovies
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
 import com.ahmetocak.model.movie_detail.MovieCredit
@@ -108,4 +112,10 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun deleteWatchList(): Response<Unit> =
         watchListLocalDataSource.deleteWatchList()
+
+    override suspend fun getActorDetails(actorId: Int): Response<ActorDetails> =
+        movieRemoteDataSource.getActorDetails(actorId).mapResponse { it.toActorDetails() }
+
+    override suspend fun getActorMovies(actorId: Int): Response<ActorMovies> =
+        movieRemoteDataSource.getActorMovies(actorId).mapResponse { it.toActorMovies() }
 }

@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -90,6 +91,7 @@ private val circularProgressIndicatorPadding = PaddingValues(Dimens.fourLevelPad
 fun MovieDetailsScreen(
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
+    onActorClick: (Int) -> Unit,
     viewModel: MovieDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -113,7 +115,8 @@ fun MovieDetailsScreen(
             directorName = uiState.directorName,
             castUiState = uiState.castUiState,
             trailerUiState = uiState.trailersUiState,
-            isWatchlistButtonInProgress = uiState.isWatchlistButtonInProgress
+            isWatchlistButtonInProgress = uiState.isWatchlistButtonInProgress,
+            onActorClick = onActorClick
         )
     }
 }
@@ -128,7 +131,8 @@ private fun MovieDetailsScreenContent(
     directorName: String,
     castUiState: UiState<MovieCredit>,
     trailerUiState: UiState<MovieTrailer>,
-    isWatchlistButtonInProgress: Boolean
+    isWatchlistButtonInProgress: Boolean,
+    onActorClick: (Int) -> Unit
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -142,7 +146,7 @@ private fun MovieDetailsScreenContent(
             directorName = directorName,
             isWatchlistButtonInProgress = isWatchlistButtonInProgress
         )
-        ActorListSection(castUiState = castUiState)
+        ActorListSection(castUiState = castUiState, onActorClick = onActorClick)
         TrailerListSection(trailerUiState = trailerUiState)
     }
 }
@@ -279,7 +283,7 @@ private fun MovieDetails(
 }
 
 @Composable
-private fun ActorListSection(castUiState: UiState<MovieCredit>) {
+private fun ActorListSection(castUiState: UiState<MovieCredit>, onActorClick: (Int) -> Unit) {
     when (castUiState) {
         is UiState.Loading -> {
             FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
@@ -300,7 +304,9 @@ private fun ActorListSection(castUiState: UiState<MovieCredit>) {
                         ActorItem(
                             imageUrl = "${TMDB.IMAGE_URL}${cast.imageUrlPath}",
                             actorName = cast.name,
-                            characterName = cast.characterName
+                            characterName = cast.characterName,
+                            actorId = cast.id,
+                            onClick = onActorClick
                         )
                     }
                 }
@@ -363,9 +369,16 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ActorItem(imageUrl: String, actorName: String, characterName: String) {
-    ElevatedCard {
+private fun ActorItem(
+    actorId: Int,
+    imageUrl: String,
+    actorName: String,
+    characterName: String,
+    onClick: (Int) -> Unit
+) {
+    ElevatedCard(onClick = { onClick(actorId) }) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

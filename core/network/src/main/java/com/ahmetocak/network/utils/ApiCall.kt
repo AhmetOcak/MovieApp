@@ -21,7 +21,7 @@ suspend inline fun <T> apiCall(crossinline call: suspend () -> T): Response<T> {
         Response.Error(errorMessage = UiText.StringResource(R.string.internet_error))
     } catch (e: Exception) {
         Response.Error(errorMessage = e.message?.let { message ->
-            UiText.DynamicString(message)
+            UiText.DynamicString(e.stackTraceToString())
         } ?: UiText.StringResource(R.string.unknown_error))
     }
 }
