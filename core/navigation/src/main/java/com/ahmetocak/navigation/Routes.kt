@@ -20,6 +20,8 @@ object MainDestinations {
     const val SEE_ALL_ROUTE = "seeAll"
     const val SEE_ALL_TYPE_KEY = "seeAllType"
     const val HOME_ROUTE = "home"
+    const val ACTOR_DETAILS_ROUTE = "actorDetails"
+    const val ACTOR_DETAILS_ID_KEY = "actorId"
 }
 
 enum class HomeSections(

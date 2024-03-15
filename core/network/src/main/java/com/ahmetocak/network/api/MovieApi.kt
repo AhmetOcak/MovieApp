@@ -1,6 +1,8 @@
 package com.ahmetocak.network.api
 
 import com.ahmetocak.network.BuildConfig
+import com.ahmetocak.network.model.movie.NetworkActorDetails
+import com.ahmetocak.network.model.movie.NetworkActorMovies
 import com.ahmetocak.network.utils.NetworkConstants
 import com.ahmetocak.network.model.movie.NetworkMovie
 import com.ahmetocak.network.model.movie_detail.NetworkMovieCredit
@@ -55,4 +57,18 @@ interface MovieApi {
         @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
         @Query(NetworkConstants.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()
     ): NetworkMovie
+
+    @GET(NetworkConstants.EndPoints.ACTOR_DETAILS)
+    suspend fun getActorDetails(
+        @Path(NetworkConstants.Paths.ACTOR_ID) actorId: Int,
+        @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
+        @Query(NetworkConstants.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()
+    ): NetworkActorDetails
+
+    @GET(NetworkConstants.EndPoints.ACTOR_MOVIES)
+    suspend fun getActorMovies(
+        @Path(NetworkConstants.Paths.ACTOR_ID) actorId: Int,
+        @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
+        @Query(NetworkConstants.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()
+    ): NetworkActorMovies
 }

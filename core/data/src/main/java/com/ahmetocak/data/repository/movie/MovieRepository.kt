@@ -3,6 +3,8 @@ package com.ahmetocak.data.repository.movie
 import androidx.paging.PagingData
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.model.firebase.WatchListMovie
+import com.ahmetocak.model.movie.ActorDetails
+import com.ahmetocak.model.movie.ActorMovies
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
 import com.ahmetocak.model.movie_detail.MovieCredit
@@ -36,4 +38,8 @@ interface MovieRepository {
     suspend fun removeMovieFromWatchList(movieId: Int): Response<Unit>
 
     suspend fun deleteWatchList(): Response<Unit>
+
+    suspend fun getActorDetails(actorId: Int): Response<ActorDetails>
+
+    suspend fun getActorMovies(actorId: Int): Response<ActorMovies>
 }

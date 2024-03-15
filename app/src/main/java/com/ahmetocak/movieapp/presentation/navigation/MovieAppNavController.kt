@@ -73,6 +73,12 @@ class MovieAppNavController(val navController: NavHostController) {
             }
         }
     }
+
+    fun navigateToActorDetails(actorId: Int, from: NavBackStackEntry) {
+        if (shouldNavigate(from)) {
+            navController.navigate("${MainDestinations.ACTOR_DETAILS_ROUTE}/$actorId")
+        }
+    }
 }
 
 private fun shouldNavigate(from: NavBackStackEntry): Boolean = from.isLifecycleResumed()

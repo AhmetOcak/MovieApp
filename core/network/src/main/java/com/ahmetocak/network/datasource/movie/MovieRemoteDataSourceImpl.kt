@@ -2,6 +2,8 @@ package com.ahmetocak.network.datasource.movie
 
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.network.api.MovieApi
+import com.ahmetocak.network.model.movie.NetworkActorDetails
+import com.ahmetocak.network.model.movie.NetworkActorMovies
 import com.ahmetocak.network.utils.apiCall
 import com.ahmetocak.network.model.movie.NetworkMovie
 import com.ahmetocak.network.model.movie_detail.NetworkMovieCredit
@@ -26,4 +28,10 @@ class MovieRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getMovieTrailers(movieId: Int): Response<NetworkMovieTrailer> =
         apiCall { api.getMovieTrailers(movieId) }
+
+    override suspend fun getActorDetails(actorId: Int): Response<NetworkActorDetails> =
+        apiCall { api.getActorDetails(actorId) }
+
+    override suspend fun getActorMovies(actorId: Int): Response<NetworkActorMovies> =
+        apiCall { api.getActorMovies(actorId) }
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="place_of_birth">Place of birth</string>
+    <string name="birthday">Birthday</string>
+    <string name="birth_and_death_day">Birthday and death day</string>
+    <string name="biography">Biography</string>
+    <string name="actor_movies">Actor\'s Movies</string>
+</resources>

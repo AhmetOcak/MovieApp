@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.ahmetocak.actor_details.ActorDetailsScreen
 import com.ahmetocak.common.constants.SeeAllType
 import com.ahmetocak.login.LoginScreen
 import com.ahmetocak.movie_details.MovieDetailsScreen
@@ -46,7 +47,8 @@ fun MovieApp(
                     onCreateAccountClick = movieAppNavController::navigateSignUp,
                     onLoginClick = movieAppNavController::navigateToHome,
                     onLogOutClick = movieAppNavController::navigateLogin,
-                    onSignUpClick = movieAppNavController::navigateToHome
+                    onSignUpClick = movieAppNavController::navigateToHome,
+                    onActorClick = movieAppNavController::navigateToActorDetails
                 )
             }
         }
@@ -61,7 +63,8 @@ private fun NavGraphBuilder.movieAppNavGraph(
     onCreateAccountClick: (NavBackStackEntry) -> Unit,
     onLoginClick: (NavBackStackEntry) -> Unit,
     onLogOutClick: (NavBackStackEntry) -> Unit,
-    onSignUpClick: (NavBackStackEntry) -> Unit
+    onSignUpClick: (NavBackStackEntry) -> Unit,
+    onActorClick: (Int, NavBackStackEntry) -> Unit
 ) {
     navigation(
         route = MainDestinations.HOME_ROUTE,
@@ -88,8 +91,11 @@ private fun NavGraphBuilder.movieAppNavGraph(
         arguments = listOf(
             navArgument(MainDestinations.MOVIE_DETAILS_ID_KEY) { NavType.IntType }
         )
-    ) {
-        MovieDetailsScreen(upPress = upPress)
+    ) { from ->
+        MovieDetailsScreen(
+            upPress = upPress,
+            onActorClick = remember { { actorId -> onActorClick(actorId, from) } }
+        )
     }
     composable(
         route = "${MainDestinations.SEE_ALL_ROUTE}/{${MainDestinations.SEE_ALL_TYPE_KEY}}",
@@ -100,6 +106,17 @@ private fun NavGraphBuilder.movieAppNavGraph(
         SeeAllScreen(
             upPress = upPress,
             onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } }
+        )
+    }
+    composable(
+        route = "${MainDestinations.ACTOR_DETAILS_ROUTE}/{${MainDestinations.ACTOR_DETAILS_ID_KEY}}",
+        arguments = listOf(
+            navArgument(MainDestinations.ACTOR_DETAILS_ID_KEY) { NavType.IntType }
+        )
+    ) { from ->
+        ActorDetailsScreen(
+            onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } },
+            upPress = upPress
         )
     }
 }

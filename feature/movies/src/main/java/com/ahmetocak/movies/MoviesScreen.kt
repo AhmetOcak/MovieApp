@@ -141,7 +141,6 @@ private fun MovieSection(
                     contentPadding = listContentPadding,
                     horizontalArrangement = horizontalArrangement
                 ) {
-                    movieState.movieList
                     items(movieState.movieList, key = { movie -> movie.id }) { movie ->
                         MovieItem(
                             modifier = movieItemModifier,

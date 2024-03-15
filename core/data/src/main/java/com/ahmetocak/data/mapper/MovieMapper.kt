@@ -2,6 +2,9 @@ package com.ahmetocak.data.mapper
 
 import com.ahmetocak.database.entity.WatchListEntity
 import com.ahmetocak.model.firebase.WatchListMovie
+import com.ahmetocak.model.movie.ActorDetails
+import com.ahmetocak.model.movie.ActorMovies
+import com.ahmetocak.model.movie.ActorMoviesContent
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
 import com.ahmetocak.model.movie_detail.Cast
@@ -10,6 +13,9 @@ import com.ahmetocak.model.movie_detail.MovieDetail
 import com.ahmetocak.model.movie_detail.MovieTrailer
 import com.ahmetocak.model.movie_detail.Trailer
 import com.ahmetocak.model.watch_list.WatchList
+import com.ahmetocak.network.model.movie.NetworkActorDetails
+import com.ahmetocak.network.model.movie.NetworkActorMovies
+import com.ahmetocak.network.model.movie.NetworkActorMoviesContent
 import com.ahmetocak.network.model.movie.NetworkMovie
 import com.ahmetocak.network.model.movie.NetworkMovieContent
 import com.ahmetocak.network.model.movie_detail.NetworkMovieCredit
@@ -102,5 +108,33 @@ internal fun NetworkMovieTrailer.toMovieTrailer(): MovieTrailer {
                 key = it.key
             )
         }
+    )
+}
+
+internal fun NetworkActorDetails.toActorDetails(): ActorDetails {
+    return ActorDetails(
+        id = id,
+        biography = biography ?: "",
+        birthday = birthday ?: "",
+        homepage = homepage,
+        name = name ?: "",
+        deathDay = deathDay,
+        placeOfBirth = placeOfBirth ?: "",
+        profileImagePath = profileImagePath ?: ""
+    )
+}
+
+internal fun NetworkActorMovies.toActorMovies(): ActorMovies {
+    return ActorMovies(movies = this.movies.map { it.toActorMoviesContent() })
+}
+
+private fun NetworkActorMoviesContent.toActorMoviesContent(): ActorMoviesContent {
+    return ActorMoviesContent(
+        id = id,
+        movieName = movieName ?: "",
+        posterImagePath = posterImagePath,
+        releaseDate = releaseDate ?: "",
+        voteAverage = voteAverage ?: 0.0,
+        voteCount = voteCount ?: 0
     )
 }
