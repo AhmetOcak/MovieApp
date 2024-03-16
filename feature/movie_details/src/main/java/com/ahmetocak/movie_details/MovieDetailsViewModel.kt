@@ -169,9 +169,9 @@ class MovieDetailsViewModel @Inject constructor(
             it.copy(isWatchlistButtonInProgress = true)
         }
         viewModelScope.launch(ioDispatcher) {
-            watchListMovie.id?.let {
+            watchListMovie.id?.let { movieId ->
                 deleteMovieFromWatchListUseCase(
-                    movieId = it,
+                    movieId = movieId,
                     onTaskSuccess = {
                         _uiState.update {
                             it.copy(
