@@ -199,3 +199,4 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * Splash ✔
 * Actor Details ✔
 * Animations
+* Google Sign In
