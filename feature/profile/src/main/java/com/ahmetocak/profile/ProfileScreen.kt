@@ -95,7 +95,6 @@ private object LanguageCodes {
     const val EN = "en"
 }
 
-//TODO: HESAP SİLERKEN ÇIKAN DIALOG GUNCELLENMELI.
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
