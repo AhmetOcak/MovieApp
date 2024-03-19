@@ -80,6 +80,8 @@ import com.ahmetocak.designsystem.theme.primaryContainerLight
 import com.ahmetocak.designsystem.theme.primaryDark
 import com.ahmetocak.designsystem.theme.primaryLight
 import com.ahmetocak.navigation.HomeSections
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -93,6 +95,7 @@ private object LanguageCodes {
     const val EN = "en"
 }
 
+//TODO: HESAP SİLERKEN ÇIKAN DIALOG GUNCELLENMELI.
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
@@ -106,19 +109,22 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            viewModel.uploadUserProfileImage(uri)
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                viewModel.uploadUserProfileImage(uri)
+            }
         }
-    }
 
     if (uiState.deleteAccountDialogUiEvent != DialogUiEvent.InActive) {
         DeleteAccountDialog(
             onDismissRequest = viewModel::endDeleteAccountDialog,
             onCancelClick = viewModel::endDeleteAccountDialog,
-            onDeleteClick = remember { {
-                viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
-            } },
+            onDeleteClick = remember {
+                {
+                    viewModel.deleteUserAccount(onAccountDeleteEnd = onLogOutClick)
+                }
+            },
             password = viewModel.password,
             onPasswordValueChange = remember { viewModel::updatePasswordValue },
             isLoading = uiState.deleteAccountDialogUiEvent == DialogUiEvent.Loading
@@ -148,33 +154,39 @@ fun ProfileScreen(
     ) { paddingValues ->
         ProfileScreenContent(
             modifier = Modifier.padding(paddingValues),
-            onLogOutClick = remember(viewModel) { {
-                viewModel.handleOnLogOutClick()
-                onLogOutClick()
-            } },
+            onLogOutClick = remember(viewModel) {
+                {
+                    viewModel.handleOnLogOutClick()
+                    onLogOutClick()
+                }
+            },
             profileImageUrl = uiState.profileImgUri?.toString() ?: "",
             userEmail = uiState.userEmail,
             onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },
             onDarkThemeSwitchChange = remember(viewModel) { viewModel::setTheme },
-            onLanguageSelect = remember { { selectedLanguage ->
-                val localeManager = LocaleManager(context)
-                coroutineScope.launch {
-                    if (selectedLanguage == Languages.ENGLISH) {
-                        localeManager.setAppLanguage(LanguageCodes.EN)
-                    } else {
-                        localeManager.setAppLanguage(LanguageCodes.TR)
+            onLanguageSelect = remember {
+                { selectedLanguage ->
+                    val localeManager = LocaleManager(context)
+                    coroutineScope.launch {
+                        if (selectedLanguage == Languages.ENGLISH) {
+                            localeManager.setAppLanguage(LanguageCodes.EN)
+                        } else {
+                            localeManager.setAppLanguage(LanguageCodes.TR)
+                        }
+                        context.findActivity()?.recreate()
                     }
-                    context.findActivity()?.recreate()
                 }
-            } },
+            },
             isAppThemeDark = uiState.isDarkModeOn,
             onDynamicColorSwitchChange = remember(viewModel) { viewModel::setDynamicColor },
             isDynamicColorActive = uiState.isDynamicColorOn,
-            onPickUpFromGalleryClick = remember { {
-                pickMedia.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            } },
+            onPickUpFromGalleryClick = remember {
+                {
+                    pickMedia.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+            },
             isProfileImageUploading = uiState.isProfileImageUploading,
             currentLanguage = Locale.getDefault().displayLanguage
         )
@@ -464,6 +476,8 @@ private fun DeleteAccountDialog(
     onPasswordValueChange: (String) -> Unit,
     isLoading: Boolean
 ) {
+    val signInProvider = FirebaseAuth.getInstance().getAccessToken(false).result.signInProvider
+
     MovieDialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier = Modifier
@@ -476,11 +490,13 @@ private fun DeleteAccountDialog(
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(text = stringResource(id = R.string.delete_account_description_text))
-            AuthPasswordOutlinedTextField(
-                value = password,
-                onValueChange = onPasswordValueChange,
-                labelText = stringResource(id = R.string.password_label)
-            )
+            if (signInProvider != GoogleAuthProvider.PROVIDER_ID) {
+                AuthPasswordOutlinedTextField(
+                    value = password,
+                    onValueChange = onPasswordValueChange,
+                    labelText = stringResource(id = R.string.password_label)
+                )
+            }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 ElevatedButton(onClick = onCancelClick) {
                     Text(text = stringResource(id = R.string.cancel_text))
@@ -489,7 +505,7 @@ private fun DeleteAccountDialog(
                 Button(
                     onClick = onDeleteClick,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                    enabled = password.isNotBlank() && !isLoading
+                    enabled = if (signInProvider != GoogleAuthProvider.PROVIDER_ID) password.isNotBlank() && !isLoading else !isLoading
                 ) {
                     if (isLoading) {
                         ButtonCircularProgressIndicator()

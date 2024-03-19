@@ -1,6 +1,10 @@
 package com.ahmetocak.login
 
+import android.app.Activity.RESULT_OK
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,8 +15,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,10 +54,24 @@ import com.ahmetocak.designsystem.dimens.Dimens
 fun LoginScreen(
     modifier: Modifier = Modifier,
     onCreateAccountClick: () -> Unit,
-    onLoginClick: () -> Unit,
+    onNavigateToHome: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.let { intent ->
+                    viewModel.signInWithGoogle(
+                        intent = intent,
+                        navigateToHome = onNavigateToHome
+                    )
+                }
+            }
+        }
+    )
 
     if (uiState.errorMessages.isNotEmpty()) {
         Toast.makeText(
@@ -100,9 +123,14 @@ fun LoginScreen(
                 passwordFieldError = uiState.passwordFieldErrorMessage != null,
                 passwordFieldLabel = uiState.passwordFieldErrorMessage?.asString()
                     ?: stringResource(id = R.string.password_label),
-                onLoginClick = remember { { viewModel.login(onLoginClick) } },
+                onLoginClick = remember { { viewModel.login(onNavigateToHome) } },
                 onCreateAccountClick = onCreateAccountClick,
-                onForgotPasswordClick = remember{ viewModel::startResetPasswordDialog }
+                onForgotPasswordClick = remember { viewModel::startResetPasswordDialog },
+                onGoogleSignInClick = remember { {
+                    viewModel.startSignInWithGoogleIntent { intentSenderRequest ->
+                        launcher.launch(intentSenderRequest)
+                    }
+                } }
             )
         }
     }
@@ -121,7 +149,8 @@ private fun LoginScreenContent(
     passwordFieldLabel: String,
     onLoginClick: () -> Unit,
     onCreateAccountClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit
+    onForgotPasswordClick: () -> Unit,
+    onGoogleSignInClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -144,19 +173,52 @@ private fun LoginScreenContent(
             isError = passwordFieldError,
             labelText = passwordFieldLabel
         )
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
+            MovieTextButton(
+                text = stringResource(id = R.string.forgot_password_text),
+                onClick = onForgotPasswordClick
+            )
+        }
         MovieButton(
             modifier = Modifier
-                .padding(top = Dimens.twoLevelPadding)
+                .padding(top = Dimens.oneLevelPadding)
                 .height(ComponentDimens.buttonHeight)
                 .fillMaxWidth(),
             text = stringResource(id = R.string.login_button_text),
             onClick = onLoginClick
         )
-        MovieTextButton(
-            text = stringResource(id = R.string.forgot_password_text),
-            onClick = onForgotPasswordClick
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
+            Text(
+                text = stringResource(id = R.string.or_contiune_with),
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
+        }
+        GoogleSignInButton(onClick = onGoogleSignInClick)
         SignUpNow(onCreateAccountClick = onCreateAccountClick)
+    }
+}
+
+@Composable
+private fun GoogleSignInButton(onClick: () -> Unit) {
+    Button(
+        modifier = Modifier.size(48.dp),
+        onClick = onClick,
+        shape = CircleShape,
+        contentPadding = PaddingValues(0.dp)
+    ) {
+        Image(
+            modifier = Modifier.padding(4.dp),
+            painter = painterResource(id = R.drawable.ic_google),
+            contentDescription = null
+        )
     }
 }
 

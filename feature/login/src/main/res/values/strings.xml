@@ -15,4 +15,5 @@
     <string name="password_reset_mail_sent">Password reset mail has been sent. Please check your email box.</string>
     <string name="unvalid_email">Please enter a valid email address</string>
     <string name="watch_list_get_error">Your watchlist could not be loaded. please try again later.</string>
+    <string name="or_contiune_with">Or Continue With</string>
 </resources>
