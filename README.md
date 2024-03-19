@@ -25,6 +25,7 @@ the watchlist and profile picture are also deleted from Firebase.
 * [Rating Bar](https://github.com/a914-gowtham/compose-ratingbar)
 * [Youtube Player View](https://github.com/PierfrancescoSoffritti/android-youtube-player)
 * [Splash API](https://developer.android.com/develop/ui/views/launch/splash-screen)
+* [Google Sign In](https://firebase.google.com/docs/auth/android/google-signin)
 
 ## Outputs 🖼
 
@@ -34,7 +35,7 @@ the watchlist and profile picture are also deleted from Firebase.
 
 |                  | Light | Dark |
 |------------------|-------|------|
-| Login Screen     | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/158a2894-cd88-4207-a487-8c14ccf74d5f" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/dde7a4fe-088f-41d7-8e7d-71f51c9c1893" width="240" height="480"/>     |
+| Login Screen     | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/8cf3ac99-12ca-43e2-8323-fd1efdad382c" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/cd1bf471-ce3c-4269-91c9-686931f65d35" width="240" height="480"/>     |
 | SignUp Screen  | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/6a8951f7-2983-4221-b094-3cacd4179e35" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/2c5c9b94-866d-4020-a56c-3d7dc2736ba7" width="240" height="480"/>     |
 | Movies Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/c5c524c5-37cc-4b3b-9cdc-5b65b4d3b60a" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/c1302ea7-1a4a-489f-9ceb-f00ee26dd646)357dea" width="240" height="480"/>     |
 | Search Screen    | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/e00edb29-8860-41ba-847e-38fafef7f6ca" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/17327c3f-a1b4-482d-8af0-a65da3263a57" width="240" height="480"/>     |
@@ -177,6 +178,15 @@ the watchlist and profile picture are also deleted from Firebase.
    <code>HomeSections</code>
    </td>
   </tr>
+
+<tr>
+   <td><code>core:authentication</code>
+   </td>
+   <td> Manages user identity verification and access control.
+   </td>  
+     <td> <code>GoogleAuthClient</code>
+   </td>
+  </tr>
 </table>
 
 ## Architecture 🏗
@@ -199,4 +209,4 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * Splash ✔
 * Actor Details ✔
 * Animations
-* Google Sign In
+* Google Sign In ✔
