@@ -110,14 +110,14 @@ class ProfileViewModel @Inject constructor(
             auth = Auth(
                 email = _uiState.value.userEmail,
                 password = password
-            )
-        )?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                onSuccess()
-            } else {
-                handleDeleteAccountError(task.exception)
+            ),
+            onTaskSuccess = onSuccess,
+            onTaskFailed = { errorMessage ->
+                _uiState.update {
+                    it.copy(userMessages = listOf(errorMessage))
+                }
             }
-        }
+        )
     }
 
     private fun deleteAccount(onSuccess: () -> Unit) {

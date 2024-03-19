@@ -1,5 +1,7 @@
 package com.ahmetocak.login
 
+import android.content.Intent
+import androidx.activity.result.IntentSenderRequest
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,6 +15,7 @@ import com.ahmetocak.common.helpers.handleTaskError
 import com.ahmetocak.common.isValidEmail
 import com.ahmetocak.domain.firebase.auth.LoginUseCase
 import com.ahmetocak.domain.firebase.auth.SendResetPasswordEmailUseCase
+import com.ahmetocak.domain.firebase.auth.SignInWithGoogleUseCase
 import com.ahmetocak.domain.firebase.firestore.GetMovieDataUseCase
 import com.ahmetocak.domain.movie.AddMovieToDbWatchListUseCase
 import com.ahmetocak.model.firebase.Auth
@@ -33,7 +36,8 @@ class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val sendResetPasswordEmailUseCase: SendResetPasswordEmailUseCase,
     private val getMovieDataUseCase: GetMovieDataUseCase,
-    private val addMovieToWatchListUseCase: AddMovieToDbWatchListUseCase
+    private val addMovieToWatchListUseCase: AddMovieToDbWatchListUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -202,6 +206,35 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun startSignInWithGoogleIntent(onTaskSuccess: (IntentSenderRequest) -> Unit) {
+        viewModelScope.launch(ioDispatcher) {
+            signInWithGoogleUseCase.startSignInIntent(
+                onTaskSuccess = onTaskSuccess,
+                onTaskFailed = { errorMessage ->
+                    _uiState.update {
+                        it.copy(errorMessages = listOf(errorMessage))
+                    }
+                }
+            )
+        }
+    }
+
+    fun signInWithGoogle(intent: Intent, navigateToHome: () -> Unit) {
+        viewModelScope.launch(ioDispatcher) {
+            signInWithGoogleUseCase.signInWithGoogle(
+                intent = intent,
+                onTaskSuccess = {
+                    saveUserWatchListDataToLocalDatabase(navigateToHome)
+                },
+                onTaskFailed = { errorMessage ->
+                    _uiState.update {
+                        it.copy(errorMessages = listOf(errorMessage))
+                    }
+                }
+            )
         }
     }
 

@@ -80,7 +80,7 @@ private fun NavGraphBuilder.movieAppNavGraph(
     composable(route = MainDestinations.LOGIN_ROUTE) { from ->
         LoginScreen(
             onCreateAccountClick = remember { { onCreateAccountClick(from) } },
-            onLoginClick = remember { { onLoginClick(from) } }
+            onNavigateToHome = remember { { onLoginClick(from) } }
         )
     }
     composable(route = MainDestinations.SIGN_UP_ROUTE) { from ->

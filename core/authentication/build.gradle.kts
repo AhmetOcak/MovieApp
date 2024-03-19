@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ahmetocak.domain"
+    namespace = "com.ahmetocak.authentication"
     compileSdk = ConfigData.compileSdk
 
     defaultConfig {
@@ -36,17 +36,13 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.javax.inject)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
     implementation(libs.google.android.gms)
-
-    implementation(project(":core:model"))
-    implementation(project(":core:data"))
-    implementation(project(":core:common"))
-    implementation(project(":core:authentication"))
 }

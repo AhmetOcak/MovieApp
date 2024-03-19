@@ -36,6 +36,7 @@ constraintlayout = "2.1.4"
 org-jetbrains-kotlin-jvm = "1.9.20"
 javax-inject = "1"
 firebase-storage-ktx = "20.3.0"
+play-services-auth = "21.0.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -81,6 +82,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "android
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebase-storage-ktx" }
+google-android-gms = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

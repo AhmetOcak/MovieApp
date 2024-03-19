@@ -11,4 +11,7 @@
     <string name="cancel_text">İptal</string>
     <string name="no_account_text">Hesabın yok mu ?</string>
     <string name="sign_up_button_text">Hesap Oluştur</string>
+    <string name="or_contiune_with">Or Continue With</string>
+    <string name="password_reset_mail_sent">Parola sıfırlama maili gönderildi. Lütfen email kutunu kontrol et.</string>
+    <string name="watch_list_get_error">İzleme listeniz yüklenemedi. Lütfen daha sonra tekrar deneyiniz.</string>
 </resources>

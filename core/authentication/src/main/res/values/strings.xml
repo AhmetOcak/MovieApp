@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="google_auth_web_client_id" tools:ignore="TypographyDashes">599679886388-78mh24j7n1l6c9jqbj96m2v4fr3qvdt7.apps.googleusercontent.com</string>
+</resources>
