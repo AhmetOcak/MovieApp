@@ -7,23 +7,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.common.helpers.DialogUiEvent
-import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.helpers.handleTaskError
 import com.ahmetocak.domain.firebase.auth.DeleteAccountUseCase
 import com.ahmetocak.domain.firebase.auth.GetUserEmailUseCase
-import com.ahmetocak.domain.firebase.auth.ReAuthenticateUseCase
 import com.ahmetocak.domain.firebase.auth.SignOutUseCase
-import com.ahmetocak.domain.firebase.firestore.DeleteMovieDocumentUseCase
-import com.ahmetocak.domain.firebase.storage.DeleteUserProfileImageUseCase
 import com.ahmetocak.domain.firebase.storage.GetUserProfileImageUseCase
 import com.ahmetocak.domain.firebase.storage.UploadProfileImageUseCase
-import com.ahmetocak.domain.movie.DeleteWatchListUseCase
 import com.ahmetocak.domain.preferences.GetAppThemeUseCase
 import com.ahmetocak.domain.preferences.GetDynamicColorUseCase
 import com.ahmetocak.domain.preferences.UpdateAppThemeUseCase
 import com.ahmetocak.domain.preferences.UpdateDynamicColorUseCase
-import com.google.firebase.storage.StorageException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,10 +30,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    private val reAuthenticateUseCase: ReAuthenticateUseCase,
-    private val deleteMovieDocumentUseCase: DeleteMovieDocumentUseCase,
-    private val deleteUserProfileImageUseCase: DeleteUserProfileImageUseCase,
-    private val deleteWatchListUseCase: DeleteWatchListUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val uploadProfileImageUseCase: UploadProfileImageUseCase,
     private val getProfileImageUseCase: GetUserProfileImageUseCase,
@@ -87,91 +77,21 @@ class ProfileViewModel @Inject constructor(
             it.copy(deleteAccountDialogUiEvent = DialogUiEvent.Loading)
         }
         viewModelScope.launch(ioDispatcher) {
-            reAuthenticate {
-                deleteMovieDocument {
-                    deleteUserProfileImage {
-                        clearMovieLocalDatabase {
-                            deleteAccount {
-                                _uiState.update {
-                                    it.copy(deleteAccountDialogUiEvent = DialogUiEvent.InActive)
-                                }
-                                onAccountDeleteEnd()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun reAuthenticate(onSuccess: () -> Unit) {
-        reAuthenticateUseCase(
-            email = _uiState.value.userEmail,
-            password = password,
-            onTaskSuccess = onSuccess,
-            onTaskFailed = { errorMessage ->
-                _uiState.update {
-                    it.copy(userMessages = listOf(errorMessage))
-                }
-            }
-        )
-    }
-
-    private fun deleteAccount(onSuccess: () -> Unit) {
-        deleteAccountUseCase()?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                onSuccess()
-            } else {
-                handleDeleteAccountError(task.exception)
-            }
-        }
-    }
-
-    private fun deleteMovieDocument(onSuccess: () -> Unit) {
-        deleteMovieDocumentUseCase().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                onSuccess()
-            } else {
-                handleDeleteAccountError(task.exception)
-            }
-        }
-    }
-
-    private fun deleteUserProfileImage(onSuccess: () -> Unit) {
-        deleteUserProfileImageUseCase().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                onSuccess()
-            } else if (task.exception is StorageException) {
-                if ((task.exception as StorageException).errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
-                    onSuccess()
-                }
-            } else {
-                handleDeleteAccountError(task.exception)
-            }
-        }
-    }
-
-    private fun clearMovieLocalDatabase(onSuccess: () -> Unit) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = deleteWatchListUseCase()) {
-                is Response.Success -> {
-                    onSuccess()
-                }
-
-                is Response.Error -> {
+            deleteAccountUseCase(
+                email = _uiState.value.userEmail,
+                password = password,
+                onSuccess = {
                     _uiState.update {
-                        it.copy(userMessages = listOf(response.errorMessage))
+                        it.copy(deleteAccountDialogUiEvent = DialogUiEvent.InActive)
                     }
-                }
-            }
-        }
-    }
-
-    private fun handleDeleteAccountError(exception: Exception?) {
-        _uiState.update {
-            it.copy(
-                userMessages = listOf(handleTaskError(e = exception)),
-                deleteAccountDialogUiEvent = DialogUiEvent.Active
+                    onAccountDeleteEnd()
+                },
+                onFailed = { errorMessage ->
+                    _uiState.update {
+                        it.copy(userMessages = listOf(errorMessage))
+                    }
+                },
+                scope = viewModelScope
             )
         }
     }
@@ -249,7 +169,13 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun handleOnLogOutClick() {
-        clearMovieLocalDatabase(onSuccess = signOutUseCase::invoke)
+        viewModelScope.launch(ioDispatcher) {
+            signOutUseCase(onFailed = { errorMessage ->
+                _uiState.update {
+                    it.copy(userMessages = listOf(errorMessage))
+                }
+            })
+        }
     }
 }
 

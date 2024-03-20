@@ -1,6 +1,7 @@
 package com.ahmetocak.login
 
 import android.content.Intent
+import android.util.Log
 import androidx.activity.result.IntentSenderRequest
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -139,13 +140,14 @@ class LoginViewModel @Inject constructor(
     }
 
     fun sendPasswordResetMail() {
+        Log.d("EMAIL", emailValue)
         if (passwordResetEmailValue.isValidEmail()) {
             viewModelScope.launch(ioDispatcher) {
                 _uiState.update {
                     it.copy(dialogUiEvent = DialogUiEvent.Loading)
                 }
                 sendResetPasswordEmailUseCase(
-                    email = emailValue,
+                    email = passwordResetEmailValue,
                     onTaskSuccess = {
                         _uiState.update {
                             it.copy(
@@ -170,7 +172,6 @@ class LoginViewModel @Inject constructor(
 
     private fun saveUserWatchListDataToLocalDatabase(onSuccess: () -> Unit) {
         viewModelScope.launch(ioDispatcher) {
-
             getMovieDataUseCase().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
