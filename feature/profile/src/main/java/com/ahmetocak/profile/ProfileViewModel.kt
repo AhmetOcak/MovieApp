@@ -23,7 +23,6 @@ import com.ahmetocak.domain.preferences.GetAppThemeUseCase
 import com.ahmetocak.domain.preferences.GetDynamicColorUseCase
 import com.ahmetocak.domain.preferences.UpdateAppThemeUseCase
 import com.ahmetocak.domain.preferences.UpdateDynamicColorUseCase
-import com.ahmetocak.model.firebase.Auth
 import com.google.firebase.storage.StorageException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -107,10 +106,8 @@ class ProfileViewModel @Inject constructor(
 
     private fun reAuthenticate(onSuccess: () -> Unit) {
         reAuthenticateUseCase(
-            auth = Auth(
-                email = _uiState.value.userEmail,
-                password = password
-            ),
+            email = _uiState.value.userEmail,
+            password = password,
             onTaskSuccess = onSuccess,
             onTaskFailed = { errorMessage ->
                 _uiState.update {

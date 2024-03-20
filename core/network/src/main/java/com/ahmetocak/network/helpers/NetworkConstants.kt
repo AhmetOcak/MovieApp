@@ -1,4 +1,4 @@
-package com.ahmetocak.network.utils
+package com.ahmetocak.network.helpers
 
 object NetworkConstants {
     const val BASE_URL = "https://api.themoviedb.org/"

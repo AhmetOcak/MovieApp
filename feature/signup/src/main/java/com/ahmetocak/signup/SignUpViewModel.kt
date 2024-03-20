@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.common.utils.AuthInputChecker
 import com.ahmetocak.common.helpers.UiText
-import com.ahmetocak.common.helpers.handleTaskError
 import com.ahmetocak.domain.firebase.auth.SignUpUseCase
-import com.ahmetocak.model.firebase.Auth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -113,22 +111,18 @@ class SignUpViewModel @Inject constructor(
             }
             viewModelScope.launch(Dispatchers.IO) {
                 signUpUseCase(
-                    auth = Auth(
-                        email = emailValue,
-                        password = passwordValue
-                    )
-                ).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        onNavigateHome()
-                    } else {
+                    email = emailValue,
+                    password = passwordValue,
+                    onTaskSuccess = onNavigateHome,
+                    onTaskFailed = { errorMessage ->
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                errorMessages = listOf(handleTaskError(e = task.exception))
+                                errorMessages = listOf(errorMessage)
                             )
                         }
                     }
-                }
+                )
             }
         }
     }

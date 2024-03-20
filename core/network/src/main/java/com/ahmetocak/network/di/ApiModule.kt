@@ -1,6 +1,6 @@
 package com.ahmetocak.network.di
 
-import com.ahmetocak.network.utils.NetworkConstants
+import com.ahmetocak.network.helpers.NetworkConstants
 import com.ahmetocak.network.api.MovieApi
 import dagger.Module
 import dagger.Provides

@@ -1,9 +1,9 @@
 package com.ahmetocak.domain.firebase.auth
 
-import com.ahmetocak.data.repository.firebase.FirebaseRepository
+import com.ahmetocak.authentication.firebase.FirebaseAuthClient
 import javax.inject.Inject
 
-class DeleteAccountUseCase @Inject constructor(private val firebaseRepository: FirebaseRepository) {
+class DeleteAccountUseCase @Inject constructor(private val firebaseAuthClient: FirebaseAuthClient) {
 
-    operator fun invoke() = firebaseRepository.deleteAccount()
+    operator fun invoke() = firebaseAuthClient.deleteAccount()
 }

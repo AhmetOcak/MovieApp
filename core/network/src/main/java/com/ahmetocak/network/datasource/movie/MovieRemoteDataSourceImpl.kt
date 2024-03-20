@@ -4,7 +4,7 @@ import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.network.api.MovieApi
 import com.ahmetocak.network.model.movie.NetworkActorDetails
 import com.ahmetocak.network.model.movie.NetworkActorMovies
-import com.ahmetocak.network.utils.apiCall
+import com.ahmetocak.network.helpers.apiCall
 import com.ahmetocak.network.model.movie.NetworkMovie
 import com.ahmetocak.network.model.movie_detail.NetworkMovieCredit
 import com.ahmetocak.network.model.movie_detail.NetworkMovieDetail

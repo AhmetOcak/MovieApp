@@ -1,4 +1,4 @@
-package com.ahmetocak.network.utils
+package com.ahmetocak.network.helpers
 
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText

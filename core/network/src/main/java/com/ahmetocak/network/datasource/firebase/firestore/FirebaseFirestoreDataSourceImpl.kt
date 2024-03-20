@@ -1,7 +1,7 @@
 package com.ahmetocak.network.datasource.firebase.firestore
 
 import com.ahmetocak.network.model.firebase.firestore.NetworkWatchListMovie
-import com.ahmetocak.network.utils.FirebaseConstants
+import com.ahmetocak.network.helpers.FirebaseConstants
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot

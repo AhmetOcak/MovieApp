@@ -18,7 +18,6 @@ import com.ahmetocak.domain.firebase.auth.SendResetPasswordEmailUseCase
 import com.ahmetocak.domain.firebase.auth.SignInWithGoogleUseCase
 import com.ahmetocak.domain.firebase.firestore.GetMovieDataUseCase
 import com.ahmetocak.domain.movie.AddMovieToDbWatchListUseCase
-import com.ahmetocak.model.firebase.Auth
 import com.ahmetocak.model.firebase.WatchList
 import com.ahmetocak.model.firebase.WatchListMovie
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -120,18 +119,21 @@ class LoginViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(isLoading = true)
                 }
-                loginUseCase(auth = Auth(emailValue, passwordValue)).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+                loginUseCase(
+                    email = emailValue,
+                    password = passwordValue,
+                    onTaskSuccess = {
                         saveUserWatchListDataToLocalDatabase(onSuccess)
-                    } else {
+                    },
+                    onTaskFailed = { errorMessage ->
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                errorMessages = listOf(handleTaskError(e = task.exception))
+                                errorMessages = listOf(errorMessage)
                             )
                         }
                     }
-                }
+                )
             }
         }
     }
@@ -142,22 +144,22 @@ class LoginViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(dialogUiEvent = DialogUiEvent.Loading)
                 }
-                sendResetPasswordEmailUseCase(email = passwordResetEmailValue).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+                sendResetPasswordEmailUseCase(
+                    email = emailValue,
+                    onTaskSuccess = {
                         _uiState.update {
                             it.copy(
                                 dialogUiEvent = DialogUiEvent.InActive,
                                 userMessages = listOf(UiText.StringResource(R.string.password_reset_mail_sent))
                             )
                         }
-                    } else {
+                    },
+                    onTaskFailed = { errorMessage ->
                         _uiState.update {
-                            it.copy(
-                                errorMessages = listOf(handleTaskError(e = task.exception))
-                            )
+                            it.copy(errorMessages = listOf(errorMessage))
                         }
                     }
-                }
+                )
             }
         } else {
             _uiState.update {
