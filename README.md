@@ -53,7 +53,7 @@ the watchlist and profile picture are also deleted from Firebase.
 -->
 
 ## Modularization 📦
-![movie_app_modular_graph](https://github.com/AhmetOcak/MovieApp/assets/73544434/fd10aa83-f93e-46d3-a37e-ddc744627538)
+![movie_app_modular_graph](https://github.com/AhmetOcak/MovieApp/assets/73544434/b71a185e-0af4-4b39-95ae-14ca219fa1e0)
 
 <table>
   <tr>
@@ -185,6 +185,7 @@ the watchlist and profile picture are also deleted from Firebase.
    <td> Manages user identity verification and access control.
    </td>  
      <td> <code>GoogleAuthClient</code>
+        <code>FirebaseAuthClient</code>
    </td>
   </tr>
 </table>
