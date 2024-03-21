@@ -4,11 +4,11 @@ import com.ahmetocak.common.R
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.helpers.handleTaskError
-import com.ahmetocak.data.utils.NetworkConnectivityObserver
 import com.ahmetocak.domain.firebase.firestore.GetMovieDataUseCase
 import com.ahmetocak.domain.firebase.firestore.UpdateMovieDataUseCase
 import com.ahmetocak.domain.movie.RemoveMovieFromWatchListUseCase
 import com.ahmetocak.model.firebase.WatchList
+import com.ahmetocak.common.connectivity.NetworkConnectivityObserver
 import javax.inject.Inject
 
 class DeleteMovieFromWatchListUseCase @Inject constructor(

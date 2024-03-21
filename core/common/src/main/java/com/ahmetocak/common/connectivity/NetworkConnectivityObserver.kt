@@ -1,4 +1,4 @@
-package com.ahmetocak.movieapp.connectivity
+package com.ahmetocak.common.connectivity
 
 import android.net.ConnectivityManager
 import android.net.Network

@@ -1,4 +1,4 @@
-package com.ahmetocak.data.utils
+package com.ahmetocak.common.connectivity
 
 import kotlinx.coroutines.flow.Flow
 

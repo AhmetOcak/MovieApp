@@ -6,8 +6,8 @@ import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.domain.preferences.GetAppThemeUseCase
 import com.ahmetocak.domain.preferences.GetDynamicColorUseCase
 import com.ahmetocak.movieapp.R
-import com.ahmetocak.movieapp.connectivity.ConnectivityObserver
-import com.ahmetocak.movieapp.connectivity.NetworkConnectivityObserver
+import com.ahmetocak.common.connectivity.ConnectivityObserver
+import com.ahmetocak.common.connectivity.NetworkConnectivityObserver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
