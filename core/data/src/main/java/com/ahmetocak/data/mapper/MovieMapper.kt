@@ -7,6 +7,7 @@ import com.ahmetocak.model.movie.ActorMovies
 import com.ahmetocak.model.movie.ActorMoviesContent
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
+import com.ahmetocak.model.movie.RecommendedMovieContent
 import com.ahmetocak.model.movie.UserReviewAuthorDetails
 import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.Cast
@@ -20,6 +21,7 @@ import com.ahmetocak.network.model.movie.NetworkActorMovies
 import com.ahmetocak.network.model.movie.NetworkActorMoviesContent
 import com.ahmetocak.network.model.movie.NetworkMovie
 import com.ahmetocak.network.model.movie.NetworkMovieContent
+import com.ahmetocak.network.model.movie.NetworkRecommendedMovieContent
 import com.ahmetocak.network.model.movie.NetworkUserReviewResults
 import com.ahmetocak.network.model.movie_detail.NetworkMovieCredit
 import com.ahmetocak.network.model.movie_detail.NetworkMovieDetail
@@ -153,5 +155,16 @@ internal fun NetworkUserReviewResults.toUserReviewResults(): UserReviewResults {
             rating = authorDetails.rating,
             avatarPath = authorDetails.avatarPath
         )
+    )
+}
+
+internal fun NetworkRecommendedMovieContent.toRecommendedMovieContent(): RecommendedMovieContent {
+    return RecommendedMovieContent(
+        id = id,
+        movieName = movieName ?: "",
+        image = image ?: "",
+        releaseDate = releaseDate ?: "",
+        voteAverage = voteAverage ?: 0.0,
+        voteCount = voteCount ?: 0
     )
 }

@@ -8,4 +8,5 @@
     <string name="review_text">incelemeler</string>
     <string name="updated_at">Güncellendi</string>
     <string name="user_reviews">Kullanıcı Değerlendirmeleri</string>
+    <string name="recommendations_text">Önerilenler</string>
 </resources>

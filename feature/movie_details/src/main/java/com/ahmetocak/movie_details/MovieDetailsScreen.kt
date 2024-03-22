@@ -63,6 +63,7 @@ import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.designsystem.theme.TransparentWhite
 import com.ahmetocak.model.firebase.WatchListMovie
+import com.ahmetocak.model.movie.RecommendedMovieContent
 import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
@@ -70,6 +71,7 @@ import com.ahmetocak.model.movie_detail.MovieTrailer
 import com.ahmetocak.movie_details.models.ActorItem
 import com.ahmetocak.movie_details.models.TrailerItem
 import com.ahmetocak.movie_details.models.UserReviewItem
+import com.ahmetocak.ui.MovieItem
 import com.ahmetocak.ui.TmdbLogo
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
@@ -85,11 +87,13 @@ fun MovieDetailsScreen(
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
     onActorClick: (Int) -> Unit,
+    onMovieClick: (Int) -> Unit,
     viewModel: MovieDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val userReviews = uiState.userReviews.collectAsLazyPagingItems()
+    val recommendations = uiState.movieRecommendations.collectAsLazyPagingItems()
 
     if (uiState.userMessages.isNotEmpty()) {
         Toast.makeText(
@@ -99,7 +103,6 @@ fun MovieDetailsScreen(
         ).show()
         viewModel.consumedUserMessage()
     }
-
     MovieScaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         MovieDetailsScreenContent(
             modifier = Modifier.padding(paddingValues),
@@ -112,7 +115,9 @@ fun MovieDetailsScreen(
             trailerUiState = uiState.trailersUiState,
             isWatchlistButtonInProgress = uiState.isWatchlistButtonInProgress,
             onActorClick = onActorClick,
-            reviews = userReviews
+            reviews = userReviews,
+            recommendations = recommendations,
+            onMovieClick = onMovieClick
         )
     }
 }
@@ -129,7 +134,9 @@ private fun MovieDetailsScreenContent(
     trailerUiState: UiState<MovieTrailer>,
     isWatchlistButtonInProgress: Boolean,
     onActorClick: (Int) -> Unit,
-    reviews: LazyPagingItems<UserReviewResults>
+    reviews: LazyPagingItems<UserReviewResults>,
+    recommendations: LazyPagingItems<RecommendedMovieContent>,
+    onMovieClick: (Int) -> Unit
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -143,9 +150,17 @@ private fun MovieDetailsScreenContent(
             directorName = directorName,
             isWatchlistButtonInProgress = isWatchlistButtonInProgress
         )
-        UserReviewsSection(reviews = reviews)
+        if (reviews.itemCount != 0) {
+            UserReviewsSection(reviews = reviews)
+        }
         ActorListSection(castUiState = castUiState, onActorClick = onActorClick)
         TrailerListSection(trailerUiState = trailerUiState)
+        if (recommendations.itemCount != 0) {
+            MovieRecommendationsSection(
+                recommendations = recommendations,
+                onMovieClick = onMovieClick
+            )
+        }
     }
 }
 
@@ -390,6 +405,36 @@ private fun UserReviewsSection(reviews: LazyPagingItems<UserReviewResults>) {
         reviews.loadState.apply {
             onLoadStateRefresh(loadState = refresh)
             onLoadStateAppend(loadState = append, isResultEmpty = reviews.itemCount == 0)
+        }
+    }
+}
+
+@Composable
+private fun MovieRecommendationsSection(
+    recommendations: LazyPagingItems<RecommendedMovieContent>,
+    onMovieClick: (Int) -> Unit
+) {
+    ContentSubTitle(titleId = R.string.recommendations_text)
+    LazyRow(
+        modifier = Modifier
+            .height(LocalConfiguration.current.screenHeightDp.dp / 3)
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+    ) {
+        items(recommendations.itemCount, key = { it }) { index ->
+            recommendations[index]?.let { movie ->
+                MovieItem(
+                    id = movie.id,
+                    name = movie.movieName,
+                    releaseDate = movie.releaseDate,
+                    imageUrl = "${TMDB.IMAGE_URL}${movie.image}",
+                    voteAverage = movie.voteAverage,
+                    voteCount = movie.voteCount,
+                    onClick = { onMovieClick(movie.id) },
+                    modifier = Modifier.aspectRatio(2f / 3f)
+                )
+            }
         }
     }
 }

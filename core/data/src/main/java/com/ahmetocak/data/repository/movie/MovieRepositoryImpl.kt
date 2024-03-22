@@ -13,6 +13,7 @@ import com.ahmetocak.data.mapper.toMovieContent
 import com.ahmetocak.data.mapper.toMovieCredit
 import com.ahmetocak.data.mapper.toMovieDetail
 import com.ahmetocak.data.mapper.toMovieTrailer
+import com.ahmetocak.data.mapper.toRecommendedMovieContent
 import com.ahmetocak.data.mapper.toUserReviewResults
 import com.ahmetocak.data.mapper.toWatchListEntity
 import com.ahmetocak.data.mapper.toWatchList
@@ -22,6 +23,7 @@ import com.ahmetocak.model.movie.ActorDetails
 import com.ahmetocak.model.movie.ActorMovies
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
+import com.ahmetocak.model.movie.RecommendedMovieContent
 import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
@@ -30,6 +32,7 @@ import com.ahmetocak.model.watch_list.WatchList
 import com.ahmetocak.network.api.MovieApi
 import com.ahmetocak.network.datasource.movie.MovieRemoteDataSource
 import com.ahmetocak.network.datasource.movie.paging_source.MoviesPagingSource
+import com.ahmetocak.network.datasource.movie.paging_source.RecommendedMoviesPagingSource
 import com.ahmetocak.network.datasource.movie.paging_source.SearchMoviesPagingSource
 import com.ahmetocak.network.datasource.movie.paging_source.UserMovieReviewsPagingSource
 import kotlinx.coroutines.flow.Flow
@@ -134,6 +137,21 @@ class MovieRepositoryImpl @Inject constructor(
         ).flow.map {
             it.map {  networkUserReviewResults ->
                 networkUserReviewResults.toUserReviewResults()
+            }
+        }
+    }
+
+    override fun getMovieRecommendations(movieId: Int): Flow<PagingData<RecommendedMovieContent>> {
+        val recommendedMoviesPagingSource = RecommendedMoviesPagingSource(
+            api = api,
+            movieId = movieId
+        )
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = { recommendedMoviesPagingSource }
+        ).flow.map {
+            it.map { networkMovieContent ->
+                networkMovieContent.toRecommendedMovieContent()
             }
         }
     }
