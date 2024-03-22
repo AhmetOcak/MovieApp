@@ -1,6 +1,5 @@
 package com.ahmetocak.movie_details
 
-import android.view.View
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,9 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -28,58 +26,53 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.common.constants.TMDB
-import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.convertToDurationTime
+import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.roundToDecimal
+import com.ahmetocak.common.utils.onLoadStateAppend
+import com.ahmetocak.common.utils.onLoadStateRefresh
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.dimens.Dimens
+import com.ahmetocak.designsystem.theme.TransparentWhite
 import com.ahmetocak.model.firebase.WatchListMovie
+import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
 import com.ahmetocak.model.movie_detail.MovieTrailer
-import com.ahmetocak.designsystem.theme.TransparentWhite
+import com.ahmetocak.movie_details.models.ActorItem
+import com.ahmetocak.movie_details.models.TrailerItem
+import com.ahmetocak.movie_details.models.UserReviewItem
 import com.ahmetocak.ui.TmdbLogo
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-
-private val ACTOR_IMAGE_SIZE = 128.dp
 
 private val errorModifier = Modifier
     .fillMaxWidth()
@@ -95,6 +88,8 @@ fun MovieDetailsScreen(
     viewModel: MovieDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val userReviews = uiState.userReviews.collectAsLazyPagingItems()
 
     if (uiState.userMessages.isNotEmpty()) {
         Toast.makeText(
@@ -116,7 +111,8 @@ fun MovieDetailsScreen(
             castUiState = uiState.castUiState,
             trailerUiState = uiState.trailersUiState,
             isWatchlistButtonInProgress = uiState.isWatchlistButtonInProgress,
-            onActorClick = onActorClick
+            onActorClick = onActorClick,
+            reviews = userReviews
         )
     }
 }
@@ -132,7 +128,8 @@ private fun MovieDetailsScreenContent(
     castUiState: UiState<MovieCredit>,
     trailerUiState: UiState<MovieTrailer>,
     isWatchlistButtonInProgress: Boolean,
-    onActorClick: (Int) -> Unit
+    onActorClick: (Int) -> Unit,
+    reviews: LazyPagingItems<UserReviewResults>
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -146,6 +143,7 @@ private fun MovieDetailsScreenContent(
             directorName = directorName,
             isWatchlistButtonInProgress = isWatchlistButtonInProgress
         )
+        UserReviewsSection(reviews = reviews)
         ActorListSection(castUiState = castUiState, onActorClick = onActorClick)
         TrailerListSection(trailerUiState = trailerUiState)
     }
@@ -291,11 +289,7 @@ private fun ActorListSection(castUiState: UiState<MovieCredit>, onActorClick: (I
 
         is UiState.OnDataLoaded -> {
             Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
-                Text(
-                    modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
-                    text = stringResource(id = R.string.actors_text),
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                )
+                ContentSubTitle(titleId = R.string.actors_text)
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
                     horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
@@ -322,7 +316,6 @@ private fun ActorListSection(castUiState: UiState<MovieCredit>, onActorClick: (I
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
     when (trailerUiState) {
@@ -339,15 +332,7 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
                     contentPadding = PaddingValues(bottom = Dimens.twoLevelPadding),
                     verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
                 ) {
-                    stickyHeader {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.background),
-                            text = stringResource(id = R.string.trailers_text),
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                        )
-                    }
+                    contentStickyHeader(R.string.trailers_text)
                     items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
                         TrailerItem(
                             videoId = trailer.key,
@@ -369,121 +354,46 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ActorItem(
-    actorId: Int,
-    imageUrl: String,
-    actorName: String,
-    characterName: String,
-    onClick: (Int) -> Unit
-) {
-    ElevatedCard(
-        modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp / 1.53f),
-        onClick = { onClick(actorId) }) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AnimatedAsyncImage(
-                modifier = Modifier
-                    .size(ACTOR_IMAGE_SIZE)
-                    .aspectRatio(1f),
-                imageUrl = imageUrl
-            )
-            Column(
-                modifier = Modifier.padding(Dimens.oneLevelPadding)
-            ) {
-                Text(
-                    text = actorName,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(Dimens.oneLevelPadding))
-                Text(text = characterName, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            }
-        }
-    }
-}
-
-@Composable
-private fun TrailerItem(
-    videoId: String,
-    title: String
-) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    var player: YouTubePlayer? by remember { mutableStateOf(null) }
-    val view: View = View.inflate(LocalContext.current, R.layout.youtube_trailer_item, null)
-    val overlayView: View = view.findViewById(R.id.overlay_view)
-
-    overlayView.setOnClickListener {
-        player?.play()
-    }
-
-    val youTubePlayerView: YouTubePlayerView by remember {
-        mutableStateOf(
-            view.findViewById<YouTubePlayerView?>(R.id.youtube_player_view).apply {
-                enableAutomaticInitialization = false
-                initialize(
-                    youTubePlayerListener = object : AbstractYouTubePlayerListener() {
-                        override fun onReady(youTubePlayer: YouTubePlayer) {
-                            super.onReady(youTubePlayer)
-                            player = youTubePlayer
-                            youTubePlayer.cueVideo(videoId, 0f)
-                        }
-
-                        override fun onStateChange(
-                            youTubePlayer: YouTubePlayer,
-                            state: PlayerConstants.PlayerState
-                        ) {
-                            super.onStateChange(youTubePlayer, state)
-                            when (state) {
-                                PlayerConstants.PlayerState.VIDEO_CUED -> {
-                                    overlayView.visibility = View.VISIBLE
-                                }
-
-                                PlayerConstants.PlayerState.PAUSED -> {
-                                    overlayView.visibility = View.VISIBLE
-                                }
-
-                                else -> {
-                                    overlayView.visibility = View.GONE
-                                }
-                            }
-                        }
-                    }
-                )
-                lifecycleOwner.lifecycle.addObserver(this)
-            }
+private fun UserReviewsSection(reviews: LazyPagingItems<UserReviewResults>) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(LocalConfiguration.current.screenHeightDp.dp / 3)
+    ) {
+        contentStickyHeader(
+            titleId = R.string.user_reviews,
+            modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding)
         )
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            player?.pause()
-            youTubePlayerView.apply {
-                release()
-                lifecycleOwner.lifecycle.removeObserver(this)
+        items(reviews.itemCount, key = { it }) { index ->
+            reviews[index]?.let { review ->
+                UserReviewItem(
+                    author = review.author,
+                    authorImagePath = review.authorDetails.avatarPath,
+                    content = review.content,
+                    createdAt = review.createdAt,
+                    updatedAt = review.updatedAt,
+                    rating = review.authorDetails.rating,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Dimens.twoLevelPadding),
+                )
+                Divider(
+                    modifier = Modifier.padding(
+                        vertical = Dimens.oneLevelPadding,
+                        horizontal = Dimens.twoLevelPadding
+                    )
+                )
             }
         }
-    }
 
-    ElevatedCard(modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp)) {
-        Column {
-            AndroidView(
-                factory = { view },
-                modifier = Modifier.aspectRatio(16f / 9f)
-            )
-            Text(
-                modifier = Modifier.padding(Dimens.oneLevelPadding),
-                text = title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        reviews.loadState.apply {
+            onLoadStateRefresh(loadState = refresh)
+            onLoadStateAppend(loadState = append, isResultEmpty = reviews.itemCount == 0)
         }
     }
 }
+
 
 @Composable
 private fun TopAppBar(
@@ -523,5 +433,27 @@ private fun TopAppBar(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ContentSubTitle(titleId: Int) {
+    Text(
+        modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
+        text = stringResource(id = titleId),
+        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.contentStickyHeader(titleId: Int, modifier: Modifier = Modifier) {
+    stickyHeader {
+        Text(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background),
+            text = stringResource(id = titleId),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+        )
     }
 }

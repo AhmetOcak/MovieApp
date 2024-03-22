@@ -5,6 +5,7 @@ import com.ahmetocak.network.model.movie.NetworkActorDetails
 import com.ahmetocak.network.model.movie.NetworkActorMovies
 import com.ahmetocak.network.helpers.NetworkConstants
 import com.ahmetocak.network.model.movie.NetworkMovie
+import com.ahmetocak.network.model.movie.NetworkUserMovieReviews
 import com.ahmetocak.network.model.movie_detail.NetworkMovieCredit
 import com.ahmetocak.network.model.movie_detail.NetworkMovieDetail
 import com.ahmetocak.network.model.movie_detail.NetworkMovieTrailer
@@ -71,4 +72,11 @@ interface MovieApi {
         @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
         @Query(NetworkConstants.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()
     ): NetworkActorMovies
+
+    @GET(NetworkConstants.EndPoints.USER_REVIEWS)
+    suspend fun getUserMovieReviews(
+        @Path(NetworkConstants.Paths.MOVIE_ID) movieId: Int,
+        @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
+        @Query(NetworkConstants.Queries.PAGE) page: Int = 1
+    ): NetworkUserMovieReviews
 }

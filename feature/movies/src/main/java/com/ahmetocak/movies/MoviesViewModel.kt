@@ -52,7 +52,7 @@ class MoviesViewModel @Inject constructor(
 
     private fun getPopularMovies() {
         viewModelScope.launch(ioDispatcher) {
-            when (val response = getNowPlayingMoviesFirstPageUseCase()) {
+            when (val response = getPopularMoviesFirstPageUseCase()) {
                 is Response.Success -> {
                     _uiState.update {
                         it.copy(popularMoviesState = MovieState.OnDataLoaded(response.data.movies))

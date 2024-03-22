@@ -7,6 +7,8 @@ import com.ahmetocak.model.movie.ActorMovies
 import com.ahmetocak.model.movie.ActorMoviesContent
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
+import com.ahmetocak.model.movie.UserReviewAuthorDetails
+import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.Cast
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
@@ -18,6 +20,7 @@ import com.ahmetocak.network.model.movie.NetworkActorMovies
 import com.ahmetocak.network.model.movie.NetworkActorMoviesContent
 import com.ahmetocak.network.model.movie.NetworkMovie
 import com.ahmetocak.network.model.movie.NetworkMovieContent
+import com.ahmetocak.network.model.movie.NetworkUserReviewResults
 import com.ahmetocak.network.model.movie_detail.NetworkMovieCredit
 import com.ahmetocak.network.model.movie_detail.NetworkMovieDetail
 import com.ahmetocak.network.model.movie_detail.NetworkMovieTrailer
@@ -136,5 +139,19 @@ private fun NetworkActorMoviesContent.toActorMoviesContent(): ActorMoviesContent
         releaseDate = releaseDate ?: "",
         voteAverage = voteAverage ?: 0.0,
         voteCount = voteCount ?: 0
+    )
+}
+
+internal fun NetworkUserReviewResults.toUserReviewResults(): UserReviewResults {
+    return UserReviewResults(
+        id = id,
+        author = author ?: "anonymous",
+        content = content ?: "",
+        createdAt = createdAt,
+        updatedAt = updatedAt ?: "",
+        authorDetails = UserReviewAuthorDetails(
+            rating = authorDetails.rating,
+            avatarPath = authorDetails.avatarPath
+        )
     )
 }
