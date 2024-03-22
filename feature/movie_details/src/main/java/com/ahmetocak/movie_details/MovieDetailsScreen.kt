@@ -161,6 +161,7 @@ private fun MovieDetailsScreenContent(
                 onMovieClick = onMovieClick
             )
         }
+        Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
     }
 }
 
@@ -344,7 +345,7 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(LocalConfiguration.current.screenHeightDp.dp / 3),
+                        .aspectRatio(18f / 11f),
                     contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
                     horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
                 ) {
@@ -355,8 +356,6 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
                         )
                     }
                 }
-            } else {
-                Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
             }
         }
 
@@ -438,7 +437,6 @@ private fun MovieRecommendationsSection(
         }
     }
 }
-
 
 @Composable
 private fun TopAppBar(
