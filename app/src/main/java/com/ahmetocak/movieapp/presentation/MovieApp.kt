@@ -94,7 +94,8 @@ private fun NavGraphBuilder.movieAppNavGraph(
     ) { from ->
         MovieDetailsScreen(
             upPress = upPress,
-            onActorClick = remember { { actorId -> onActorClick(actorId, from) } }
+            onActorClick = remember { { actorId -> onActorClick(actorId, from) } },
+            onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } }
         )
     }
     composable(

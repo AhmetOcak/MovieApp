@@ -89,7 +89,7 @@ internal fun TrailerItem(
         }
     }
 
-    ElevatedCard(modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp)) {
+    ElevatedCard(modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp - 32.dp)) {
         Column {
             AndroidView(
                 factory = { view },

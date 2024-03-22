@@ -8,4 +8,5 @@
     <string name="review_text">reviews</string>
     <string name="updated_at">Updated at</string>
     <string name="user_reviews">User Reviews</string>
+    <string name="recommendations_text">Recommendations</string>
 </resources>

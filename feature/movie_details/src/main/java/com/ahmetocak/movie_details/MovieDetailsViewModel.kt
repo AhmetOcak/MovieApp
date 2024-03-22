@@ -14,9 +14,11 @@ import com.ahmetocak.domain.firebase.firestore.AddMovieToWatchListUseCase
 import com.ahmetocak.domain.movie.AddMovieToDbWatchListUseCase
 import com.ahmetocak.domain.movie.GetMovieCreditsUseCase
 import com.ahmetocak.domain.movie.GetMovieDetailsUseCase
+import com.ahmetocak.domain.movie.GetMovieRecommendationsUseCase
 import com.ahmetocak.domain.movie.GetMovieTrailersUseCase
 import com.ahmetocak.domain.movie.GetUserMovieReviewsUseCase
 import com.ahmetocak.model.firebase.WatchListMovie
+import com.ahmetocak.model.movie.RecommendedMovieContent
 import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
@@ -44,7 +46,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val getMovieTrailersUseCase: GetMovieTrailersUseCase,
     private val addMovieToWatchListUseCase: AddMovieToWatchListUseCase,
     private val addMovieToDbWatchListUseCase: AddMovieToDbWatchListUseCase,
-    getUserMovieReviewsUseCase: GetUserMovieReviewsUseCase
+    getUserMovieReviewsUseCase: GetUserMovieReviewsUseCase,
+    getMovieRecommendationsUseCase: GetMovieRecommendationsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailUiState())
@@ -60,7 +63,10 @@ class MovieDetailsViewModel @Inject constructor(
             isMovieInWatchList(id.toInt())
 
             _uiState.update {
-                it.copy(userReviews = getUserMovieReviewsUseCase(id.toInt()))
+                it.copy(
+                    userReviews = getUserMovieReviewsUseCase(id.toInt()),
+                    movieRecommendations = getMovieRecommendationsUseCase(id.toInt())
+                )
             }
         }
     }
@@ -248,5 +254,6 @@ data class MovieDetailUiState(
     val userMessages: List<UiText> = emptyList(),
     val isWatchlistButtonInProgress: Boolean = false,
     val isMovieInWatchList: Boolean = false,
-    val userReviews: Flow<PagingData<UserReviewResults>> = emptyFlow()
+    val userReviews: Flow<PagingData<UserReviewResults>> = emptyFlow(),
+    val movieRecommendations: Flow<PagingData<RecommendedMovieContent>> = emptyFlow()
 )

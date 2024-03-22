@@ -12,6 +12,7 @@ object NetworkConstants {
         const val ACTOR_DETAILS = "/3/person/{${Paths.ACTOR_ID}}"
         const val ACTOR_MOVIES = "/3/person/{${Paths.ACTOR_ID}}/movie_credits"
         const val USER_REVIEWS = "/3/movie/{${Paths.MOVIE_ID}}/reviews"
+        const val RECOMMENDATIONS = "/3/movie/{${Paths.MOVIE_ID}}/recommendations"
     }
 
     object Queries {
