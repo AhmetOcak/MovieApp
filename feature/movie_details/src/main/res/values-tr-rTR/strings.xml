@@ -6,4 +6,6 @@
     <string name="actors_text">Oyuncu Kadrosu</string>
     <string name="trailers_text">Fragmanlar</string>
     <string name="review_text">incelemeler</string>
+    <string name="updated_at">Güncellendi</string>
+    <string name="user_reviews">Kullanıcı Değerlendirmeleri</string>
 </resources>

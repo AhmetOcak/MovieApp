@@ -6,4 +6,6 @@
     <string name="actors_text">Actors</string>
     <string name="trailers_text">Trailers</string>
     <string name="review_text">reviews</string>
+    <string name="updated_at">Updated at</string>
+    <string name="user_reviews">User Reviews</string>
 </resources>

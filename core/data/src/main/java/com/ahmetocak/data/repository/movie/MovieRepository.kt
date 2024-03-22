@@ -7,6 +7,7 @@ import com.ahmetocak.model.movie.ActorDetails
 import com.ahmetocak.model.movie.ActorMovies
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
+import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
 import com.ahmetocak.model.movie_detail.MovieTrailer
@@ -42,4 +43,6 @@ interface MovieRepository {
     suspend fun getActorDetails(actorId: Int): Response<ActorDetails>
 
     suspend fun getActorMovies(actorId: Int): Response<ActorMovies>
+
+    fun getUserMovieReviews(movieId: Int): Flow<PagingData<UserReviewResults>>
 }

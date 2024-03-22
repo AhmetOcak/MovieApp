@@ -3,6 +3,7 @@ package com.ahmetocak.movie_details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
@@ -14,16 +15,20 @@ import com.ahmetocak.domain.movie.AddMovieToDbWatchListUseCase
 import com.ahmetocak.domain.movie.GetMovieCreditsUseCase
 import com.ahmetocak.domain.movie.GetMovieDetailsUseCase
 import com.ahmetocak.domain.movie.GetMovieTrailersUseCase
+import com.ahmetocak.domain.movie.GetUserMovieReviewsUseCase
 import com.ahmetocak.model.firebase.WatchListMovie
+import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
 import com.ahmetocak.model.movie_detail.MovieTrailer
 import com.ahmetocak.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,7 +43,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val getMovieCreditsUseCase: GetMovieCreditsUseCase,
     private val getMovieTrailersUseCase: GetMovieTrailersUseCase,
     private val addMovieToWatchListUseCase: AddMovieToWatchListUseCase,
-    private val addMovieToDbWatchListUseCase: AddMovieToDbWatchListUseCase
+    private val addMovieToDbWatchListUseCase: AddMovieToDbWatchListUseCase,
+    getUserMovieReviewsUseCase: GetUserMovieReviewsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailUiState())
@@ -52,6 +58,10 @@ class MovieDetailsViewModel @Inject constructor(
             getMovieCredits(id.toInt())
             getMovieTrailers(id.toInt())
             isMovieInWatchList(id.toInt())
+
+            _uiState.update {
+                it.copy(userReviews = getUserMovieReviewsUseCase(id.toInt()))
+            }
         }
     }
 
@@ -237,5 +247,6 @@ data class MovieDetailUiState(
     val trailersUiState: UiState<MovieTrailer> = UiState.Loading,
     val userMessages: List<UiText> = emptyList(),
     val isWatchlistButtonInProgress: Boolean = false,
-    val isMovieInWatchList: Boolean = false
+    val isMovieInWatchList: Boolean = false,
+    val userReviews: Flow<PagingData<UserReviewResults>> = emptyFlow()
 )

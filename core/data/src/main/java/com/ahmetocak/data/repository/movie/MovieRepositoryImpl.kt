@@ -13,6 +13,7 @@ import com.ahmetocak.data.mapper.toMovieContent
 import com.ahmetocak.data.mapper.toMovieCredit
 import com.ahmetocak.data.mapper.toMovieDetail
 import com.ahmetocak.data.mapper.toMovieTrailer
+import com.ahmetocak.data.mapper.toUserReviewResults
 import com.ahmetocak.data.mapper.toWatchListEntity
 import com.ahmetocak.data.mapper.toWatchList
 import com.ahmetocak.database.datasource.WatchListLocalDataSource
@@ -21,6 +22,7 @@ import com.ahmetocak.model.movie.ActorDetails
 import com.ahmetocak.model.movie.ActorMovies
 import com.ahmetocak.model.movie.Movie
 import com.ahmetocak.model.movie.MovieContent
+import com.ahmetocak.model.movie.UserReviewResults
 import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
 import com.ahmetocak.model.movie_detail.MovieTrailer
@@ -29,6 +31,7 @@ import com.ahmetocak.network.api.MovieApi
 import com.ahmetocak.network.datasource.movie.MovieRemoteDataSource
 import com.ahmetocak.network.datasource.movie.paging_source.MoviesPagingSource
 import com.ahmetocak.network.datasource.movie.paging_source.SearchMoviesPagingSource
+import com.ahmetocak.network.datasource.movie.paging_source.UserMovieReviewsPagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -118,4 +121,20 @@ class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun getActorMovies(actorId: Int): Response<ActorMovies> =
         movieRemoteDataSource.getActorMovies(actorId).mapResponse { it.toActorMovies() }
+
+    override fun getUserMovieReviews(movieId: Int): Flow<PagingData<UserReviewResults>> {
+        val userReviewsPagingSource = UserMovieReviewsPagingSource(
+            movieId = movieId,
+            api = api
+        )
+
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = { userReviewsPagingSource }
+        ).flow.map {
+            it.map {  networkUserReviewResults ->
+                networkUserReviewResults.toUserReviewResults()
+            }
+        }
+    }
 }
