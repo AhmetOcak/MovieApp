@@ -209,5 +209,6 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 ## Upcoming Features
 * Splash ✔
 * Actor Details ✔
-* Animations
 * Google Sign In ✔
+* User Reviews
+* Recommendations
