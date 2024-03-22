@@ -340,14 +340,14 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
 
         is UiState.OnDataLoaded -> {
             if (trailerUiState.data.trailers.isNotEmpty()) {
-                LazyColumn(
+                ContentSubTitle(titleId = R.string.trailers_text)
+                LazyRow(
                     modifier = Modifier
-                        .height((LocalConfiguration.current.screenHeightDp.dp / 1.33.dp).dp)
-                        .padding(horizontal = Dimens.twoLevelPadding),
-                    contentPadding = PaddingValues(bottom = Dimens.twoLevelPadding),
-                    verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+                        .fillMaxWidth()
+                        .height(LocalConfiguration.current.screenHeightDp.dp / 3),
+                    contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
                 ) {
-                    contentStickyHeader(R.string.trailers_text)
                     items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
                         TrailerItem(
                             videoId = trailer.key,
