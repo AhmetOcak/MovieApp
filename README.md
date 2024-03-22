@@ -3,7 +3,7 @@
 
 Movie App is developed with Jetpack Compose. To log in to the application, you must first create an account or sign in with Google. Authentication is done with Firebase. 
 The app can display movies that are currently playing and popular. On the See all movies page, all selected movies are shown with pagination. 
-You can search for any movie, add it to the watchlist or look at the details of the movie. The movie details show the movie poster, a short description about the movie, director, rating, cast, trailers and user reviews. 
+You can search for any movie, add it to the watchlist or look at the details of the movie. The movie details show the movie poster, a short description about the movie, director, rating, cast, trailers, user reviews and recomended movies. 
 On the profile screen you can change the app's language, theme and, if the device is Android 12 and above, you can also choose dynamic color. The profile picture is kept with Firebase storage. When the account is deleted, 
 the watchlist and profile picture are also deleted from Firebase.
 
@@ -211,4 +211,4 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * Actor Details ✔
 * Google Sign In ✔
 * User Reviews ✔
-* Recommendations
+* Recommendations ✔
