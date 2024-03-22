@@ -1,9 +1,9 @@
 # Jetpack Compose - Movie App 🎬
 <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/14c662e4-2bca-4920-af9a-535a9484248c"/>
 
-Movie App is developed with Jetpack Compose. In order to log in to the application, an account must first be created. Authentication is done with Firebase. 
+Movie App is developed with Jetpack Compose. To log in to the application, you must first create an account or sign in with Google. Authentication is done with Firebase. 
 The app can display movies that are currently playing and popular. On the See all movies page, all selected movies are shown with pagination. 
-You can search for any movie, add it to the watchlist or look at the details of the movie. The movie details show the movie poster, a short description about the movie, director, rating, cast and trailers. 
+You can search for any movie, add it to the watchlist or look at the details of the movie. The movie details show the movie poster, a short description about the movie, director, rating, cast, trailers and user reviews. 
 On the profile screen you can change the app's language, theme and, if the device is Android 12 and above, you can also choose dynamic color. The profile picture is kept with Firebase storage. When the account is deleted, 
 the watchlist and profile picture are also deleted from Firebase.
 
@@ -210,5 +210,5 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * Splash ✔
 * Actor Details ✔
 * Google Sign In ✔
-* User Reviews
+* User Reviews ✔
 * Recommendations
