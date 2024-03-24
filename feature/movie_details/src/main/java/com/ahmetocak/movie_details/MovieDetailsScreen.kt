@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,7 +24,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccessTime
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -59,6 +59,7 @@ import com.ahmetocak.common.utils.onLoadStateRefresh
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
+import com.ahmetocak.designsystem.components.GeminiLoading
 import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.firebase.WatchListMovie
@@ -486,14 +487,7 @@ private fun GeminiSection(
         onDismissRequest = onDismissRequest
     ) {
         if (isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = Dimens.twoLevelPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
+            AnimatedGeminiLoading()
         } else {
             Text(
                 modifier = Modifier
@@ -532,5 +526,35 @@ private fun LazyListScope.contentStickyHeader(titleId: Int, modifier: Modifier =
             text = stringResource(id = titleId),
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
         )
+    }
+}
+
+@Composable
+private fun AnimatedGeminiLoading() {
+    Column(modifier = Modifier.padding(Dimens.twoLevelPadding)) {
+        GeminiLoading(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(16.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        GeminiLoading(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(16.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        GeminiLoading(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(16.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        GeminiLoading(
+            modifier = Modifier
+                .width(LocalConfiguration.current.screenWidthDp.dp / 3)
+                .height(16.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
