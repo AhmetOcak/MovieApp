@@ -212,3 +212,5 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * Google Sign In ✔
 * User Reviews ✔
 * Recommendations ✔
+* Shimmer effect
+* Gemini AI
