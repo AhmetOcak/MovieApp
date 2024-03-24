@@ -4,6 +4,7 @@
 Movie App is developed with Jetpack Compose. To log in to the application, you must first create an account or sign in with Google. Authentication is done with Firebase. 
 The app can display movies that are currently playing and popular. On the See all movies page, all selected movies are shown with pagination. 
 You can search for any movie, add it to the watchlist or look at the details of the movie. The movie details show the movie poster, a short description about the movie, director, rating, cast, trailers, user reviews and recomended movies. 
+You can also get details about the movie you have selected on this page from the Gemini api.
 On the profile screen you can change the app's language, theme and, if the device is Android 12 and above, you can also choose dynamic color. The profile picture is kept with Firebase storage. When the account is deleted, 
 the watchlist and profile picture are also deleted from Firebase.
 
@@ -26,6 +27,7 @@ the watchlist and profile picture are also deleted from Firebase.
 * [Youtube Player View](https://github.com/PierfrancescoSoffritti/android-youtube-player)
 * [Splash API](https://developer.android.com/develop/ui/views/launch/splash-screen)
 * [Google Sign In](https://firebase.google.com/docs/auth/android/google-signin)
+* [Gemini API](https://ai.google.dev/tutorials/quickstart?#android)
 
 ## Outputs 🖼
 
@@ -42,8 +44,7 @@ the watchlist and profile picture are also deleted from Firebase.
 | WatchList Screen | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/65b51927-c45a-49c8-ae1a-84144fd7e727" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bb1b8270-29fd-4db8-80d8-c237d67f093d" width="240" height="480"/>     |
 | Profile Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/075fe7c7-3215-4300-ae01-28fa74538acd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/372af4a6-fb1e-4929-9bfd-4a410a80f7aa" width="240" height="480"/>     |
 | See All Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/fc0688dc-4798-405e-afa5-4c72d357de37" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ba8a3925-c128-417b-b520-7b9c272937a8" width="240" height="480"/>     |
-| Movie Details Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/35ab8f75-6be8-4de7-89a7-436eb641fafd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d7f02f9e-7dbb-4e01-af05-039d9295da6a" width="240" height="480"/> |
-|  Movie Details Screen     |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/5cc2c76c-ee1e-4045-80c0-3d3fa2983e9a" width="240" height="480"/>       |  <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bd7af4df-c02b-472a-afac-6632a4cebd99" width="240" height="480"/>          |
+| Movie Details Screen      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/75a5ea9c-4427-4b75-91b7-9d3f06cc0aa5" width="240" height="480"/>      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d4471a51-6b9d-4b11-b5fc-5bfce1c1108a" width="240" height="480"/> |
 |  Actor Details Screen     |  <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/e23aae75-56e0-40d5-b3cc-80dec79ea34d" width="240" height="480" />       | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/8a686ad1-b45d-4cb5-968b-cc3ba9486813" width="240" height="480" />          |
 <!--
 |                  |              |
@@ -199,9 +200,9 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 [TMDB Movie API](https://developer.themoviedb.org/reference/intro/getting-started)
 
 ## Installation 🏗
-* Generate a new api key from [here](https://www.themoviedb.org/settings/api).
+* Generate a new TMDB Api key from [here](https://www.themoviedb.org/settings/api) and generate a new Gemini Api key from [here](https://aistudio.google.com/app/apikey).
 * Open the local.properties. Define API key.
-* ``` API_KEY="YOUR_API_KEY" ```
+* TMDB API KEY -> ``` API_KEY="YOUR_API_KEY" ```, Gemini API KEY -> ``` GEMINI_API_KEY="YOUR_API_KEY" ```
 * Create a firebase project.
 * Enable firebase auth, storage and firestore.
 * Add google.services.json file to project.
@@ -213,4 +214,14 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 * User Reviews ✔
 * Recommendations ✔
 * Shimmer effect
-* Gemini AI
+* Gemini API ✔
+
+
+
+
+
+
+
+
+
+
