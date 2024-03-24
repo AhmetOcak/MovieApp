@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,23 +22,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -53,6 +52,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.convertToDurationTime
 import com.ahmetocak.common.helpers.UiState
+import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.roundToDecimal
 import com.ahmetocak.common.utils.onLoadStateAppend
 import com.ahmetocak.common.utils.onLoadStateRefresh
@@ -61,7 +61,6 @@ import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.dimens.Dimens
-import com.ahmetocak.designsystem.theme.TransparentWhite
 import com.ahmetocak.model.firebase.WatchListMovie
 import com.ahmetocak.model.movie.RecommendedMovieContent
 import com.ahmetocak.model.movie.UserReviewResults
@@ -69,6 +68,7 @@ import com.ahmetocak.model.movie_detail.MovieCredit
 import com.ahmetocak.model.movie_detail.MovieDetail
 import com.ahmetocak.model.movie_detail.MovieTrailer
 import com.ahmetocak.movie_details.models.ActorItem
+import com.ahmetocak.movie_details.models.TopAppBar
 import com.ahmetocak.movie_details.models.TrailerItem
 import com.ahmetocak.movie_details.models.UserReviewItem
 import com.ahmetocak.ui.MovieItem
@@ -95,6 +95,10 @@ fun MovieDetailsScreen(
     val userReviews = uiState.userReviews.collectAsLazyPagingItems()
     val recommendations = uiState.movieRecommendations.collectAsLazyPagingItems()
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
     if (uiState.userMessages.isNotEmpty()) {
         Toast.makeText(
             LocalContext.current,
@@ -117,8 +121,21 @@ fun MovieDetailsScreen(
             onActorClick = onActorClick,
             reviews = userReviews,
             recommendations = recommendations,
-            onMovieClick = onMovieClick
+            onMovieClick = onMovieClick,
+            onGeminiClick = {
+                showBottomSheet = true
+                viewModel.getGeminiResponse(movieName = viewModel.movieName, context = context)
+            }
         )
+
+        if (showBottomSheet) {
+            GeminiSection(
+                onDismissRequest = { showBottomSheet = false },
+                isLoading = uiState.gemini.isLoading,
+                response = uiState.gemini.responseString,
+                errorMessage = uiState.gemini.errorMessage
+            )
+        }
     }
 }
 
@@ -136,7 +153,8 @@ private fun MovieDetailsScreenContent(
     onActorClick: (Int) -> Unit,
     reviews: LazyPagingItems<UserReviewResults>,
     recommendations: LazyPagingItems<RecommendedMovieContent>,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    onGeminiClick: () -> Unit
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -148,7 +166,8 @@ private fun MovieDetailsScreenContent(
             onWatchListClick = onWatchListClick,
             detailUiState = detailUiState,
             directorName = directorName,
-            isWatchlistButtonInProgress = isWatchlistButtonInProgress
+            isWatchlistButtonInProgress = isWatchlistButtonInProgress,
+            onGeminiClick = onGeminiClick
         )
         if (reviews.itemCount != 0) {
             UserReviewsSection(reviews = reviews)
@@ -172,7 +191,8 @@ private fun MovieSection(
     onWatchListClick: (WatchListMovie) -> Unit,
     detailUiState: UiState<MovieDetail>,
     directorName: String,
-    isWatchlistButtonInProgress: Boolean
+    isWatchlistButtonInProgress: Boolean,
+    onGeminiClick: () -> Unit
 ) {
     when (detailUiState) {
         is UiState.Loading -> {
@@ -203,7 +223,8 @@ private fun MovieSection(
                                 )
                             )
                         },
-                        isWatchlistButtonInProgress = isWatchlistButtonInProgress
+                        isWatchlistButtonInProgress = isWatchlistButtonInProgress,
+                        onGeminiClick = onGeminiClick
                     )
                 }
                 MovieDetails(
@@ -438,43 +459,56 @@ private fun MovieRecommendationsSection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopAppBar(
-    upPress: () -> Unit,
-    isMovieInWatchList: Boolean,
-    onWatchListClick: () -> Unit,
-    isWatchlistButtonInProgress: Boolean
+private fun GeminiSection(
+    onDismissRequest: () -> Unit,
+    isLoading: Boolean,
+    response: String?,
+    errorMessage: UiText?
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dimens.twoLevelPadding),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+    val parts = response?.split("**")
+
+    val annotatedResponse = buildAnnotatedString {
+        parts?.onEachIndexed { index, part ->
+            if (index % 2 == 0) {
+                append(part)
+            } else {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(part)
+                }
+            }
+        }
+    }
+
+    ModalBottomSheet(
+        modifier = Modifier.defaultMinSize(minHeight = LocalConfiguration.current.screenHeightDp.dp / 2),
+        onDismissRequest = onDismissRequest
     ) {
-        IconButton(
-            onClick = upPress,
-            colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = null,
-                tint = Color.Black
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimens.twoLevelPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Text(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(Dimens.twoLevelPadding),
+                text = annotatedResponse
             )
         }
-        IconButton(
-            onClick = onWatchListClick,
-            colors = IconButtonDefaults.iconButtonColors(containerColor = TransparentWhite)
-        ) {
-            if (isWatchlistButtonInProgress) {
-                CircularProgressIndicator()
-            } else {
-                Icon(
-                    imageVector = if (isMovieInWatchList) Icons.Filled.Bookmark else Icons.Filled.BookmarkBorder,
-                    contentDescription = null,
-                    tint = Color.Black
-                )
-            }
+
+        if (errorMessage != null) {
+            Toast.makeText(
+                LocalContext.current,
+                errorMessage.asString(),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.ahmetocak.movie_details
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.helpers.handleTaskError
 import com.ahmetocak.domain.DeleteMovieFromWatchListUseCase
+import com.ahmetocak.domain.GetGeminiResponseUseCase
 import com.ahmetocak.domain.firebase.CheckMovieInWatchListUseCase
 import com.ahmetocak.domain.firebase.firestore.AddMovieToWatchListUseCase
 import com.ahmetocak.domain.movie.AddMovieToDbWatchListUseCase
@@ -47,11 +49,15 @@ class MovieDetailsViewModel @Inject constructor(
     private val addMovieToWatchListUseCase: AddMovieToWatchListUseCase,
     private val addMovieToDbWatchListUseCase: AddMovieToDbWatchListUseCase,
     getUserMovieReviewsUseCase: GetUserMovieReviewsUseCase,
-    getMovieRecommendationsUseCase: GetMovieRecommendationsUseCase
+    getMovieRecommendationsUseCase: GetMovieRecommendationsUseCase,
+    private val getGeminiResponseUseCase: GetGeminiResponseUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MovieDetailUiState())
     val uiState: StateFlow<MovieDetailUiState> = _uiState.asStateFlow()
+
+    var movieName: String = ""
+        private set
 
     init {
         val movieId = savedStateHandle.get<String>(MainDestinations.MOVIE_DETAILS_ID_KEY)
@@ -78,6 +84,7 @@ class MovieDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(detailUiState = UiState.OnDataLoaded(response.data))
                     }
+                    movieName = response.data.movieName
                 }
 
                 is Response.Error -> {
@@ -239,6 +246,39 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
+    fun getGeminiResponse(movieName: String, context: Context) {
+        if (_uiState.value.gemini.responseString == null) {
+            _uiState.update {
+                it.copy(gemini = Gemini(isLoading = true))
+            }
+            viewModelScope.launch(ioDispatcher) {
+                when(val response = getGeminiResponseUseCase(movieName, context)) {
+                    is Response.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                gemini = Gemini(
+                                    isLoading = false,
+                                    responseString = response.data
+                                )
+                            )
+                        }
+                    }
+
+                    is Response.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                gemini = Gemini(
+                                    isLoading = false,
+                                    errorMessage = response.errorMessage
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun consumedUserMessage() {
         _uiState.update {
             it.copy(userMessages = emptyList())
@@ -255,5 +295,12 @@ data class MovieDetailUiState(
     val isWatchlistButtonInProgress: Boolean = false,
     val isMovieInWatchList: Boolean = false,
     val userReviews: Flow<PagingData<UserReviewResults>> = emptyFlow(),
-    val movieRecommendations: Flow<PagingData<RecommendedMovieContent>> = emptyFlow()
+    val movieRecommendations: Flow<PagingData<RecommendedMovieContent>> = emptyFlow(),
+    val gemini: Gemini = Gemini()
+)
+
+data class Gemini(
+    val isLoading: Boolean = false,
+    val responseString: String? = null,
+    val errorMessage: UiText? = null
 )
