@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlin.android)
@@ -8,11 +10,16 @@ android {
     namespace = "com.ahmetocak.domain"
     compileSdk = ConfigData.compileSdk
 
+    val p = Properties()
+    p.load(project.rootProject.file("local.properties").inputStream())
+
     defaultConfig {
         minSdk = ConfigData.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String","GEMINI_API_KEY", p.getProperty("GEMINI_API_KEY"))
     }
 
     buildTypes {
@@ -31,6 +38,9 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -44,6 +54,9 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
     implementation(libs.google.android.gms)
+
+    //Google AI client SDK for Android
+    implementation(libs.google.ai.client.generativeai)
 
     implementation(project(":core:model"))
     implementation(project(":core:data"))
