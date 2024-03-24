@@ -31,9 +31,11 @@ the watchlist and profile picture are also deleted from Firebase.
 
 ## Outputs 🖼
 
+<!--
 |                  |              |
 |------------------|--------------|
 | Video from app   | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/694f560a-e6d3-46b5-a67e-d3e8ccf104df" width="240" height="480" /> |
+-->
 
 |                  | Light | Dark |
 |------------------|-------|------|
