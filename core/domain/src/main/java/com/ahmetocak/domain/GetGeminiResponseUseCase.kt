@@ -1,6 +1,5 @@
 package com.ahmetocak.domain
 
-import android.content.Context
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.R as common
@@ -9,14 +8,14 @@ import javax.inject.Inject
 
 class GetGeminiResponseUseCase @Inject constructor() {
 
-    suspend operator fun invoke(movieName: String, context: Context): Response<String?> {
+    suspend operator fun invoke(prompt: String): Response<String?> {
         val generativeModel = GenerativeModel(
             modelName = "gemini-pro",
             apiKey = BuildConfig.GEMINI_API_KEY
         )
 
         return try {
-            Response.Success(data = generativeModel.generateContent(context.getString(R.string.gemini_prompt, movieName)).text)
+            Response.Success(data = generativeModel.generateContent(prompt).text)
         } catch (e: Exception) {
             Response.Error(errorMessage = e.message?.let { message ->
                 UiText.DynamicString(message)

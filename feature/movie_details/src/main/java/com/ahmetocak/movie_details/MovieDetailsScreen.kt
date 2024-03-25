@@ -125,7 +125,7 @@ fun MovieDetailsScreen(
             onMovieClick = onMovieClick,
             onGeminiClick = {
                 showBottomSheet = true
-                viewModel.getGeminiResponse(movieName = viewModel.movieName, context = context)
+                viewModel.getGeminiResponse(context = context)
             }
         )
 

@@ -56,8 +56,7 @@ class MovieDetailsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MovieDetailUiState())
     val uiState: StateFlow<MovieDetailUiState> = _uiState.asStateFlow()
 
-    var movieName: String = ""
-        private set
+    private var movieName: String = ""
 
     init {
         val movieId = savedStateHandle.get<String>(MainDestinations.MOVIE_DETAILS_ID_KEY)
@@ -246,13 +245,13 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getGeminiResponse(movieName: String, context: Context) {
+    fun getGeminiResponse(context: Context) {
         if (_uiState.value.gemini.responseString == null) {
             _uiState.update {
                 it.copy(gemini = Gemini(isLoading = true))
             }
             viewModelScope.launch(ioDispatcher) {
-                when(val response = getGeminiResponseUseCase(movieName, context)) {
+                when(val response = getGeminiResponseUseCase(context.getString(R.string.gemini_prompt, movieName))) {
                     is Response.Success -> {
                         _uiState.update {
                             it.copy(
