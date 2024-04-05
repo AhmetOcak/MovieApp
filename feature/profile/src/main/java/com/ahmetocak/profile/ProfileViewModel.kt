@@ -96,7 +96,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun userMessageConsumed() {
+    fun consumedUserMessage() {
         _uiState.update {
             it.copy(userMessages = emptyList())
         }

@@ -1,6 +1,5 @@
 package com.ahmetocak.movies
 
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.common.helpers.Response
@@ -71,13 +70,11 @@ class MoviesViewModel @Inject constructor(
 
 data class MoviesUiState(
     val nowPlayingMoviesState: MovieState = MovieState.Loading,
-    val popularMoviesState: MovieState = MovieState.Loading,
-    val errorMessage: List<UiText> = emptyList()
+    val popularMoviesState: MovieState = MovieState.Loading
 )
 
-@Stable
 sealed class MovieState {
     data object Loading : MovieState()
-    data class OnDataLoaded(val movieList: List<MovieContent> = emptyList()) : MovieState()
-    data class OnError(val errorMessage: UiText? = null) : MovieState()
+    data class OnDataLoaded(val movieList: List<MovieContent>) : MovieState()
+    data class OnError(val errorMessage: UiText) : MovieState()
 }

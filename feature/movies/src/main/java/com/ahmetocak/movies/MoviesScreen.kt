@@ -159,8 +159,7 @@ private fun MovieSection(
             is MovieState.OnError -> {
                 ErrorView(
                     modifier = Modifier.fillMaxSize(),
-                    errorMessage = movieState.errorMessage?.asString()
-                        ?: stringResource(id = R.string.see_all_text)
+                    errorMessage = movieState.errorMessage.asString()
                 )
             }
         }
