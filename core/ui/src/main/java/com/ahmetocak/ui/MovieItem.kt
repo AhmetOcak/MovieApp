@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -37,7 +38,8 @@ fun MovieItem(
     imageUrl: String,
     voteAverage: Double,
     voteCount: Int,
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
+    contentScale: ContentScale = ContentScale.Crop
 ) {
     ElevatedCard(
         modifier = modifier,
@@ -45,7 +47,11 @@ fun MovieItem(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-            AnimatedAsyncImage(modifier = Modifier.fillMaxSize(), imageUrl = imageUrl)
+            AnimatedAsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                imageUrl = imageUrl,
+                contentScale = contentScale
+            )
             Column(
                 modifier = Modifier
                     .fillMaxSize()

@@ -38,6 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.helpers.DialogUiEvent
+import com.ahmetocak.common.helpers.conditional
+import com.ahmetocak.common.helpers.isScreenPortrait
+import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.ButtonCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieButton
 import com.ahmetocak.designsystem.components.MovieDialog
@@ -49,12 +52,14 @@ import com.ahmetocak.designsystem.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.designsystem.components.auth.AuthWelcomeMessage
 import com.ahmetocak.designsystem.dimens.ComponentDimens
 import com.ahmetocak.designsystem.dimens.Dimens
+import com.ahmetocak.designsystem.dimens.setAdaptiveWidth
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     onCreateAccountClick: () -> Unit,
     onNavigateToHome: () -> Unit,
+    windowHeightSizeClass: WindowSizeClasses,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -126,11 +131,15 @@ fun LoginScreen(
                 onLoginClick = remember { { viewModel.login(onNavigateToHome) } },
                 onCreateAccountClick = onCreateAccountClick,
                 onForgotPasswordClick = remember { viewModel::startResetPasswordDialog },
-                onGoogleSignInClick = remember { {
-                    viewModel.startSignInWithGoogleIntent { intentSenderRequest ->
-                        launcher.launch(intentSenderRequest)
+                onGoogleSignInClick = remember {
+                    {
+                        viewModel.startSignInWithGoogleIntent { intentSenderRequest ->
+                            launcher.launch(intentSenderRequest)
+                        }
                     }
-                } }
+                },
+                isScreenPortrait = isScreenPortrait(),
+                isScreenHeightCompact = windowHeightSizeClass == WindowSizeClasses.COMPACT
             )
         }
     }
@@ -150,17 +159,169 @@ private fun LoginScreenContent(
     onLoginClick: () -> Unit,
     onCreateAccountClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
-    onGoogleSignInClick: () -> Unit
+    onGoogleSignInClick: () -> Unit,
+    isScreenPortrait: Boolean,
+    isScreenHeightCompact: Boolean
+) {
+    FlexLayout(
+        modifier = modifier,
+        emailValue = emailValue,
+        onEmailValueChange = onEmailValueChange,
+        emailFieldError = emailFieldError,
+        emailFieldLabel = emailFieldLabel,
+        passwordValue = passwordValue,
+        onPasswordValueChange = onPasswordValueChange,
+        passwordFieldError = passwordFieldError,
+        passwordFieldLabel = passwordFieldLabel,
+        onLoginClick = onLoginClick,
+        onCreateAccountClick = onCreateAccountClick,
+        onForgotPasswordClick = onForgotPasswordClick,
+        onGoogleSignInClick = onGoogleSignInClick,
+        isScreenPortrait = isScreenPortrait,
+        isScreenHeightCompact = isScreenHeightCompact
+    )
+}
+
+@Composable
+private fun FlexLayout(
+    modifier: Modifier,
+    emailValue: String,
+    onEmailValueChange: (String) -> Unit,
+    emailFieldError: Boolean,
+    emailFieldLabel: String,
+    passwordValue: String,
+    onPasswordValueChange: (String) -> Unit,
+    passwordFieldError: Boolean,
+    passwordFieldLabel: String,
+    onLoginClick: () -> Unit,
+    onCreateAccountClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
+    onGoogleSignInClick: () -> Unit,
+    isScreenPortrait: Boolean,
+    isScreenHeightCompact: Boolean
+) {
+    if (isScreenPortrait) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = Dimens.twoLevelPadding),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AuthWelcomeMessage(text = stringResource(id = R.string.login_welcome_message))
+            AuthSection(
+                modifier = Modifier.setAdaptiveWidth(),
+                emailValue = emailValue,
+                onEmailValueChange = onEmailValueChange,
+                passwordValue = passwordValue,
+                onPasswordValueChange = onPasswordValueChange,
+                emailFieldError = emailFieldError,
+                passwordFieldError = passwordFieldError,
+                emailFieldLabel = emailFieldLabel,
+                passwordFieldLabel = passwordFieldLabel,
+                onForgotPasswordClick = onForgotPasswordClick,
+                onLoginClick = onLoginClick
+            )
+            ContinueWith()
+            GoogleSignInButton(onClick = onGoogleSignInClick)
+            SignUpNow(onCreateAccountClick = onCreateAccountClick)
+        }
+    } else {
+        Row(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AuthWelcomeMessage(text = stringResource(id = R.string.login_welcome_message))
+                if (isScreenHeightCompact) {
+                    ContinueWith()
+                    GoogleSignInButton(onClick = onGoogleSignInClick)
+                }
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AuthSection(
+                    modifier = Modifier.conditional(
+                        condition = isScreenHeightCompact,
+                        ifTrue = { setAdaptiveWidth() },
+                        ifFalse = {
+                            setAdaptiveWidth(
+                                mediumWidthRatio = 3,
+                                expandedWidthRatio = 3
+                            )
+                        }
+                    ),
+                    emailValue = emailValue,
+                    onEmailValueChange = onEmailValueChange,
+                    passwordValue = passwordValue,
+                    onPasswordValueChange = onPasswordValueChange,
+                    emailFieldError = emailFieldError,
+                    passwordFieldError = passwordFieldError,
+                    emailFieldLabel = emailFieldLabel,
+                    passwordFieldLabel = passwordFieldLabel,
+                    onForgotPasswordClick = onForgotPasswordClick,
+                    onLoginClick = onLoginClick
+                )
+                Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
+                SignUpNow(onCreateAccountClick = onCreateAccountClick)
+                if (!isScreenHeightCompact) {
+                    ContinueWith(mediumWidthRatio = 3, expandedWidthRatio = 3)
+                    GoogleSignInButton(onClick = onGoogleSignInClick)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ContinueWith(mediumWidthRatio: Int = 2, expandedWidthRatio: Int = 2) {
+    Row(
+        modifier = Modifier
+            .setAdaptiveWidth(
+                mediumWidthRatio = mediumWidthRatio,
+                expandedWidthRatio = expandedWidthRatio
+            )
+            .padding(vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
+        Text(
+            text = stringResource(id = R.string.or_contiune_with),
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+@Composable
+private fun AuthSection(
+    modifier: Modifier = Modifier,
+    emailValue: String,
+    onEmailValueChange: (String) -> Unit,
+    passwordValue: String,
+    onPasswordValueChange: (String) -> Unit,
+    emailFieldError: Boolean,
+    passwordFieldError: Boolean,
+    emailFieldLabel: String,
+    passwordFieldLabel: String,
+    onForgotPasswordClick: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(bottom = Dimens.eightLevelPadding)
-            .padding(horizontal = Dimens.twoLevelPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AuthWelcomeMessage(text = stringResource(id = R.string.login_welcome_message))
         AuthEmailOutlinedTextField(
             value = emailValue,
             onValueChange = onEmailValueChange,
@@ -187,22 +348,6 @@ private fun LoginScreenContent(
             text = stringResource(id = R.string.login_button_text),
             onClick = onLoginClick
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
-            Text(
-                text = stringResource(id = R.string.or_contiune_with),
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Divider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.primary)
-        }
-        GoogleSignInButton(onClick = onGoogleSignInClick)
-        SignUpNow(onCreateAccountClick = onCreateAccountClick)
     }
 }
 

@@ -37,14 +37,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.constants.TMDB
+import com.ahmetocak.common.helpers.isScreenPortrait
 import com.ahmetocak.common.roundToDecimal
+import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
-import com.ahmetocak.designsystem.components.MovieNavigationBar
 import com.ahmetocak.designsystem.components.MovieScaffold
+import com.ahmetocak.designsystem.components.navigation.MovieNavigationBar
 import com.ahmetocak.designsystem.dimens.ComponentDimens
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.firebase.WatchListMovie
@@ -59,6 +62,8 @@ fun WatchListScreen(
     modifier: Modifier = Modifier,
     onMovieClick: (Int) -> Unit,
     onNavigateToRoute: (String) -> Unit,
+    showNavigationRail: Boolean,
+    windowWidthSizeClass: WindowSizeClasses,
     viewModel: WatchListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -76,6 +81,7 @@ fun WatchListScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                modifier = Modifier.padding(start = if (showNavigationRail) 80.dp else 0.dp),
                 title = {
                     Text(text = stringResource(id = R.string.my_watch_list_text))
                 }
@@ -83,20 +89,30 @@ fun WatchListScreen(
         },
         bottomBar = remember {
             {
-                MovieNavigationBar(
-                    tabs = HomeSections.entries.toTypedArray(),
-                    currentRoute = HomeSections.WATCH_LIST.route,
-                    navigateToRoute = onNavigateToRoute
-                )
+                if (!showNavigationRail) {
+                    MovieNavigationBar(
+                        tabs = HomeSections.entries.toTypedArray(),
+                        currentRoute = HomeSections.WATCH_LIST.route,
+                        navigateToRoute = onNavigateToRoute
+                    )
+                }
             }
         }
     ) { paddingValues ->
         WatchListScreenContent(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(start = if (showNavigationRail) 80.dp else 0.dp),
             onMovieClick = onMovieClick,
             watchList = uiState.watchList,
             isLoading = uiState.isLoading,
-            onRemoveFromWatchListClick = remember { viewModel::deleteMovieFromWatchList }
+            onRemoveFromWatchListClick = remember { viewModel::deleteMovieFromWatchList },
+            gridCells = when (windowWidthSizeClass) {
+                is WindowSizeClasses.COMPACT -> 2
+                is WindowSizeClasses.MEDIUM -> 3
+                else -> 4
+            },
+            isScreenPortrait = isScreenPortrait()
         )
     }
 }
@@ -107,7 +123,9 @@ private fun WatchListScreenContent(
     onMovieClick: (Int) -> Unit,
     watchList: List<WatchList>,
     isLoading: Boolean,
-    onRemoveFromWatchListClick: (WatchListMovie) -> Unit
+    onRemoveFromWatchListClick: (WatchListMovie) -> Unit,
+    gridCells: Int,
+    isScreenPortrait: Boolean
 ) {
     if (isLoading) {
         FullScreenCircularProgressIndicator()
@@ -115,7 +133,7 @@ private fun WatchListScreenContent(
         if (watchList.isNotEmpty()) {
             Column(modifier = modifier.fillMaxSize()) {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(gridCells),
                     contentPadding = PaddingValues(Dimens.twoLevelPadding),
                     horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
                     verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
@@ -140,7 +158,8 @@ private fun WatchListScreenContent(
                                         imageUrlPath = movie.imageUrlPath
                                     )
                                 )
-                            }
+                            },
+                            isScreenPortrait = isScreenPortrait
                         )
                     }
                 }
@@ -183,7 +202,8 @@ private fun WatchListItem(
     voteCount: Int,
     movieId: Int,
     onClick: (Int) -> Unit,
-    onRemoveFromWatchListClick: () -> Unit
+    onRemoveFromWatchListClick: () -> Unit,
+    isScreenPortrait: Boolean
 ) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
@@ -191,7 +211,7 @@ private fun WatchListItem(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)) {
             Box(
-                modifier = Modifier.aspectRatio(2f / 3f),
+                modifier = Modifier.aspectRatio(if (isScreenPortrait) 2f / 3f else 1f),
                 contentAlignment = Alignment.TopEnd
             ) {
                 AnimatedAsyncImage(

@@ -72,8 +72,7 @@ fun AuthPasswordOutlinedTextField(
                         Icons.Filled.Visibility
                     } else {
                         Icons.Filled.VisibilityOff
-                    },
-                    contentDescription = null
+                    }, contentDescription = null
                 )
             }
         },

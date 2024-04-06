@@ -5,26 +5,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import com.ahmetocak.designsystem.WindowWidthSizeClasses
-import com.ahmetocak.designsystem.computeWindowSizeClasses
+import com.ahmetocak.designsystem.WindowSizeClasses
+import com.ahmetocak.designsystem.computeWindowWidthSize
 
 fun Modifier.setAdaptiveWidth(
     compactWidthRatio: Int = 1,
-    mediumWidthRation: Int = 2,
-    expandedWidthRation: Int = 2
+    mediumWidthRatio: Int = 2,
+    expandedWidthRatio: Int = 2
 ): Modifier = this.composed {
-    computeWindowSizeClasses()?.let { windowWidthSizeClasses ->
+    computeWindowWidthSize()?.let { windowWidthSizeClasses ->
         when (windowWidthSizeClasses) {
-            WindowWidthSizeClasses.COMPACT -> {
+            WindowSizeClasses.COMPACT -> {
                 then(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / compactWidthRatio))
             }
 
-            WindowWidthSizeClasses.MEDIUM -> {
-                then(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / mediumWidthRation))
+            WindowSizeClasses.MEDIUM -> {
+                then(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / mediumWidthRatio))
             }
 
-            WindowWidthSizeClasses.EXPANDED -> {
-                then(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / expandedWidthRation))
+            WindowSizeClasses.EXPANDED -> {
+                then(Modifier.width(LocalConfiguration.current.screenWidthDp.dp / expandedWidthRatio))
             }
         }
     } ?: this

@@ -10,6 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.helpers.LocaleManager
+import com.ahmetocak.designsystem.WindowSizeClasses
+import com.ahmetocak.designsystem.computeWindowHeightSize
+import com.ahmetocak.designsystem.computeWindowWidthSize
 import com.ahmetocak.navigation.MainDestinations
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +36,9 @@ class MainActivity : ComponentActivity() {
                 startDestination = if (firebaseAuth.currentUser?.uid == null)
                     MainDestinations.LOGIN_ROUTE else MainDestinations.HOME_ROUTE,
                 darkTheme = uiState.isDarkModeOn,
-                dynamicColor = uiState.isDynamicColorOn
+                dynamicColor = uiState.isDynamicColorOn,
+                windowWidthSizeClass = computeWindowWidthSize() ?: WindowSizeClasses.COMPACT,
+                windowHeightSizeClass = computeWindowHeightSize() ?: WindowSizeClasses.MEDIUM
             )
 
             if (uiState.userMessages.isNotEmpty()) {

@@ -53,14 +53,18 @@ import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.convertToDurationTime
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
+import com.ahmetocak.common.helpers.conditional
+import com.ahmetocak.common.helpers.isScreenPortrait
 import com.ahmetocak.common.roundToDecimal
 import com.ahmetocak.common.utils.onLoadStateAppend
 import com.ahmetocak.common.utils.onLoadStateRefresh
+import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.components.GeminiLoading
 import com.ahmetocak.designsystem.components.MovieScaffold
+import com.ahmetocak.designsystem.computeWindowHeightSize
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.firebase.WatchListMovie
 import com.ahmetocak.model.movie.RecommendedMovieContent
@@ -89,6 +93,7 @@ fun MovieDetailsScreen(
     upPress: () -> Unit,
     onActorClick: (Int) -> Unit,
     onMovieClick: (Int) -> Unit,
+    windowWidthSizeClass: WindowSizeClasses,
     viewModel: MovieDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -126,7 +131,8 @@ fun MovieDetailsScreen(
             onGeminiClick = {
                 showBottomSheet = true
                 viewModel.getGeminiResponse(context = context)
-            }
+            },
+            isScreenWidthCompact = windowWidthSizeClass == WindowSizeClasses.COMPACT
         )
 
         if (showBottomSheet) {
@@ -155,7 +161,8 @@ private fun MovieDetailsScreenContent(
     reviews: LazyPagingItems<UserReviewResults>,
     recommendations: LazyPagingItems<RecommendedMovieContent>,
     onMovieClick: (Int) -> Unit,
-    onGeminiClick: () -> Unit
+    onGeminiClick: () -> Unit,
+    isScreenWidthCompact: Boolean
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -168,7 +175,8 @@ private fun MovieDetailsScreenContent(
             detailUiState = detailUiState,
             directorName = directorName,
             isWatchlistButtonInProgress = isWatchlistButtonInProgress,
-            onGeminiClick = onGeminiClick
+            onGeminiClick = onGeminiClick,
+            isScreenWidthCompact = isScreenWidthCompact
         )
         if (reviews.itemCount != 0) {
             UserReviewsSection(reviews = reviews)
@@ -193,7 +201,8 @@ private fun MovieSection(
     detailUiState: UiState<MovieDetail>,
     directorName: String,
     isWatchlistButtonInProgress: Boolean,
-    onGeminiClick: () -> Unit
+    onGeminiClick: () -> Unit,
+    isScreenWidthCompact: Boolean
 ) {
     when (detailUiState) {
         is UiState.Loading -> {
@@ -203,12 +212,14 @@ private fun MovieSection(
         is UiState.OnDataLoaded -> {
             detailUiState.data.apply {
                 Box {
-                    AnimatedAsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(2f / 3f),
-                        imageUrl = "${TMDB.IMAGE_URL}${imageUrlPath}"
-                    )
+                    if (computeWindowHeightSize() != WindowSizeClasses.COMPACT) {
+                        AnimatedAsyncImage(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(if (isScreenPortrait()) 2f / 3f else 2f / 1f),
+                            imageUrl = "${TMDB.IMAGE_URL}${if (isScreenPortrait()) posterImageUrlPath else backdropImageUrlPath}"
+                        )
+                    }
                     TopAppBar(
                         upPress = upPress,
                         isMovieInWatchList = isMovieInWatchList,
@@ -220,7 +231,7 @@ private fun MovieSection(
                                     releaseYear = releaseDate,
                                     voteAverage = voteAverage,
                                     voteCount = voteCount,
-                                    imageUrlPath = imageUrlPath
+                                    imageUrlPath = posterImageUrlPath
                                 )
                             )
                         },
@@ -237,7 +248,8 @@ private fun MovieSection(
                     directorName = directorName,
                     movieName = movieName,
                     overview = overview,
-                    movieOriginalName = originalMovieName
+                    movieOriginalName = originalMovieName,
+                    isScreenWidthCompact = isScreenWidthCompact
                 )
             }
         }
@@ -261,7 +273,8 @@ private fun MovieDetails(
     directorName: String,
     movieName: String,
     overview: String,
-    movieOriginalName: String
+    movieOriginalName: String,
+    isScreenWidthCompact: Boolean
 ) {
     Column(
         modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
@@ -270,7 +283,7 @@ private fun MovieDetails(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column(
                 modifier = Modifier
-                    .weight(3f)
+                    .conditional(condition = isScreenWidthCompact, ifTrue = { weight(3f) })
                     .padding(end = Dimens.twoLevelPadding),
                 verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
             ) {
@@ -312,7 +325,12 @@ private fun MovieDetails(
                     }
                 })
             }
-            TmdbLogo(modifier = Modifier.weight(1f))
+            TmdbLogo(
+                modifier = Modifier.conditional(
+                    condition = isScreenWidthCompact,
+                    ifTrue = { weight(1f) }
+                )
+            )
         }
         Text(text = overview)
     }
@@ -365,17 +383,11 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
             if (trailerUiState.data.trailers.isNotEmpty()) {
                 ContentSubTitle(titleId = R.string.trailers_text)
                 LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(18f / 11f),
                     contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
                     horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
                 ) {
                     items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
-                        TrailerItem(
-                            videoId = trailer.key,
-                            title = trailer.name
-                        )
+                        TrailerItem(videoId = trailer.key)
                     }
                 }
             }
@@ -395,7 +407,11 @@ private fun UserReviewsSection(reviews: LazyPagingItems<UserReviewResults>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .height(LocalConfiguration.current.screenHeightDp.dp / 3)
+            .conditional(
+                condition = computeWindowHeightSize() == WindowSizeClasses.COMPACT,
+                ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) },
+                ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 2) }
+            )
     ) {
         contentStickyHeader(
             titleId = R.string.user_reviews,
@@ -438,7 +454,11 @@ private fun MovieRecommendationsSection(
     ContentSubTitle(titleId = R.string.recommendations_text)
     LazyRow(
         modifier = Modifier
-            .height(LocalConfiguration.current.screenHeightDp.dp / 3)
+            .conditional(
+                condition = computeWindowHeightSize() == WindowSizeClasses.COMPACT,
+                ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) },
+                ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 2) }
+            )
             .fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
         horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)

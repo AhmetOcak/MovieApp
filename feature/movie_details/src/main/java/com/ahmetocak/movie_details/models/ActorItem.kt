@@ -19,7 +19,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.ahmetocak.common.helpers.conditional
+import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
+import com.ahmetocak.designsystem.computeWindowWidthSize
 import com.ahmetocak.designsystem.dimens.Dimens
 
 private val ACTOR_IMAGE_SIZE = 128.dp
@@ -34,7 +37,11 @@ internal fun ActorItem(
     onClick: (Int) -> Unit
 ) {
     ElevatedCard(
-        modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp / 1.53f),
+        modifier = Modifier.conditional(
+            condition = computeWindowWidthSize() == WindowSizeClasses.COMPACT,
+            ifTrue = { this.width(LocalConfiguration.current.screenWidthDp.dp / 1.53f) },
+            ifFalse = { this.width(LocalConfiguration.current.screenWidthDp.dp / 2.5f) }
+        ),
         onClick = { onClick(actorId) }) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

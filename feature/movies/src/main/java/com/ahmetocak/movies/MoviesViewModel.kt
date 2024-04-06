@@ -78,6 +78,6 @@ data class MoviesUiState(
 @Stable
 sealed class MovieState {
     data object Loading : MovieState()
-    data class OnDataLoaded(val movieList: List<MovieContent> = emptyList()) : MovieState()
-    data class OnError(val errorMessage: UiText? = null) : MovieState()
+    data class OnDataLoaded(val movieList: List<MovieContent>) : MovieState()
+    data class OnError(val errorMessage: UiText) : MovieState()
 }

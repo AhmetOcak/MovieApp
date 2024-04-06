@@ -34,6 +34,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.UiState
+import com.ahmetocak.common.helpers.conditional
+import com.ahmetocak.common.helpers.isScreenPortrait
+import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
@@ -49,6 +52,7 @@ fun ActorDetailsScreen(
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
     onMovieClick: (Int) -> Unit,
+    windowWidthSizeClass: WindowSizeClasses,
     viewModel: ActorDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,7 +76,9 @@ fun ActorDetailsScreen(
             modifier = Modifier.padding(paddingValues),
             actorDetailsState = uiState.actorDetailsState,
             actorMoviesState = uiState.actorMoviesState,
-            onMovieClick = onMovieClick
+            onMovieClick = onMovieClick,
+            isScreenWidthCompact = windowWidthSizeClass == WindowSizeClasses.COMPACT,
+            isScreenPortrait = isScreenPortrait()
         )
     }
 }
@@ -82,7 +88,9 @@ private fun ActorDetailsScreenContent(
     modifier: Modifier,
     actorDetailsState: UiState<ActorDetails>,
     actorMoviesState: UiState<List<ActorMoviesContent>>,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    isScreenWidthCompact: Boolean,
+    isScreenPortrait: Boolean
 ) {
     Column(
         modifier = modifier
@@ -91,7 +99,11 @@ private fun ActorDetailsScreenContent(
             .padding(bottom = Dimens.twoLevelPadding),
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
-        ActorDetailsSection(actorDetailsState = actorDetailsState)
+        ActorDetailsSection(
+            actorDetailsState = actorDetailsState,
+            isScreenWidthCompact = isScreenWidthCompact,
+            isScreenPortrait = isScreenPortrait
+        )
         ActorMoviesSection(
             actorMoviesState = actorMoviesState,
             onMovieClick = onMovieClick
@@ -100,7 +112,11 @@ private fun ActorDetailsScreenContent(
 }
 
 @Composable
-private fun ActorDetailsSection(actorDetailsState: UiState<ActorDetails>) {
+private fun ActorDetailsSection(
+    actorDetailsState: UiState<ActorDetails>,
+    isScreenWidthCompact: Boolean,
+    isScreenPortrait: Boolean
+) {
     when (actorDetailsState) {
         is UiState.Loading -> {
             FullScreenCircularProgressIndicator()
@@ -108,23 +124,59 @@ private fun ActorDetailsSection(actorDetailsState: UiState<ActorDetails>) {
 
         is UiState.OnDataLoaded -> {
             actorDetailsState.data.apply {
-                AnimatedAsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(2f / 3f),
-                    imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}"
-                )
-                ContentTextRow(subtitleId = R.string.place_of_birth, contentText = placeOfBirth)
-                if (deathDay != null) {
-                    ContentTextRow(
-                        subtitleId = R.string.birth_and_death_day,
-                        contentText = "$birthday / $deathDay"
+                if (isScreenPortrait) {
+                    AnimatedAsyncImage(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .conditional(
+                                condition = !isScreenWidthCompact && isScreenPortrait(),
+                                ifTrue = { aspectRatio(4f / 5f) },
+                                ifFalse = { aspectRatio(2f / 3f) }
+                            ),
+                        imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}"
                     )
+                    ContentTextRow(subtitleId = R.string.place_of_birth, contentText = placeOfBirth)
+                    if (deathDay != null) {
+                        ContentTextRow(
+                            subtitleId = R.string.birth_and_death_day,
+                            contentText = "$birthday / $deathDay"
+                        )
+                    } else {
+                        ContentTextRow(subtitleId = R.string.birthday, contentText = birthday)
+                    }
+                    if (biography.isNotBlank()) {
+                        ContentTextRow(subtitleId = R.string.biography, contentText = biography)
+                    }
                 } else {
-                    ContentTextRow(subtitleId = R.string.birthday, contentText = birthday)
-                }
-                if (biography.isNotBlank()) {
-                    ContentTextRow(subtitleId = R.string.biography, contentText = biography)
+                    Row {
+                        AnimatedAsyncImage(
+                            modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp),
+                            imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}"
+                        )
+                        Column {
+                            ContentTextRow(
+                                subtitleId = R.string.place_of_birth,
+                                contentText = placeOfBirth
+                            )
+                            if (deathDay != null) {
+                                ContentTextRow(
+                                    subtitleId = R.string.birth_and_death_day,
+                                    contentText = "$birthday / $deathDay"
+                                )
+                            } else {
+                                ContentTextRow(
+                                    subtitleId = R.string.birthday,
+                                    contentText = birthday
+                                )
+                            }
+                            if (biography.isNotBlank()) {
+                                ContentTextRow(
+                                    subtitleId = R.string.biography,
+                                    contentText = biography
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -158,7 +210,11 @@ private fun ActorMoviesSection(
                 fontWeight = FontWeight.Bold
             )
             LazyRow(
-                modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp / 3),
+                modifier = Modifier.conditional(
+                    condition = isScreenPortrait(),
+                    ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 3) },
+                    ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) }
+                ),
                 contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
                 horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
             ) {
@@ -189,9 +245,7 @@ private fun ActorMoviesSection(
 @Composable
 private fun ContentTextRow(subtitleId: Int, contentText: String) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimens.twoLevelPadding)
+        modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding)
     ) {
         Text(text = buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {

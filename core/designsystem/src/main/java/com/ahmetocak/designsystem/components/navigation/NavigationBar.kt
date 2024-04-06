@@ -1,4 +1,4 @@
-package com.ahmetocak.designsystem.components
+package com.ahmetocak.designsystem.components.navigation
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar

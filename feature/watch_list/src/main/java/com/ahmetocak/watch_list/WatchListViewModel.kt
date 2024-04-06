@@ -57,9 +57,9 @@ class WatchListViewModel @Inject constructor(
 
     fun deleteMovieFromWatchList(watchListMovie: WatchListMovie) {
         viewModelScope.launch(ioDispatcher) {
-            watchListMovie.id?.let {
+            watchListMovie.id?.let { id ->
                 deleteMovieFromWatchListUseCase.invoke(
-                    movieId = it,
+                    movieId = id,
                     onTaskSuccess = {
                         _uiState.update {
                             it.copy(userMessages = listOf(UiText.StringResource(R.string.movie_remove_watch_list)))

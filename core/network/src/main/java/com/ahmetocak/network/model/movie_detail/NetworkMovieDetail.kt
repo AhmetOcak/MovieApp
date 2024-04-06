@@ -8,7 +8,10 @@ data class NetworkMovieDetail(
     val overview: String?,
 
     @SerializedName("poster_path")
-    val imageUrlPath: String?,
+    val posterImageUrlPath: String?,
+
+    @SerializedName("backdrop_path")
+    val backdropImageUrlPath: String?,
 
     @SerializedName("title")
     val movieName: String?,
