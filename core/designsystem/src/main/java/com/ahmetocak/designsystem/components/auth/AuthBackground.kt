@@ -1,10 +1,11 @@
 package com.ahmetocak.designsystem.components.auth
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,8 +40,20 @@ fun AuthBackground() {
     Box {
         Image(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(LocalConfiguration.current.screenHeightDp.dp / 2)
+                .height(
+                    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        LocalConfiguration.current.screenHeightDp.dp / 2
+                    } else {
+                        LocalConfiguration.current.screenHeightDp.dp
+                    }
+                )
+                .width(
+                    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        LocalConfiguration.current.screenWidthDp.dp
+                    } else {
+                        LocalConfiguration.current.screenWidthDp.dp / 2
+                    }
+                )
                 .onGloballyPositioned { sizeImage = it.size }
                 .blur(
                     radiusX = 10.dp,

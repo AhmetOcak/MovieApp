@@ -1,5 +1,6 @@
 package com.ahmetocak.movie_details
 
+import android.graphics.drawable.Drawable
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -37,6 +38,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -45,6 +48,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
@@ -54,6 +58,7 @@ import com.ahmetocak.common.convertToDurationTime
 import com.ahmetocak.common.helpers.ShowUserMessage
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
+import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.roundToDecimal
 import com.ahmetocak.common.utils.onLoadStateAppend
 import com.ahmetocak.common.utils.onLoadStateRefresh
@@ -90,6 +95,8 @@ fun MovieDetailsScreen(
     upPress: () -> Unit,
     onActorClick: (Int) -> Unit,
     onMovieClick: (Int) -> Unit,
+    isScreenWidthExpanded: Boolean,
+    isScreenHeightCompact: Boolean,
     viewModel: MovieDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -123,10 +130,25 @@ fun MovieDetailsScreen(
             reviews = userReviews,
             recommendations = recommendations,
             onMovieClick = onMovieClick,
-            onGeminiClick = {
-                showBottomSheet = true
-                viewModel.getGeminiResponse(context = context)
-            }
+            onGeminiClick = remember {
+                {
+                    showBottomSheet = true
+                    viewModel.getGeminiResponse(context = context)
+                }
+            },
+            onImageLoaded = remember {
+                {
+                    if (!isScreenHeightCompact) {
+                        viewModel.generatePaletteFromImage(it.toBitmap())
+                    }
+                }
+            },
+            posterBackgroundColors = if (isScreenHeightCompact) listOf(
+                Color.Transparent,
+                Color.Transparent
+            ) else uiState.posterBackgroundColors,
+            isScreenHeightCompact = isScreenHeightCompact,
+            isScreenWidthExpanded = isScreenWidthExpanded
         )
 
         if (showBottomSheet) {
@@ -155,7 +177,11 @@ private fun MovieDetailsScreenContent(
     reviews: LazyPagingItems<UserReviewResults>,
     recommendations: LazyPagingItems<RecommendedMovieContent>,
     onMovieClick: (Int) -> Unit,
-    onGeminiClick: () -> Unit
+    onGeminiClick: () -> Unit,
+    isScreenWidthExpanded: Boolean,
+    posterBackgroundColors: List<Color>,
+    onImageLoaded: (Drawable) -> Unit,
+    isScreenHeightCompact: Boolean
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -168,17 +194,22 @@ private fun MovieDetailsScreenContent(
             detailUiState = detailUiState,
             directorName = directorName,
             isWatchlistButtonInProgress = isWatchlistButtonInProgress,
-            onGeminiClick = onGeminiClick
+            onGeminiClick = onGeminiClick,
+            isScreenWidthExpanded = isScreenWidthExpanded,
+            posterBackgroundColors = posterBackgroundColors,
+            onImageLoaded = onImageLoaded,
+            isScreenHeightCompact = isScreenHeightCompact
         )
         if (reviews.itemCount != 0) {
-            UserReviewsSection(reviews = reviews)
+            UserReviewsSection(reviews = reviews, isScreenHeightCompact = isScreenHeightCompact)
         }
         ActorListSection(castUiState = castUiState, onActorClick = onActorClick)
         TrailerListSection(trailerUiState = trailerUiState)
         if (recommendations.itemCount != 0) {
             MovieRecommendationsSection(
                 recommendations = recommendations,
-                onMovieClick = onMovieClick
+                onMovieClick = onMovieClick,
+                isScreenHeightCompact = isScreenHeightCompact
             )
         }
         Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
@@ -193,7 +224,11 @@ private fun MovieSection(
     detailUiState: UiState<MovieDetail>,
     directorName: String,
     isWatchlistButtonInProgress: Boolean,
-    onGeminiClick: () -> Unit
+    onGeminiClick: () -> Unit,
+    isScreenWidthExpanded: Boolean,
+    posterBackgroundColors: List<Color>,
+    onImageLoaded: (Drawable) -> Unit,
+    isScreenHeightCompact: Boolean
 ) {
     when (detailUiState) {
         is UiState.Loading -> {
@@ -202,13 +237,21 @@ private fun MovieSection(
 
         is UiState.OnDataLoaded -> {
             detailUiState.data.apply {
-                Box {
-                    AnimatedAsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(2f / 3f),
-                        imageUrl = "${TMDB.IMAGE_URL}${imageUrlPath}"
+                Box(
+                    modifier = Modifier.background(
+                        brush = Brush.verticalGradient(colors = posterBackgroundColors)
                     )
+                ) {
+                    if (!isScreenHeightCompact) {
+                        AnimatedAsyncImage(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(LocalConfiguration.current.screenHeightDp.dp / 1.33f)
+                                .aspectRatio(2f / 3f, true),
+                            imageUrl = "${TMDB.IMAGE_URL}${posterImageUrlPath}",
+                            onImagePainterSuccess = onImageLoaded
+                        )
+                    }
                     TopAppBar(
                         upPress = upPress,
                         isMovieInWatchList = isMovieInWatchList,
@@ -220,7 +263,7 @@ private fun MovieSection(
                                     releaseYear = releaseDate,
                                     voteAverage = voteAverage,
                                     voteCount = voteCount,
-                                    imageUrlPath = imageUrlPath
+                                    imageUrlPath = posterImageUrlPath
                                 )
                             )
                         },
@@ -237,7 +280,8 @@ private fun MovieSection(
                     directorName = directorName,
                     movieName = movieName,
                     overview = overview,
-                    movieOriginalName = originalMovieName
+                    movieOriginalName = originalMovieName,
+                    isScreenWidthExpanded = isScreenWidthExpanded
                 )
             }
         }
@@ -261,7 +305,8 @@ private fun MovieDetails(
     directorName: String,
     movieName: String,
     overview: String,
-    movieOriginalName: String
+    movieOriginalName: String,
+    isScreenWidthExpanded: Boolean
 ) {
     Column(
         modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
@@ -270,7 +315,7 @@ private fun MovieDetails(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column(
                 modifier = Modifier
-                    .weight(3f)
+                    .conditional(condition = !isScreenWidthExpanded, ifTrue = { weight(3f) })
                     .padding(end = Dimens.twoLevelPadding),
                 verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
             ) {
@@ -312,7 +357,12 @@ private fun MovieDetails(
                     }
                 })
             }
-            TmdbLogo(modifier = Modifier.weight(1f))
+            TmdbLogo(
+                modifier = Modifier.conditional(
+                    condition = !isScreenWidthExpanded,
+                    ifTrue = { weight(1f).aspectRatio(1f) }
+                )
+            )
         }
         Text(text = overview)
     }
@@ -365,17 +415,11 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
             if (trailerUiState.data.trailers.isNotEmpty()) {
                 ContentSubTitle(titleId = R.string.trailers_text)
                 LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(18f / 11f),
                     contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
                     horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
                 ) {
                     items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
-                        TrailerItem(
-                            videoId = trailer.key,
-                            title = trailer.name
-                        )
+                        TrailerItem(videoId = trailer.key)
                     }
                 }
             }
@@ -391,54 +435,68 @@ private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
 }
 
 @Composable
-private fun UserReviewsSection(reviews: LazyPagingItems<UserReviewResults>) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(LocalConfiguration.current.screenHeightDp.dp / 3)
-    ) {
-        contentStickyHeader(
-            titleId = R.string.user_reviews,
-            modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding)
-        )
-        items(reviews.itemCount, key = { it }) { index ->
-            reviews[index]?.let { review ->
-                UserReviewItem(
-                    author = review.author,
-                    authorImagePath = review.authorDetails.avatarPath,
-                    content = review.content,
-                    createdAt = review.createdAt,
-                    updatedAt = review.updatedAt,
-                    rating = review.authorDetails.rating,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Dimens.twoLevelPadding),
-                )
-                Divider(
-                    modifier = Modifier.padding(
-                        vertical = Dimens.oneLevelPadding,
-                        horizontal = Dimens.twoLevelPadding
+private fun UserReviewsSection(
+    reviews: LazyPagingItems<UserReviewResults>,
+    isScreenHeightCompact: Boolean
+) {
+    Column {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .conditional(
+                    condition = isScreenHeightCompact,
+                    ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) },
+                    ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 2) }
+                ),
+            verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+            contentPadding = PaddingValues(vertical = Dimens.oneLevelPadding)
+        ) {
+            contentStickyHeader(
+                titleId = R.string.user_reviews,
+                modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding)
+            )
+            items(reviews.itemCount, key = { it }) { index ->
+                reviews[index]?.let { review ->
+                    UserReviewItem(
+                        author = review.author,
+                        authorImagePath = review.authorDetails.avatarPath,
+                        content = review.content,
+                        createdAt = review.createdAt,
+                        updatedAt = review.updatedAt,
+                        rating = review.authorDetails.rating,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = Dimens.twoLevelPadding),
                     )
-                )
+                }
+            }
+
+            reviews.loadState.apply {
+                onLoadStateRefresh(loadState = refresh)
+                onLoadStateAppend(loadState = append, isResultEmpty = reviews.itemCount == 0)
             }
         }
-
-        reviews.loadState.apply {
-            onLoadStateRefresh(loadState = refresh)
-            onLoadStateAppend(loadState = append, isResultEmpty = reviews.itemCount == 0)
-        }
+        Divider(
+            modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding),
+            thickness = 2.dp
+        )
     }
 }
 
 @Composable
 private fun MovieRecommendationsSection(
     recommendations: LazyPagingItems<RecommendedMovieContent>,
-    onMovieClick: (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    isScreenHeightCompact: Boolean
 ) {
     ContentSubTitle(titleId = R.string.recommendations_text)
     LazyRow(
         modifier = Modifier
-            .height(LocalConfiguration.current.screenHeightDp.dp / 3)
+            .conditional(
+                condition = isScreenHeightCompact,
+                ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) },
+                ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 3) }
+            )
             .fillMaxWidth(),
         contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
         horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)

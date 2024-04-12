@@ -38,6 +38,7 @@ javax-inject = "1"
 firebase-storage-ktx = "20.3.0"
 play-services-auth = "21.0.0"
 generativeai = "0.2.2"
+palette = "1.0.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -85,6 +86,8 @@ javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inje
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebase-storage-ktx" }
 google-android-gms = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
 google-ai-client-generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
+androidx-compose-material3-windowsize = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }

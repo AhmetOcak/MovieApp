@@ -22,8 +22,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.common.constants.TMDB
+import com.ahmetocak.common.helpers.isScreenPortrait
 import com.ahmetocak.common.utils.onLoadStateAppend
 import com.ahmetocak.common.utils.onLoadStateRefresh
+import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.movie.MovieContent
@@ -35,6 +37,7 @@ fun SeeAllScreen(
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
     onMovieClick: (Int) -> Unit,
+    windowSizeClasses: WindowSizeClasses,
     viewModel: SeeAllViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -59,7 +62,9 @@ fun SeeAllScreen(
         SeeAllScreenContent(
             modifier = Modifier.padding(paddingValues),
             onMovieClick = onMovieClick,
-            movieList = movieList
+            movieList = movieList,
+            isScreenWidthCompact = windowSizeClasses == WindowSizeClasses.COMPACT,
+            isScreenPortrait = isScreenPortrait()
         )
     }
 }
@@ -68,14 +73,16 @@ fun SeeAllScreen(
 private fun SeeAllScreenContent(
     modifier: Modifier,
     onMovieClick: (Int) -> Unit,
-    movieList: LazyPagingItems<MovieContent>?
+    movieList: LazyPagingItems<MovieContent>?,
+    isScreenWidthCompact: Boolean,
+    isScreenPortrait: Boolean
 ) {
     if (movieList != null) {
         LazyVerticalGrid(
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = Dimens.twoLevelPadding),
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(if (isScreenWidthCompact) 2 else 3),
             contentPadding = PaddingValues(vertical = Dimens.twoLevelPadding),
             horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
             verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
@@ -90,7 +97,7 @@ private fun SeeAllScreenContent(
                         voteAverage = movie.voteAverage,
                         voteCount = movie.voteCount ?: 0,
                         onClick = onMovieClick,
-                        modifier = Modifier.aspectRatio(2f / 3f)
+                        modifier = Modifier.aspectRatio(if (isScreenPortrait) 2f / 3f else 1f)
                     )
                 }
             }

@@ -1,5 +1,6 @@
 package com.ahmetocak.actor_details
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -19,21 +22,27 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.UiState
+import com.ahmetocak.common.helpers.conditional
+import com.ahmetocak.common.helpers.isScreenPortrait
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
@@ -89,7 +98,8 @@ private fun ActorDetailsScreenContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(bottom = Dimens.twoLevelPadding),
-        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ActorDetailsSection(actorDetailsState = actorDetailsState)
         ActorMoviesSection(
@@ -110,9 +120,18 @@ private fun ActorDetailsSection(actorDetailsState: UiState<ActorDetails>) {
             actorDetailsState.data.apply {
                 AnimatedAsyncImage(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(2f / 3f),
-                    imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}"
+                        .clip(CircleShape)
+                        .conditional(
+                            condition = isScreenPortrait(),
+                            ifTrue = { size(LocalConfiguration.current.screenWidthDp.dp / 2) },
+                            ifFalse = { size(LocalConfiguration.current.screenHeightDp.dp / 2) }
+                        ),
+                    imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}",
+                    borderShape = CircleShape,
+                    borderStroke = BorderStroke(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 )
                 ContentTextRow(subtitleId = R.string.place_of_birth, contentText = placeOfBirth)
                 if (deathDay != null) {
@@ -150,15 +169,22 @@ private fun ActorMoviesSection(
 
         is UiState.OnDataLoaded -> {
             Text(
-                modifier = Modifier.padding(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
                     top = Dimens.oneLevelPadding,
                     start = Dimens.twoLevelPadding
                 ),
                 text = stringResource(id = R.string.actor_movies),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start
             )
             LazyRow(
-                modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp / 3),
+                modifier = Modifier.conditional(
+                    condition = isScreenPortrait(),
+                    ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 3) },
+                    ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) }
+                ),
                 contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
                 horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
             ) {
@@ -191,7 +217,8 @@ private fun ContentTextRow(subtitleId: Int, contentText: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.twoLevelPadding)
+            .padding(horizontal = Dimens.twoLevelPadding),
+        horizontalArrangement = Arrangement.Start
     ) {
         Text(text = buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {

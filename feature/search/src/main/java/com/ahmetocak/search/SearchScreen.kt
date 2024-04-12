@@ -26,15 +26,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.common.constants.TMDB
+import com.ahmetocak.common.helpers.isScreenPortrait
 import com.ahmetocak.common.utils.onLoadStateAppend
 import com.ahmetocak.common.utils.onLoadStateRefresh
-import com.ahmetocak.designsystem.components.MovieNavigationBar
+import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.MovieScaffold
+import com.ahmetocak.designsystem.components.navigation.MovieNavigationBar
 import com.ahmetocak.designsystem.dimens.ComponentDimens
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.movie.MovieContent
@@ -46,6 +49,8 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     onNavigateToRoute: (String) -> Unit,
     onMovieClick: (Int) -> Unit,
+    showNavigationRail: Boolean,
+    windowWidthSizeClass: WindowSizeClasses,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -55,15 +60,19 @@ fun SearchScreen(
     MovieScaffold(
         modifier = modifier.fillMaxSize(),
         bottomBar = {
-            MovieNavigationBar(
-                tabs = HomeSections.entries.toTypedArray(),
-                currentRoute = HomeSections.SEARCH.route,
-                navigateToRoute = onNavigateToRoute
-            )
+            if (!showNavigationRail) {
+                MovieNavigationBar(
+                    tabs = HomeSections.entries.toTypedArray(),
+                    currentRoute = HomeSections.SEARCH.route,
+                    navigateToRoute = onNavigateToRoute
+                )
+            }
         }
     ) { paddingValues ->
         SearchScreenContent(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(start = if (showNavigationRail) 80.dp else 0.dp),
             searchValue = viewModel.query,
             onSearchValueChange = remember { viewModel::updateQueryValue },
             searchError = uiState.queryFieldErrorMessage != null,
@@ -72,7 +81,9 @@ fun SearchScreen(
             onSearchClick = remember { viewModel::searchMovie },
             searchResult = searchResult,
             onMovieItemClick = onMovieClick,
-            isSearchDone = uiState.isSearchDone
+            isSearchDone = uiState.isSearchDone,
+            isScreenWidthCompact = windowWidthSizeClass == WindowSizeClasses.COMPACT,
+            isScreenPortrait = isScreenPortrait()
         )
     }
 }
@@ -87,7 +98,9 @@ private fun SearchScreenContent(
     onSearchClick: () -> Unit,
     searchResult: LazyPagingItems<MovieContent>,
     onMovieItemClick: (Int) -> Unit,
-    isSearchDone: Boolean
+    isSearchDone: Boolean,
+    isScreenWidthCompact: Boolean,
+    isScreenPortrait: Boolean
 ) {
     Column(
         modifier = modifier
@@ -95,27 +108,16 @@ private fun SearchScreenContent(
             .padding(horizontal = Dimens.twoLevelPadding)
             .padding(top = Dimens.twoLevelPadding)
     ) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
+        SearchField(
             value = searchValue,
             onValueChange = onSearchValueChange,
             isError = searchError,
-            label = {
-                Text(text = searchLabelText)
-            },
-            leadingIcon = {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = null)
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(onSearch = { onSearchClick() }),
-            singleLine = true
+            labelText = searchLabelText,
+            onSearchClick = onSearchClick
         )
         if (isSearchDone) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = GridCells.Fixed(if (isScreenWidthCompact) 2 else 3),
                 contentPadding = PaddingValues(vertical = Dimens.twoLevelPadding),
                 verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
                 horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
@@ -130,7 +132,7 @@ private fun SearchScreenContent(
                             voteAverage = movie.voteAverage,
                             voteCount = movie.voteCount ?: 0,
                             onClick = onMovieItemClick,
-                            modifier = Modifier.aspectRatio(2f / 3f)
+                            modifier = Modifier.aspectRatio(if (isScreenPortrait) 2f / 3f else 1f)
                         )
                     }
                 }
@@ -147,6 +149,34 @@ private fun SearchScreenContent(
             SearchSomethingView()
         }
     }
+}
+
+@Composable
+private fun SearchField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean,
+    labelText: String,
+    onSearchClick: () -> Unit
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = value,
+        onValueChange = onValueChange,
+        isError = isError,
+        label = {
+            Text(text = labelText)
+        },
+        leadingIcon = {
+            Icon(imageVector = Icons.Filled.Search, contentDescription = null)
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(onSearch = { onSearchClick() }),
+        singleLine = true
+    )
 }
 
 @Composable

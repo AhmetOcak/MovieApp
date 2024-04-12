@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ahmetocak.designsystem.components.DynamicLayout
 import com.ahmetocak.designsystem.components.MovieButton
 import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.components.auth.AuthBackground
@@ -26,6 +27,7 @@ import com.ahmetocak.designsystem.components.auth.AuthPasswordOutlinedTextField
 import com.ahmetocak.designsystem.components.auth.AuthWelcomeMessage
 import com.ahmetocak.designsystem.dimens.ComponentDimens
 import com.ahmetocak.designsystem.dimens.Dimens
+import com.ahmetocak.designsystem.dimens.setAdaptiveWidth
 
 @Composable
 fun SignUpScreen(
@@ -91,15 +93,55 @@ private fun SignUpScreenContent(
     confirmPasswordLabel: String,
     onSignUpClick: () -> Unit
 ) {
-    Column(
+    DynamicLayout(
         modifier = modifier
             .fillMaxSize()
-            .padding(bottom = Dimens.eightLevelPadding)
             .padding(horizontal = Dimens.twoLevelPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AuthWelcomeMessage(text = stringResource(id = R.string.sign_up_welcome_message))
+        AuthSection(
+            emailValue = emailValue,
+            onEmailValueChange = onEmailValueChange,
+            emailFieldError = emailFieldError,
+            emailFieldLabel = emailFieldLabel,
+            passwordValue = passwordValue,
+            onPasswordValueChange = onPasswordValueChange,
+            passwordFieldError = passwordFieldError,
+            passwordFieldLabel = passwordFieldLabel,
+            confirmPasswordValue = confirmPasswordValue,
+            onConfirmPasswordValueChange = onConfirmPasswordValueChange,
+            confirmPasswordFieldError = confirmPasswordFieldError,
+            confirmPasswordLabel = confirmPasswordLabel,
+            onSignUpClick = onSignUpClick
+        )
+    }
+}
+
+
+@Composable
+private fun AuthSection(
+    emailValue: String,
+    onEmailValueChange: (String) -> Unit,
+    emailFieldError: Boolean,
+    emailFieldLabel: String,
+    passwordValue: String,
+    onPasswordValueChange: (String) -> Unit,
+    passwordFieldError: Boolean,
+    passwordFieldLabel: String,
+    confirmPasswordValue: String,
+    onConfirmPasswordValueChange: (String) -> Unit,
+    confirmPasswordFieldError: Boolean,
+    confirmPasswordLabel: String,
+    onSignUpClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.setAdaptiveWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         AuthEmailOutlinedTextField(
             value = emailValue,
             onValueChange = onEmailValueChange,

@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
@@ -60,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ahmetocak.common.findActivity
 import com.ahmetocak.common.helpers.DialogUiEvent
 import com.ahmetocak.common.helpers.LocaleManager
 import com.ahmetocak.common.findActivity
@@ -68,9 +71,9 @@ import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ButtonCircularProgressIndicator
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieDialog
-import com.ahmetocak.designsystem.components.MovieNavigationBar
 import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.components.auth.AuthPasswordOutlinedTextField
+import com.ahmetocak.designsystem.components.navigation.MovieNavigationBar
 import com.ahmetocak.designsystem.dimens.ComponentDimens
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.designsystem.theme.backgroundDark
@@ -100,6 +103,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     onNavigateToRoute: (String) -> Unit,
     onLogOutClick: () -> Unit,
+    showNavigationRail: Boolean,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -108,8 +112,7 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    val pickMedia =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 viewModel.uploadUserProfileImage(uri)
             }
@@ -141,17 +144,21 @@ fun ProfileScreen(
         modifier = modifier.fillMaxSize(),
         bottomBar = remember {
             {
-                MovieNavigationBar(
-                    tabs = HomeSections.entries.toTypedArray(),
-                    currentRoute = HomeSections.PROFILE.route,
-                    navigateToRoute = onNavigateToRoute
-                )
+                if (!showNavigationRail) {
+                    MovieNavigationBar(
+                        tabs = HomeSections.entries.toTypedArray(),
+                        currentRoute = HomeSections.PROFILE.route,
+                        navigateToRoute = onNavigateToRoute
+                    )
+                }
             }
         }
     ) { paddingValues ->
         ProfileScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            onLogOutClick = remember(viewModel) {
+            modifier = Modifier
+                .padding(paddingValues)
+                .padding(start = if (showNavigationRail) 80.dp else 0.dp),
+            onLogOutClick = remember {
                 {
                     viewModel.handleOnLogOutClick()
                     onLogOutClick()
@@ -159,8 +166,8 @@ fun ProfileScreen(
             },
             profileImageUrl = uiState.profileImgUri?.toString() ?: "",
             userEmail = uiState.userEmail,
-            onDeleteAccountClick = remember(viewModel) { viewModel::startDeleteAccountDialog },
-            onDarkThemeSwitchChange = remember(viewModel) { viewModel::setTheme },
+            onDeleteAccountClick = remember { viewModel::startDeleteAccountDialog },
+            onDarkThemeSwitchChange = remember { viewModel::setTheme },
             onLanguageSelect = remember {
                 { selectedLanguage ->
                     val localeManager = LocaleManager(context)
@@ -175,7 +182,7 @@ fun ProfileScreen(
                 }
             },
             isAppThemeDark = uiState.isDarkModeOn,
-            onDynamicColorSwitchChange = remember(viewModel) { viewModel::setDynamicColor },
+            onDynamicColorSwitchChange = remember { viewModel::setDynamicColor },
             isDynamicColorActive = uiState.isDynamicColorOn,
             onPickUpFromGalleryClick = remember {
                 {
@@ -227,7 +234,6 @@ private fun ProfileScreenContent(
             currentLanguage = currentLanguage
         )
     }
-    AppIcon(modifier = modifier.fillMaxSize())
 }
 
 @Composable
@@ -312,7 +318,8 @@ private fun SettingsSection(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(Dimens.twoLevelPadding),
+            .padding(horizontal = Dimens.twoLevelPadding)
+            .padding(top = Dimens.twoLevelPadding),
     ) {
         Text(
             text = stringResource(id = R.string.settings_text),
@@ -321,18 +328,26 @@ private fun SettingsSection(
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = Dimens.twoLevelPadding)
+                .padding(top = Dimens.twoLevelPadding)
         )
-        DarkThemePicker(
-            onDarkThemeSwitchChange = onDarkThemeSwitchChange,
-            isAppThemeDark = isAppThemeDark
-        )
-        LanguagePicker(onLanguageSelect = onLanguageSelect, currentLanguage = currentLanguage)
-        if (Build.VERSION.SDK_INT >= 31) {
-            DynamicColorPicker(
-                onDynamicColorSwitchChange = onDynamicColorSwitchChange,
-                isDynamicColorActive = isDynamicColorActive
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            DarkThemePicker(
+                onDarkThemeSwitchChange = onDarkThemeSwitchChange,
+                isAppThemeDark = isAppThemeDark
             )
+            LanguagePicker(onLanguageSelect = onLanguageSelect, currentLanguage = currentLanguage)
+            if (Build.VERSION.SDK_INT >= 31) {
+                DynamicColorPicker(
+                    onDynamicColorSwitchChange = onDynamicColorSwitchChange,
+                    isDynamicColorActive = isDynamicColorActive
+                )
+            }
+            Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
+            AppIcon()
         }
     }
 }
@@ -430,25 +445,26 @@ private fun SettingItem(height: Dp = 48.dp, content: @Composable RowScope.() -> 
 }
 
 @Composable
-private fun AppIcon(modifier: Modifier) {
-    Box(
-        modifier = modifier.padding(bottom = Dimens.oneLevelPadding),
-        contentAlignment = Alignment.BottomCenter
+private fun AppIcon() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = Dimens.oneLevelPadding),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                modifier = Modifier
-                    .padding(Dimens.twoLevelPadding)
-                    .size(ComponentDimens.appIconSize),
-                bitmap = LocalContext.current.packageManager.getApplicationIcon("com.ahmetocak.movieapp")
-                    .toBitmap().asImageBitmap(),
-                contentDescription = null
-            )
-            Text(
-                text = "Ahmet Ocak",
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
+        Image(
+            modifier = Modifier
+                .padding(Dimens.twoLevelPadding)
+                .size(ComponentDimens.appIconSize),
+            bitmap = LocalContext.current.packageManager.getApplicationIcon("com.ahmetocak.movieapp")
+                .toBitmap().asImageBitmap(),
+            contentDescription = null
+        )
+        Text(
+            text = "Ahmet Ocak",
+            style = MaterialTheme.typography.titleMedium
+        )
     }
 }
 
