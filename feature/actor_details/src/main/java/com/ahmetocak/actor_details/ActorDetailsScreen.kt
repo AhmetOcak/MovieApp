@@ -1,6 +1,8 @@
 package com.ahmetocak.actor_details
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -43,6 +46,7 @@ import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.helpers.isScreenPortrait
+import com.ahmetocak.common.helpers.setSize
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
@@ -157,6 +161,7 @@ private fun ActorDetailsSection(actorDetailsState: UiState<ActorDetails>) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ActorMoviesSection(
     actorMoviesState: UiState<List<ActorMoviesContent>>,
@@ -168,25 +173,33 @@ private fun ActorMoviesSection(
         }
 
         is UiState.OnDataLoaded -> {
+            val state = rememberLazyListState()
+
+            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                    top = Dimens.oneLevelPadding,
-                    start = Dimens.twoLevelPadding
-                ),
+                        top = Dimens.oneLevelPadding,
+                        start = Dimens.twoLevelPadding
+                    ),
                 text = stringResource(id = R.string.actor_movies),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start
             )
             LazyRow(
-                modifier = Modifier.conditional(
-                    condition = isScreenPortrait(),
-                    ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 3) },
-                    ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) }
+                modifier = Modifier.height(
+                    setSize(
+                        onCompact = screenHeight / 1.5f,
+                        onMedium = if (isScreenPortrait()) screenHeight / 2.5f else screenHeight / 1.75f,
+                        onExpanded = screenHeight / 2.5f
+                    )
                 ),
                 contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+                horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+                state = state,
+                flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
             ) {
                 items(actorMoviesState.data, key = { movie -> movie.id }) { movie ->
                     MovieItem(

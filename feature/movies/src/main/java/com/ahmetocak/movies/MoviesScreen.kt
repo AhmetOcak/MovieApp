@@ -1,5 +1,7 @@
 package com.ahmetocak.movies
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.constants.SeeAllType
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.isScreenPortrait
-import com.ahmetocak.designsystem.WindowSizeClasses
+import com.ahmetocak.common.helpers.setSize
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieButton
@@ -48,10 +51,11 @@ fun MoviesScreen(
     onSeeAllClick: (SeeAllType) -> Unit,
     onNavigateToRoute: (String) -> Unit,
     showNavigationRail: Boolean,
-    windowHeightSizeClass: WindowSizeClasses,
     viewModel: MoviesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     MovieScaffold(
         modifier = modifier.fillMaxSize(),
@@ -75,18 +79,14 @@ fun MoviesScreen(
             topRatedMoviesState = uiState.topRatedMoviesState,
             upcomingMoviesState = uiState.upcomingMoviesState,
             topMovieSectionImageSize = setSize(
-                windowHeightSizeClass = windowHeightSizeClass,
-                onCompact = LocalConfiguration.current.screenHeightDp.dp - Dimens.twoLevelPadding,
-                onMedium = if (isScreenPortrait()) LocalConfiguration.current.screenHeightDp.dp / 2
-                else LocalConfiguration.current.screenHeightDp.dp / 1.75f,
-                onExpanded = LocalConfiguration.current.screenHeightDp.dp / 1.5f
+                onCompact = screenHeight - Dimens.twoLevelPadding,
+                onMedium = if (isScreenPortrait()) screenHeight / 2 else screenHeight / 1.75f,
+                onExpanded = screenHeight / 1.5f
             ),
             movieSectionImageSize = setSize(
-                windowHeightSizeClass = windowHeightSizeClass,
-                onCompact = LocalConfiguration.current.screenHeightDp.dp - Dimens.twoLevelPadding,
-                onMedium = if (isScreenPortrait()) LocalConfiguration.current.screenHeightDp.dp / 2.5f
-                else LocalConfiguration.current.screenHeightDp.dp / 2,
-                onExpanded = LocalConfiguration.current.screenHeightDp.dp / 1.75f
+                onCompact = screenHeight - Dimens.twoLevelPadding,
+                onMedium = if (isScreenPortrait()) screenHeight / 2.5f else screenHeight / 2,
+                onExpanded = screenHeight / 1.75f
             )
         )
     }
@@ -137,6 +137,7 @@ private fun MoviesScreenContent(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MovieSection(
     sectionHeight: Dp,
@@ -162,9 +163,13 @@ private fun MovieSection(
             }
 
             is MovieState.OnDataLoaded -> {
+                val state = rememberLazyListState()
+
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+                    state = state,
+                    flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
                 ) {
                     items(movieState.movieList, key = { movie -> movie.id }) { movie ->
                         MovieItem(
@@ -214,26 +219,5 @@ private fun ContentTitleSection(
             onClick = { onSeeAllClick(type) },
             fontSize = 16.sp
         )
-    }
-}
-
-private fun setSize(
-    windowHeightSizeClass: WindowSizeClasses,
-    onCompact: Dp,
-    onMedium: Dp,
-    onExpanded: Dp
-): Dp {
-    return when (windowHeightSizeClass) {
-        is WindowSizeClasses.COMPACT -> {
-            onCompact
-        }
-
-        is WindowSizeClasses.MEDIUM -> {
-            onMedium
-        }
-
-        is WindowSizeClasses.EXPANDED -> {
-            onExpanded
-        }
     }
 }
