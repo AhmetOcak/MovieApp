@@ -2,11 +2,12 @@
 <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/14c662e4-2bca-4920-af9a-535a9484248c"/>
 
 Movie App is developed with Jetpack Compose. To log in to the application, you must first create an account or sign in with Google. Authentication is done with Firebase. 
-The app can display movies that are currently playing and popular. On the See all movies page, all selected movies are shown with pagination. 
+The app can display movies that are trending, top rated and upcoming. On the See all movies page, all selected movies are shown with pagination. 
 You can search for any movie, add it to the watchlist or look at the details of the movie. The movie details show the movie poster, a short description about the movie, director, rating, cast, trailers, user reviews and recomended movies. 
 You can also get details about the movie you have selected on this page from the Gemini api.
 On the profile screen you can change the app's language, theme and, if the device is Android 12 and above, you can also choose dynamic color. The profile picture is kept with Firebase storage. When the account is deleted, 
 the watchlist and profile picture are also deleted from Firebase.
+The application can work in both landscape and portrait mode. The Application also works compatible with tablets.
 
 ## Tech Stack 📚
 
@@ -28,6 +29,7 @@ the watchlist and profile picture are also deleted from Firebase.
 * [Splash API](https://developer.android.com/develop/ui/views/launch/splash-screen)
 * [Google Sign In](https://firebase.google.com/docs/auth/android/google-signin)
 * [Gemini API](https://ai.google.dev/tutorials/quickstart?#android)
+* [Palette API](https://developer.android.com/develop/ui/views/graphics/palette-colors)
 
 ## Outputs 🖼
 
@@ -41,11 +43,11 @@ the watchlist and profile picture are also deleted from Firebase.
 |------------------|-------|------|
 | Login Screen     | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/8cf3ac99-12ca-43e2-8323-fd1efdad382c" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/cd1bf471-ce3c-4269-91c9-686931f65d35" width="240" height="480"/>     |
 | SignUp Screen  | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/6a8951f7-2983-4221-b094-3cacd4179e35" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/2c5c9b94-866d-4020-a56c-3d7dc2736ba7" width="240" height="480"/>     |
-| Movies Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/c5c524c5-37cc-4b3b-9cdc-5b65b4d3b60a" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/c1302ea7-1a4a-489f-9ceb-f00ee26dd646)357dea" width="240" height="480"/>     |
+| Movies Screen      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/723982f4-5e39-4f72-936c-c0b79b8ade9f" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/3eeb8078-e3c5-41c2-b958-d69c8403fd8f" width="240" height="480"/>     |
 | Search Screen    | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/e00edb29-8860-41ba-847e-38fafef7f6ca" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/17327c3f-a1b4-482d-8af0-a65da3263a57" width="240" height="480"/>     |
 | WatchList Screen | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/65b51927-c45a-49c8-ae1a-84144fd7e727" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bb1b8270-29fd-4db8-80d8-c237d67f093d" width="240" height="480"/>     |
 | Profile Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/075fe7c7-3215-4300-ae01-28fa74538acd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/372af4a6-fb1e-4929-9bfd-4a410a80f7aa" width="240" height="480"/>     |
-| See All Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/fc0688dc-4798-405e-afa5-4c72d357de37" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ba8a3925-c128-417b-b520-7b9c272937a8" width="240" height="480"/>     |
+| See All Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/7dc2f3e1-2e8e-44b8-9123-6845f5d8423f" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/47ca1f31-7689-4249-b1d7-0b94e1d1f1b8" width="240" height="480"/>     |
 | Movie Details Screen      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/75a5ea9c-4427-4b75-91b7-9d3f06cc0aa5" width="240" height="480"/>      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d4471a51-6b9d-4b11-b5fc-5bfce1c1108a" width="240" height="480"/> |
 |  Actor Details Screen     |  <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/e23aae75-56e0-40d5-b3cc-80dec79ea34d" width="240" height="480" />       | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/8a686ad1-b45d-4cb5-968b-cc3ba9486813" width="240" height="480" />          |
 <!--
@@ -54,6 +56,14 @@ the watchlist and profile picture are also deleted from Firebase.
 | Video from app   | <video src="<video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/694f560a-e6d3-46b5-a67e-d3e8ccf104df" />" width="240" height="480" /> |
 
 -->
+
+### Tablet Preview
+
+<p float="left">
+   <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d3d55f52-ff40-4b6b-9584-085321b70494" width="45%"/>
+   &nbsp; &nbsp; &nbsp; &nbsp;
+   <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ace4700c-623c-4bec-967b-b69c92e878fb" width="45%" />
+</p>
 
 ## Modularization 📦
 ![movie_app_modular_graph](https://github.com/AhmetOcak/MovieApp/assets/73544434/b71a185e-0af4-4b39-95ae-14ca219fa1e0)
