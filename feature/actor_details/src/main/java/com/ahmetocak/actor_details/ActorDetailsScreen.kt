@@ -1,5 +1,6 @@
 package com.ahmetocak.actor_details
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -19,15 +22,19 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,7 +43,6 @@ import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.helpers.isScreenPortrait
-import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
@@ -52,7 +58,6 @@ fun ActorDetailsScreen(
     modifier: Modifier = Modifier,
     upPress: () -> Unit,
     onMovieClick: (Int) -> Unit,
-    windowWidthSizeClass: WindowSizeClasses,
     viewModel: ActorDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -76,9 +81,7 @@ fun ActorDetailsScreen(
             modifier = Modifier.padding(paddingValues),
             actorDetailsState = uiState.actorDetailsState,
             actorMoviesState = uiState.actorMoviesState,
-            onMovieClick = onMovieClick,
-            isScreenWidthCompact = windowWidthSizeClass == WindowSizeClasses.COMPACT,
-            isScreenPortrait = isScreenPortrait()
+            onMovieClick = onMovieClick
         )
     }
 }
@@ -88,22 +91,17 @@ private fun ActorDetailsScreenContent(
     modifier: Modifier,
     actorDetailsState: UiState<ActorDetails>,
     actorMoviesState: UiState<List<ActorMoviesContent>>,
-    onMovieClick: (Int) -> Unit,
-    isScreenWidthCompact: Boolean,
-    isScreenPortrait: Boolean
+    onMovieClick: (Int) -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(bottom = Dimens.twoLevelPadding),
-        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+        verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ActorDetailsSection(
-            actorDetailsState = actorDetailsState,
-            isScreenWidthCompact = isScreenWidthCompact,
-            isScreenPortrait = isScreenPortrait
-        )
+        ActorDetailsSection(actorDetailsState = actorDetailsState)
         ActorMoviesSection(
             actorMoviesState = actorMoviesState,
             onMovieClick = onMovieClick
@@ -112,11 +110,7 @@ private fun ActorDetailsScreenContent(
 }
 
 @Composable
-private fun ActorDetailsSection(
-    actorDetailsState: UiState<ActorDetails>,
-    isScreenWidthCompact: Boolean,
-    isScreenPortrait: Boolean
-) {
+private fun ActorDetailsSection(actorDetailsState: UiState<ActorDetails>) {
     when (actorDetailsState) {
         is UiState.Loading -> {
             FullScreenCircularProgressIndicator()
@@ -124,59 +118,32 @@ private fun ActorDetailsSection(
 
         is UiState.OnDataLoaded -> {
             actorDetailsState.data.apply {
-                if (isScreenPortrait) {
-                    AnimatedAsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .conditional(
-                                condition = !isScreenWidthCompact && isScreenPortrait(),
-                                ifTrue = { aspectRatio(4f / 5f) },
-                                ifFalse = { aspectRatio(2f / 3f) }
-                            ),
-                        imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}"
+                AnimatedAsyncImage(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .conditional(
+                            condition = isScreenPortrait(),
+                            ifTrue = { size(LocalConfiguration.current.screenWidthDp.dp / 2) },
+                            ifFalse = { size(LocalConfiguration.current.screenHeightDp.dp / 2) }
+                        ),
+                    imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}",
+                    borderShape = CircleShape,
+                    borderStroke = BorderStroke(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    ContentTextRow(subtitleId = R.string.place_of_birth, contentText = placeOfBirth)
-                    if (deathDay != null) {
-                        ContentTextRow(
-                            subtitleId = R.string.birth_and_death_day,
-                            contentText = "$birthday / $deathDay"
-                        )
-                    } else {
-                        ContentTextRow(subtitleId = R.string.birthday, contentText = birthday)
-                    }
-                    if (biography.isNotBlank()) {
-                        ContentTextRow(subtitleId = R.string.biography, contentText = biography)
-                    }
+                )
+                ContentTextRow(subtitleId = R.string.place_of_birth, contentText = placeOfBirth)
+                if (deathDay != null) {
+                    ContentTextRow(
+                        subtitleId = R.string.birth_and_death_day,
+                        contentText = "$birthday / $deathDay"
+                    )
                 } else {
-                    Row {
-                        AnimatedAsyncImage(
-                            modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp),
-                            imageUrl = "${TMDB.IMAGE_URL}${profileImagePath}"
-                        )
-                        Column {
-                            ContentTextRow(
-                                subtitleId = R.string.place_of_birth,
-                                contentText = placeOfBirth
-                            )
-                            if (deathDay != null) {
-                                ContentTextRow(
-                                    subtitleId = R.string.birth_and_death_day,
-                                    contentText = "$birthday / $deathDay"
-                                )
-                            } else {
-                                ContentTextRow(
-                                    subtitleId = R.string.birthday,
-                                    contentText = birthday
-                                )
-                            }
-                            if (biography.isNotBlank()) {
-                                ContentTextRow(
-                                    subtitleId = R.string.biography,
-                                    contentText = biography
-                                )
-                            }
-                        }
-                    }
+                    ContentTextRow(subtitleId = R.string.birthday, contentText = birthday)
+                }
+                if (biography.isNotBlank()) {
+                    ContentTextRow(subtitleId = R.string.biography, contentText = biography)
                 }
             }
         }
@@ -202,12 +169,15 @@ private fun ActorMoviesSection(
 
         is UiState.OnDataLoaded -> {
             Text(
-                modifier = Modifier.padding(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
                     top = Dimens.oneLevelPadding,
                     start = Dimens.twoLevelPadding
                 ),
                 text = stringResource(id = R.string.actor_movies),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Start
             )
             LazyRow(
                 modifier = Modifier.conditional(
@@ -245,7 +215,10 @@ private fun ActorMoviesSection(
 @Composable
 private fun ContentTextRow(subtitleId: Int, contentText: String) {
     Row(
-        modifier = Modifier.padding(horizontal = Dimens.twoLevelPadding)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.twoLevelPadding),
+        horizontalArrangement = Arrangement.Start
     ) {
         Text(text = buildAnnotatedString {
             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {

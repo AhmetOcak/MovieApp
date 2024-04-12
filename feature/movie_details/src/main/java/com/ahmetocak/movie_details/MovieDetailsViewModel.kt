@@ -1,10 +1,13 @@
 package com.ahmetocak.movie_details
 
 import android.content.Context
+import android.graphics.Bitmap
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.palette.graphics.Palette
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
@@ -278,6 +281,33 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
+    fun generatePaletteFromImage(bitmap: Bitmap) {
+        val argbList = mutableListOf<Color>()
+
+        Palette.from(bitmap).generate { palette ->
+            palette?.apply {
+                lightVibrantSwatch?.rgb?.let { argbList.add(Color(it)) }
+                vibrantSwatch?.rgb?.let { argbList.add(Color(it)) }
+                darkVibrantSwatch?.rgb?.let { argbList.add(Color(it)) }
+                lightMutedSwatch?.rgb?.let { argbList.add(Color(it)) }
+                mutedSwatch?.rgb?.let { argbList.add(Color(it)) }
+                darkMutedSwatch?.rgb?.let { argbList.add(Color(it)) }
+            }
+
+            // There must be at least 2 colors in the gradient list.
+            if (argbList.size == 0) {
+                argbList.add(Color.Transparent)
+                argbList.add(Color.Transparent)
+            } else if (argbList.size == 1) {
+                argbList.add(Color.Transparent)
+            }
+
+            _uiState.update {
+                it.copy(posterBackgroundColors = argbList)
+            }
+        }
+    }
+
     fun consumedUserMessage() {
         _uiState.update {
             it.copy(userMessages = emptyList())
@@ -295,7 +325,11 @@ data class MovieDetailUiState(
     val isMovieInWatchList: Boolean = false,
     val userReviews: Flow<PagingData<UserReviewResults>> = emptyFlow(),
     val movieRecommendations: Flow<PagingData<RecommendedMovieContent>> = emptyFlow(),
-    val gemini: Gemini = Gemini()
+    val gemini: Gemini = Gemini(),
+    val posterBackgroundColors: List<Color> = listOf(
+        Color.Transparent,
+        Color.Transparent
+    )
 )
 
 data class Gemini(

@@ -1,5 +1,6 @@
 package com.ahmetocak.designsystem.components
 
+import android.graphics.drawable.Drawable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -33,7 +34,8 @@ fun AnimatedAsyncImage(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     imageUrl: String,
-    errorImageDrawableId: Int = R.drawable.no_image_available
+    errorImageDrawableId: Int = R.drawable.no_image_available,
+    onImagePainterSuccess: (Drawable) -> Unit = {}
 ) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -52,7 +54,7 @@ fun AnimatedAsyncImage(
     val matrix = ColorMatrix()
     matrix.setToSaturation(transition)
 
-    when (painter.state) {
+    when (val image = painter.state) {
         is AsyncImagePainter.State.Loading -> {
             Box(modifier = modifier, contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -60,6 +62,7 @@ fun AnimatedAsyncImage(
         }
 
         is AsyncImagePainter.State.Success -> {
+            onImagePainterSuccess(image.result.drawable)
             Image(
                 modifier = modifier
                     .scale(.8f + (.2f * transition))
@@ -90,7 +93,8 @@ fun AnimatedAsyncImage(
     imageUrl: String,
     borderStroke: BorderStroke = BorderStroke(1.dp, MaterialTheme.colorScheme.onBackground),
     borderShape: Shape = RoundedCornerShape(4.dp),
-    errorImageDrawableId: Int = R.drawable.no_image_available
+    errorImageDrawableId: Int = R.drawable.no_image_available,
+    onImagePainterSuccess: (Drawable) -> Unit = {}
 ) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
@@ -109,7 +113,7 @@ fun AnimatedAsyncImage(
     val matrix = ColorMatrix()
     matrix.setToSaturation(transition)
 
-    when (painter.state) {
+    when (val image = painter.state) {
         is AsyncImagePainter.State.Loading -> {
             Box(modifier = modifier, contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -117,6 +121,7 @@ fun AnimatedAsyncImage(
         }
 
         is AsyncImagePainter.State.Success -> {
+            onImagePainterSuccess(image.result.drawable)
             Image(
                 modifier = modifier
                     .scale(.8f + (.2f * transition))

@@ -41,8 +41,10 @@ fun MovieApp(
         val movieAppNavController = rememberMovieAppNavController()
 
         val navBackStackEntry by movieAppNavController.navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route ?: HomeSections.MOVIES.route
+
         val showNavigationRail =
-            windowWidthSizeClass != WindowSizeClasses.COMPACT && isScreenHasNavRail(navBackStackEntry?.destination?.route)
+            windowWidthSizeClass != WindowSizeClasses.COMPACT && isScreenHasNavRail(currentRoute)
 
         Surface {
             NavHost(
@@ -69,7 +71,8 @@ fun MovieApp(
         if (showNavigationRail) {
             MovieNavigationRail(
                 tabs = HomeSections.entries.toTypedArray(),
-                navigateToRoute = movieAppNavController::navigateToNavigationBar
+                navigateToRoute = movieAppNavController::navigateToNavigationBar,
+                currentRoute = currentRoute
             )
         }
     }
@@ -106,7 +109,7 @@ private fun NavGraphBuilder.movieAppNavGraph(
         LoginScreen(
             onCreateAccountClick = remember { { onCreateAccountClick(from) } },
             onNavigateToHome = remember { { onLoginClick(from) } },
-            windowHeightSizeClass = windowHeightSizeClass
+            isExpandedScreen = windowWidthSizeClass == WindowSizeClasses.EXPANDED
         )
     }
     composable(route = MainDestinations.SIGN_UP_ROUTE) { from ->
@@ -122,7 +125,8 @@ private fun NavGraphBuilder.movieAppNavGraph(
             upPress = upPress,
             onActorClick = remember { { actorId -> onActorClick(actorId, from) } },
             onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } },
-            windowWidthSizeClass = windowWidthSizeClass
+            isScreenWidthExpanded = windowWidthSizeClass == WindowSizeClasses.EXPANDED,
+            isScreenHeightCompact = windowHeightSizeClass == WindowSizeClasses.COMPACT
         )
     }
     composable(
@@ -145,8 +149,7 @@ private fun NavGraphBuilder.movieAppNavGraph(
     ) { from ->
         ActorDetailsScreen(
             onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } },
-            upPress = upPress,
-            windowWidthSizeClass = windowWidthSizeClass
+            upPress = upPress
         )
     }
 }

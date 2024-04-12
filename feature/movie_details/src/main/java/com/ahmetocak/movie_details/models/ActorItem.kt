@@ -1,33 +1,31 @@
 package com.ahmetocak.movie_details.models
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.ahmetocak.common.helpers.conditional
-import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
-import com.ahmetocak.designsystem.computeWindowWidthSize
 import com.ahmetocak.designsystem.dimens.Dimens
 
 private val ACTOR_IMAGE_SIZE = 128.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ActorItem(
     actorId: Int,
@@ -36,35 +34,35 @@ internal fun ActorItem(
     characterName: String,
     onClick: (Int) -> Unit
 ) {
-    ElevatedCard(
-        modifier = Modifier.conditional(
-            condition = computeWindowWidthSize() == WindowSizeClasses.COMPACT,
-            ifTrue = { this.width(LocalConfiguration.current.screenWidthDp.dp / 1.53f) },
-            ifFalse = { this.width(LocalConfiguration.current.screenWidthDp.dp / 2.5f) }
-        ),
-        onClick = { onClick(actorId) }) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AnimatedAsyncImage(
-                modifier = Modifier
-                    .size(ACTOR_IMAGE_SIZE)
-                    .aspectRatio(1f),
-                imageUrl = imageUrl
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Dimens.oneLevelPadding)
+    ) {
+        AnimatedAsyncImage(
+            modifier = Modifier
+                .size(ACTOR_IMAGE_SIZE)
+                .aspectRatio(1f)
+                .clip(CircleShape)
+                .clickable(onClick = { onClick(actorId) }),
+            imageUrl = imageUrl,
+            borderShape = CircleShape,
+            borderStroke = BorderStroke(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary
             )
-            Column(
-                modifier = Modifier.padding(Dimens.oneLevelPadding)
-            ) {
-                Text(
-                    text = actorName,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(Dimens.oneLevelPadding))
-                Text(text = characterName, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            }
-        }
+        )
+        Text(
+            modifier = Modifier.width(ACTOR_IMAGE_SIZE),
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(actorName)
+                }
+                append(" ")
+                append("($characterName)")
+            },
+            maxLines = 4,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center
+        )
     }
 }

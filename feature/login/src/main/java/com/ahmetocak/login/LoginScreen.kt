@@ -40,7 +40,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.helpers.DialogUiEvent
 import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.helpers.isScreenPortrait
-import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.ButtonCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieButton
 import com.ahmetocak.designsystem.components.MovieDialog
@@ -59,7 +58,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     onCreateAccountClick: () -> Unit,
     onNavigateToHome: () -> Unit,
-    windowHeightSizeClass: WindowSizeClasses,
+    isExpandedScreen: Boolean,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -139,7 +138,7 @@ fun LoginScreen(
                     }
                 },
                 isScreenPortrait = isScreenPortrait(),
-                isScreenHeightCompact = windowHeightSizeClass == WindowSizeClasses.COMPACT
+                isExpandedScreen  = isExpandedScreen
             )
         }
     }
@@ -161,7 +160,7 @@ private fun LoginScreenContent(
     onForgotPasswordClick: () -> Unit,
     onGoogleSignInClick: () -> Unit,
     isScreenPortrait: Boolean,
-    isScreenHeightCompact: Boolean
+    isExpandedScreen : Boolean
 ) {
     FlexLayout(
         modifier = modifier,
@@ -178,7 +177,7 @@ private fun LoginScreenContent(
         onForgotPasswordClick = onForgotPasswordClick,
         onGoogleSignInClick = onGoogleSignInClick,
         isScreenPortrait = isScreenPortrait,
-        isScreenHeightCompact = isScreenHeightCompact
+        isExpandedScreen  = isExpandedScreen
     )
 }
 
@@ -198,7 +197,7 @@ private fun FlexLayout(
     onForgotPasswordClick: () -> Unit,
     onGoogleSignInClick: () -> Unit,
     isScreenPortrait: Boolean,
-    isScreenHeightCompact: Boolean
+    isExpandedScreen : Boolean
 ) {
     if (isScreenPortrait) {
         Column(
@@ -240,7 +239,7 @@ private fun FlexLayout(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AuthWelcomeMessage(text = stringResource(id = R.string.login_welcome_message))
-                if (isScreenHeightCompact) {
+                if (!isExpandedScreen) {
                     ContinueWith()
                     GoogleSignInButton(onClick = onGoogleSignInClick)
                 }
@@ -252,7 +251,7 @@ private fun FlexLayout(
             ) {
                 AuthSection(
                     modifier = Modifier.conditional(
-                        condition = isScreenHeightCompact,
+                        condition = !isExpandedScreen ,
                         ifTrue = { setAdaptiveWidth() },
                         ifFalse = {
                             setAdaptiveWidth(
@@ -274,7 +273,7 @@ private fun FlexLayout(
                 )
                 Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
                 SignUpNow(onCreateAccountClick = onCreateAccountClick)
-                if (!isScreenHeightCompact) {
+                if (isExpandedScreen) {
                     ContinueWith(mediumWidthRatio = 3, expandedWidthRatio = 3)
                     GoogleSignInButton(onClick = onGoogleSignInClick)
                 }

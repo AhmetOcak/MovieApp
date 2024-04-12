@@ -41,7 +41,7 @@ internal fun NetworkMovieContent.toMovieContent(): MovieContent {
         id = id,
         backdropImagePath = backdropImagePath,
         posterImagePath = posterImagePath,
-        releaseDate = releaseDate?: "",
+        releaseDate = releaseDate ?: "",
         movieName = movieName ?: "",
         voteAverage = voteAverage ?: 0.0,
         voteCount = voteCount ?: 0
@@ -66,7 +66,9 @@ internal fun NetworkMovieDetail.toMovieDetail(): MovieDetail {
 
 internal fun NetworkMovieCredit.toMovieCredit(): MovieCredit {
     return MovieCredit(
-        cast = cast.map { castDto ->
+        cast = cast.filter {
+            it.imageUrlPath != null
+        }.map { castDto ->
             Cast(
                 id = castDto.id,
                 name = castDto.name ?: "",
