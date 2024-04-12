@@ -3,8 +3,9 @@ package com.ahmetocak.network.helpers
 object NetworkConstants {
     const val BASE_URL = "https://api.themoviedb.org/"
     object EndPoints {
-        const val NOW_PLAYING = "/3/movie/now_playing"
-        const val POPULAR = "/3/movie/popular"
+        const val TRENDING = "/3/trending/movie/{${Paths.TIME}}"
+        const val TOP_RATED = "/3/movie/top_rated"
+        const val UPCOMING = "/3/movie/upcoming"
         const val MOVIE_DETAILS = "/3/movie/{${Paths.MOVIE_ID}}"
         const val MOVIE_CREDITS = "/3/movie/{${Paths.MOVIE_ID}}/credits"
         const val MOVIE_TRAILERS = "/3/movie/{${Paths.MOVIE_ID}}/videos"
@@ -25,6 +26,7 @@ object NetworkConstants {
     object Paths {
         const val MOVIE_ID = "movie_id"
         const val ACTOR_ID = "actor_id"
+        const val TIME = "time_window"
     }
 }
 

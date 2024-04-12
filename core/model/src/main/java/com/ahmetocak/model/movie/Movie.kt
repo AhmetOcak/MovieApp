@@ -11,7 +11,6 @@ data class Movie(
 @Immutable
 data class MovieContent(
     val id: Int,
-    val backdropImagePath: String?,
     val posterImagePath: String?,
     val releaseDate: String,
     val movieName: String,

@@ -7,8 +7,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.ahmetocak.common.constants.SeeAllType
 import com.ahmetocak.common.helpers.UiText
-import com.ahmetocak.domain.movie.GetAllNowPlayingMoviesUseCase
-import com.ahmetocak.domain.movie.GetAllPopularMoviesUseCase
+import com.ahmetocak.domain.movie.GetAllTopRatedMoviesUseCase
+import com.ahmetocak.domain.movie.GetAllUpcomingMoviesUseCase
 import com.ahmetocak.model.movie.MovieContent
 import com.ahmetocak.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,11 +19,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import com.ahmetocak.common.R
+import com.ahmetocak.domain.movie.GetAllTrendingMoviesUseCase
 
 @HiltViewModel
 class SeeAllViewModel @Inject constructor(
-    private val getAllPopularMoviesUseCase: GetAllPopularMoviesUseCase,
-    private val getAllNowPlayingMoviesUseCase: GetAllNowPlayingMoviesUseCase,
+    private val getAllTrendingMoviesUseCase: GetAllTrendingMoviesUseCase,
+    private val getAllUpcomingMoviesUseCase: GetAllUpcomingMoviesUseCase,
+    private val getAllTopRatedMoviesUseCase: GetAllTopRatedMoviesUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -32,17 +35,33 @@ class SeeAllViewModel @Inject constructor(
 
     init {
         val seeAllType = savedStateHandle.get<String>(MainDestinations.SEE_ALL_TYPE_KEY)
-        _uiState.update {
-            if (seeAllType == SeeAllType.NOW_PLAYING.toString()) {
-                it.copy(
-                    topBarTitle = UiText.StringResource(R.string.now_playing_text),
-                    movieList = getAllNowPlayingMoviesUseCase().cachedIn(viewModelScope)
-                )
-            } else {
-                it.copy(
-                    topBarTitle = UiText.StringResource(R.string.popular_movies_text),
-                    movieList = getAllPopularMoviesUseCase().cachedIn(viewModelScope)
-                )
+
+        when(seeAllType) {
+            SeeAllType.TRENDING.toString() -> {
+                _uiState.update {
+                    it.copy(
+                        topBarTitle = UiText.StringResource(R.string.trending),
+                        movieList = getAllTrendingMoviesUseCase().cachedIn(viewModelScope)
+                    )
+                }
+            }
+
+            SeeAllType.TOP_RATED.toString() -> {
+                _uiState.update {
+                    it.copy(
+                        topBarTitle = UiText.StringResource(R.string.top_rated),
+                        movieList = getAllTopRatedMoviesUseCase().cachedIn(viewModelScope)
+                    )
+                }
+            }
+
+            SeeAllType.UPCOMING.toString() -> {
+                _uiState.update {
+                    it.copy(
+                        topBarTitle = UiText.StringResource(R.string.upcoming),
+                        movieList = getAllUpcomingMoviesUseCase().cachedIn(viewModelScope)
+                    )
+                }
             }
         }
     }

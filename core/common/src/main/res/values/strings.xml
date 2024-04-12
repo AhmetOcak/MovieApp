@@ -12,4 +12,7 @@
     <string name="passwords_dont_match">Passwords do not match</string>
     <string name="password_length">Password must be at least 6 characters in length</string>
     <string name="search_result_empty_text">The movie you are looking for could not be found.</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="trending">Trending</string>
 </resources>

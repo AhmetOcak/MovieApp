@@ -102,7 +102,8 @@ private fun NavGraphBuilder.movieAppNavGraph(
             onSeeAllClick = onSeeAllClick,
             onLogOutClick = onLogOutClick,
             showNavigationRail = showNavigationRail,
-            windowWidthSizeClass = windowWidthSizeClass
+            windowWidthSizeClass = windowWidthSizeClass,
+            windowHeightSizeClass = windowHeightSizeClass
         )
     }
     composable(route = MainDestinations.LOGIN_ROUTE) { from ->

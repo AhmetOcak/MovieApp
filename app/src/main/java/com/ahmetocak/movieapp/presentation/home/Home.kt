@@ -18,14 +18,16 @@ fun NavGraphBuilder.addHomeGraph(
     onSeeAllClick: (SeeAllType, NavBackStackEntry) -> Unit,
     onLogOutClick: (NavBackStackEntry) -> Unit,
     showNavigationRail: Boolean,
-    windowWidthSizeClass: WindowSizeClasses
+    windowWidthSizeClass: WindowSizeClasses,
+    windowHeightSizeClass: WindowSizeClasses
 ) {
     composable(HomeSections.MOVIES.route) { from ->
         MoviesScreen(
             onMovieClick = remember { { movieId -> onMovieClick(movieId, from) } },
             onSeeAllClick = remember { { seeAllType -> onSeeAllClick(seeAllType, from) } },
             onNavigateToRoute = onNavigateToRoute,
-            showNavigationRail = showNavigationRail
+            showNavigationRail = showNavigationRail,
+            windowHeightSizeClass = windowHeightSizeClass
         )
     }
     composable(HomeSections.SEARCH.route) { from ->

@@ -14,11 +14,15 @@ import javax.inject.Inject
 class MovieRemoteDataSourceImpl @Inject constructor(
     private val api: MovieApi
 ) : MovieRemoteDataSource {
-    override suspend fun getNowPlayingMoviesFirstPage(): Response<NetworkMovie> =
-        apiCall { api.getNowPlayingMovies() }
 
-    override suspend fun getPopularMoviesFirstPage(): Response<NetworkMovie> =
-        apiCall { api.getPopularMovies() }
+    override suspend fun getTrendingMoviesFirstPage(): Response<NetworkMovie> =
+        apiCall { api.getTrendingMovies() }
+
+    override suspend fun getTopRatedMoviesFirstPage(): Response<NetworkMovie> =
+        apiCall { api.getTopRatedMovies() }
+
+    override suspend fun getUpcomingMoviesFirstPage(): Response<NetworkMovie> =
+        apiCall { api.getUpcomingMovies() }
 
     override suspend fun getMovieDetails(movieId: Int): Response<NetworkMovieDetail> =
         apiCall { api.getMovieDetails(movieId) }

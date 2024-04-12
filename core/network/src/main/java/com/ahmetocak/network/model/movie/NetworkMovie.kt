@@ -13,9 +13,6 @@ data class NetworkMovie(
 data class NetworkMovieContent(
     val id: Int,
 
-    @SerializedName("backdrop_path")
-    val backdropImagePath: String?,
-
     @SerializedName("poster_path")
     val posterImagePath: String?,
 

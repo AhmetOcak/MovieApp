@@ -39,7 +39,6 @@ internal fun NetworkMovie.toMovie(): Movie {
 internal fun NetworkMovieContent.toMovieContent(): MovieContent {
     return MovieContent(
         id = id,
-        backdropImagePath = backdropImagePath,
         posterImagePath = posterImagePath,
         releaseDate = releaseDate ?: "",
         movieName = movieName ?: "",
