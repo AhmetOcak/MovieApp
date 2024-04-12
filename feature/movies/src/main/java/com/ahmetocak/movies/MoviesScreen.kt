@@ -1,5 +1,7 @@
 package com.ahmetocak.movies
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -22,14 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.constants.SeeAllType
 import com.ahmetocak.common.constants.TMDB
-import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.helpers.isScreenPortrait
+import com.ahmetocak.common.helpers.setSize
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieButton
@@ -38,6 +42,7 @@ import com.ahmetocak.designsystem.components.navigation.MovieNavigationBar
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.navigation.HomeSections
 import com.ahmetocak.ui.MovieItem
+import com.ahmetocak.common.R as CommonR
 
 @Composable
 fun MoviesScreen(
@@ -49,6 +54,8 @@ fun MoviesScreen(
     viewModel: MoviesViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     MovieScaffold(
         modifier = modifier.fillMaxSize(),
@@ -68,9 +75,19 @@ fun MoviesScreen(
                 .padding(start = if (showNavigationRail) 80.dp else 0.dp),
             onMovieClick = onMovieClick,
             onSeeAllClick = onSeeAllClick,
-            nowPlayingMoviesState = uiState.nowPlayingMoviesState,
-            popularMoviesState = uiState.popularMoviesState,
-            isScreenPortrait = isScreenPortrait()
+            trendingMoviesState = uiState.trendingMoviesState,
+            topRatedMoviesState = uiState.topRatedMoviesState,
+            upcomingMoviesState = uiState.upcomingMoviesState,
+            topMovieSectionImageSize = setSize(
+                onCompact = screenHeight - Dimens.twoLevelPadding,
+                onMedium = if (isScreenPortrait()) screenHeight / 2 else screenHeight / 1.75f,
+                onExpanded = screenHeight / 1.5f
+            ),
+            movieSectionImageSize = setSize(
+                onCompact = screenHeight - Dimens.twoLevelPadding,
+                onMedium = if (isScreenPortrait()) screenHeight / 2.5f else screenHeight / 2,
+                onExpanded = screenHeight / 1.75f
+            )
         )
     }
 }
@@ -80,76 +97,59 @@ private fun MoviesScreenContent(
     modifier: Modifier,
     onMovieClick: (Int) -> Unit,
     onSeeAllClick: (SeeAllType) -> Unit,
-    nowPlayingMoviesState: MovieState,
-    popularMoviesState: MovieState,
-    isScreenPortrait: Boolean
+    trendingMoviesState: MovieState,
+    topRatedMoviesState: MovieState,
+    upcomingMoviesState: MovieState,
+    topMovieSectionImageSize: Dp,
+    movieSectionImageSize: Dp
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .conditional(
-                condition = !isScreenPortrait,
-                ifTrue = { verticalScroll(rememberScrollState()) }
-            )
+            .verticalScroll(rememberScrollState())
             .padding(vertical = Dimens.twoLevelPadding),
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
         MovieSection(
-            modifier = Modifier.conditional(
-                condition = isScreenPortrait,
-                ifTrue = { weight(1f).padding(horizontal = Dimens.oneLevelPadding) },
-                ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp) }
-            ),
-            movieItemModifier = Modifier
-                .conditional(
-                    condition = isScreenPortrait,
-                    ifTrue = { aspectRatio(4f / 3f).padding(horizontal = Dimens.oneLevelPadding) },
-                    ifFalse = { aspectRatio(2f / 3f) }
-                ),
-            listContentPadding = PaddingValues(horizontal = if (isScreenPortrait) 0.dp else Dimens.twoLevelPadding),
-            horizontalArrangement = Arrangement.spacedBy(if (isScreenPortrait) 0.dp else Dimens.twoLevelPadding),
+            sectionHeight = topMovieSectionImageSize,
             onSeeAllClick = onSeeAllClick,
             onMovieClick = onMovieClick,
-            movieState = nowPlayingMoviesState,
-            seeAllType = SeeAllType.NOW_PLAYING,
-            title = stringResource(id = R.string.now_playing),
-            usePosterImage = !isScreenPortrait
+            movieState = trendingMoviesState,
+            seeAllType = SeeAllType.TRENDING,
+            title = stringResource(id = CommonR.string.trending)
         )
         MovieSection(
-            modifier = Modifier.conditional(
-                condition = isScreenPortrait,
-                ifTrue = { weight(1f) },
-                ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp) }
-            ),
-            movieItemModifier = Modifier.aspectRatio(2f / 3f),
-            listContentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+            sectionHeight = movieSectionImageSize,
             onSeeAllClick = onSeeAllClick,
             onMovieClick = onMovieClick,
-            movieState = popularMoviesState,
-            seeAllType = SeeAllType.POPULAR,
-            title = stringResource(id = R.string.popular_movies),
-            usePosterImage = true
+            movieState = topRatedMoviesState,
+            seeAllType = SeeAllType.TOP_RATED,
+            title = stringResource(id = CommonR.string.top_rated)
+        )
+        MovieSection(
+            sectionHeight = movieSectionImageSize,
+            onSeeAllClick = onSeeAllClick,
+            onMovieClick = onMovieClick,
+            movieState = upcomingMoviesState,
+            seeAllType = SeeAllType.UPCOMING,
+            title = stringResource(id = CommonR.string.upcoming)
         )
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MovieSection(
-    modifier: Modifier = Modifier,
-    movieItemModifier: Modifier = Modifier,
-    listContentPadding: PaddingValues = PaddingValues(0.dp),
-    reverseLayout: Boolean = false,
-    horizontalArrangement: Arrangement.Horizontal = if (!reverseLayout) Arrangement.Start else Arrangement.End,
+    sectionHeight: Dp,
+    movieImageRatio: Float = 2f / 3f,
     onSeeAllClick: (SeeAllType) -> Unit,
     onMovieClick: (Int) -> Unit,
     movieState: MovieState,
     seeAllType: SeeAllType,
-    title: String,
-    usePosterImage: Boolean
+    title: String
 ) {
     Column(
-        modifier = modifier,
+        modifier = Modifier.height(sectionHeight),
         verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
     ) {
         ContentTitleSection(
@@ -163,17 +163,21 @@ private fun MovieSection(
             }
 
             is MovieState.OnDataLoaded -> {
+                val state = rememberLazyListState()
+
                 LazyRow(
-                    contentPadding = listContentPadding,
-                    horizontalArrangement = horizontalArrangement
+                    contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+                    state = state,
+                    flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
                 ) {
                     items(movieState.movieList, key = { movie -> movie.id }) { movie ->
                         MovieItem(
-                            modifier = movieItemModifier,
+                            modifier = Modifier.aspectRatio(movieImageRatio),
                             id = movie.id,
                             name = movie.movieName,
                             releaseDate = movie.releaseDate,
-                            imageUrl = "${TMDB.IMAGE_URL}${if (usePosterImage) movie.posterImagePath else movie.backdropImagePath}",
+                            imageUrl = "${TMDB.IMAGE_URL}${movie.posterImagePath}",
                             voteAverage = movie.voteAverage,
                             voteCount = movie.voteCount ?: 0,
                             onClick = onMovieClick

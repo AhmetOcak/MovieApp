@@ -12,4 +12,7 @@
     <string name="password_length">Şifre minimum 6 karakterden oluşmalı</string>
     <string name="unvalid_email">Lütfen geçerli bir email adresi giriniz</string>
     <string name="search_result_empty_text">Aradığınız film bulunamadı.</string>
+    <string name="trending">Trendler</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="upcoming">Upcoming</string>
 </resources>

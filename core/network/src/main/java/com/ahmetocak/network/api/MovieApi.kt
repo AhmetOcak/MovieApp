@@ -17,15 +17,23 @@ import java.util.Locale
 
 interface MovieApi {
 
-    @GET(NetworkConstants.EndPoints.NOW_PLAYING)
-    suspend fun getNowPlayingMovies(
+    @GET(NetworkConstants.EndPoints.TRENDING)
+    suspend fun getTrendingMovies(
+        @Path(NetworkConstants.Paths.TIME) time: String = "week",
         @Query(NetworkConstants.Queries.PAGE) page: Int = 1,
         @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
         @Query(NetworkConstants.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()
     ): NetworkMovie
 
-    @GET(NetworkConstants.EndPoints.POPULAR)
-    suspend fun getPopularMovies(
+    @GET(NetworkConstants.EndPoints.TOP_RATED)
+    suspend fun getTopRatedMovies(
+        @Query(NetworkConstants.Queries.PAGE) page: Int = 1,
+        @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
+        @Query(NetworkConstants.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()
+    ): NetworkMovie
+
+    @GET(NetworkConstants.EndPoints.UPCOMING)
+    suspend fun getUpcomingMovies(
         @Query(NetworkConstants.Queries.PAGE) page: Int = 1,
         @Query(NetworkConstants.Queries.API_KEY) apiKey: String = BuildConfig.API_KEY,
         @Query(NetworkConstants.Queries.LANGUAGE) language: String = Locale.getDefault().toLanguageTag()

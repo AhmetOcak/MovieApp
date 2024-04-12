@@ -10,9 +10,11 @@ import com.ahmetocak.network.model.movie_detail.NetworkMovieTrailer
 
 interface MovieRemoteDataSource {
 
-    suspend fun getNowPlayingMoviesFirstPage(): Response<NetworkMovie>
+    suspend fun getTrendingMoviesFirstPage(): Response<NetworkMovie>
 
-    suspend fun getPopularMoviesFirstPage(): Response<NetworkMovie>
+    suspend fun getTopRatedMoviesFirstPage(): Response<NetworkMovie>
+
+    suspend fun getUpcomingMoviesFirstPage(): Response<NetworkMovie>
 
     suspend fun getMovieDetails(movieId: Int): Response<NetworkMovieDetail>
 

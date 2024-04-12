@@ -45,16 +45,19 @@ class MovieRepositoryImpl @Inject constructor(
     private val watchListLocalDataSource: WatchListLocalDataSource
 ) : MovieRepository {
 
-    override suspend fun getNowPlayingMoviesFirstPage(): Response<Movie> =
-        movieRemoteDataSource.getNowPlayingMoviesFirstPage().mapResponse { it.toMovie() }
+    override suspend fun getTrendingMoviesFirstPage(): Response<Movie> =
+        movieRemoteDataSource.getTrendingMoviesFirstPage().mapResponse { it.toMovie() }
 
-    override suspend fun getPopularMoviesFirstPage(): Response<Movie> =
-        movieRemoteDataSource.getPopularMoviesFirstPage().mapResponse { it.toMovie() }
+    override suspend fun getTopRatedMoviesFirstPage(): Response<Movie> =
+        movieRemoteDataSource.getTopRatedMoviesFirstPage().mapResponse { it.toMovie() }
 
-    override fun getAllNowPlayingMovies(): Flow<PagingData<MovieContent>> {
+    override suspend fun getUpcomingMoviesFirstPage(): Response<Movie> =
+        movieRemoteDataSource.getUpcomingMoviesFirstPage().mapResponse { it.toMovie() }
+
+    override fun getAllTrendingMovies(): Flow<PagingData<MovieContent>> {
         val moviesPagingSource = MoviesPagingSource(
             apiCall = { currentPageNumber ->
-                api.getNowPlayingMovies(page = currentPageNumber)
+                api.getTrendingMovies(page = currentPageNumber)
             }
         )
         return Pager(
@@ -67,10 +70,26 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAllPopularMovies(): Flow<PagingData<MovieContent>> {
+    override fun getAllTopRatedMovies(): Flow<PagingData<MovieContent>> {
         val moviesPagingSource = MoviesPagingSource(
             apiCall = { currentPageNumber ->
-                api.getPopularMovies(page = currentPageNumber)
+                api.getTopRatedMovies(page = currentPageNumber)
+            }
+        )
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = { moviesPagingSource }
+        ).flow.map {
+            it.map { networkMovieContent ->
+                networkMovieContent.toMovieContent()
+            }
+        }
+    }
+
+    override fun getAllUpcomingMovies(): Flow<PagingData<MovieContent>> {
+        val moviesPagingSource = MoviesPagingSource(
+            apiCall = { currentPageNumber ->
+                api.getUpcomingMovies(page = currentPageNumber)
             }
         )
         return Pager(

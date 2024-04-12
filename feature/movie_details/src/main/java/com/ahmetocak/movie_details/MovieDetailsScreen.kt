@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -38,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -59,6 +62,8 @@ import com.ahmetocak.common.helpers.ShowUserMessage
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.helpers.conditional
+import com.ahmetocak.common.helpers.isScreenPortrait
+import com.ahmetocak.common.helpers.setSize
 import com.ahmetocak.common.roundToDecimal
 import com.ahmetocak.common.utils.onLoadStateAppend
 import com.ahmetocak.common.utils.onLoadStateRefresh
@@ -208,8 +213,7 @@ private fun MovieDetailsScreenContent(
         if (recommendations.itemCount != 0) {
             MovieRecommendationsSection(
                 recommendations = recommendations,
-                onMovieClick = onMovieClick,
-                isScreenHeightCompact = isScreenHeightCompact
+                onMovieClick = onMovieClick
             )
         }
         Spacer(modifier = Modifier.height(Dimens.twoLevelPadding))
@@ -238,9 +242,9 @@ private fun MovieSection(
         is UiState.OnDataLoaded -> {
             detailUiState.data.apply {
                 Box(
-                    modifier = Modifier.background(
-                        brush = Brush.verticalGradient(colors = posterBackgroundColors)
-                    )
+                    modifier = Modifier.drawBehind {
+                        drawRect(brush = Brush.verticalGradient(colors = posterBackgroundColors))
+                    }
                 ) {
                     if (!isScreenHeightCompact) {
                         AnimatedAsyncImage(
@@ -483,23 +487,29 @@ private fun UserReviewsSection(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MovieRecommendationsSection(
     recommendations: LazyPagingItems<RecommendedMovieContent>,
-    onMovieClick: (Int) -> Unit,
-    isScreenHeightCompact: Boolean
+    onMovieClick: (Int) -> Unit
 ) {
+    val state = rememberLazyListState()
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
     ContentSubTitle(titleId = R.string.recommendations_text)
     LazyRow(
-        modifier = Modifier
-            .conditional(
-                condition = isScreenHeightCompact,
-                ifTrue = { height(LocalConfiguration.current.screenHeightDp.dp / 1.33f) },
-                ifFalse = { height(LocalConfiguration.current.screenHeightDp.dp / 3) }
+        modifier = Modifier.height(
+            setSize(
+                onCompact = screenHeight / 1.5f,
+                onMedium = if (isScreenPortrait()) screenHeight / 2.5f else screenHeight / 1.75f,
+                onExpanded = screenHeight / 2.5f
             )
-            .fillMaxWidth(),
+        ),
         contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-        horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+        horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+        state = state,
+        flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
     ) {
         items(recommendations.itemCount, key = { it }) { index ->
             recommendations[index]?.let { movie ->

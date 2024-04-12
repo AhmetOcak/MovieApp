@@ -17,13 +17,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
 
-    suspend fun getNowPlayingMoviesFirstPage(): Response<Movie>
+    suspend fun getTrendingMoviesFirstPage(): Response<Movie>
 
-    suspend fun getPopularMoviesFirstPage(): Response<Movie>
+    suspend fun getTopRatedMoviesFirstPage(): Response<Movie>
 
-    fun getAllNowPlayingMovies(): Flow<PagingData<MovieContent>>
+    suspend fun getUpcomingMoviesFirstPage(): Response<Movie>
 
-    fun getAllPopularMovies(): Flow<PagingData<MovieContent>>
+    fun getAllTrendingMovies(): Flow<PagingData<MovieContent>>
+
+    fun getAllTopRatedMovies(): Flow<PagingData<MovieContent>>
+
+    fun getAllUpcomingMovies(): Flow<PagingData<MovieContent>>
 
     suspend fun getMovieDetails(movieId: Int): Response<MovieDetail>
 

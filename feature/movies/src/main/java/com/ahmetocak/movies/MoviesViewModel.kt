@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText
-import com.ahmetocak.domain.movie.GetNowPlayingMoviesFirstPageUseCase
-import com.ahmetocak.domain.movie.GetPopularMoviesFirstPageUseCase
+import com.ahmetocak.domain.movie.GetTopRatedMoviesFirstPageUseCase
+import com.ahmetocak.domain.movie.GetTrendingMoviesFirstPage
+import com.ahmetocak.domain.movie.GetUpcomingMoviesFirstPageUseCase
 import com.ahmetocak.model.movie.MovieContent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,48 +20,68 @@ import javax.inject.Inject
 @HiltViewModel
 class MoviesViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
-    private val getNowPlayingMoviesFirstPageUseCase: GetNowPlayingMoviesFirstPageUseCase,
-    private val getPopularMoviesFirstPageUseCase: GetPopularMoviesFirstPageUseCase
+    private val getTopRatedMoviesFirstPageUseCase: GetTopRatedMoviesFirstPageUseCase,
+    private val getUpcomingMoviesFirstPageUseCase: GetUpcomingMoviesFirstPageUseCase,
+    private val getTrendingMoviesFirstPage: GetTrendingMoviesFirstPage
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MoviesUiState())
     val uiState: StateFlow<MoviesUiState> = _uiState.asStateFlow()
 
     init {
-        getNowPlayingMovies()
-        getPopularMovies()
+        getTrendingMovies()
+        getTopRatedMovies()
+        getUpcomingMovies()
     }
 
-    private fun getNowPlayingMovies() {
+    private fun getTrendingMovies() {
         viewModelScope.launch(ioDispatcher) {
-            when (val response = getNowPlayingMoviesFirstPageUseCase()) {
+            when (val response = getTrendingMoviesFirstPage()) {
                 is Response.Success -> {
                     _uiState.update {
-                        it.copy(nowPlayingMoviesState = MovieState.OnDataLoaded(response.data.movies))
+                        it.copy(trendingMoviesState = MovieState.OnDataLoaded(response.data.movies))
                     }
                 }
 
                 is Response.Error -> {
                     _uiState.update {
-                        it.copy(nowPlayingMoviesState = MovieState.OnError(response.errorMessage))
+                        it.copy(trendingMoviesState = MovieState.OnError(response.errorMessage))
                     }
                 }
             }
         }
     }
 
-    private fun getPopularMovies() {
+    private fun getTopRatedMovies() {
         viewModelScope.launch(ioDispatcher) {
-            when (val response = getPopularMoviesFirstPageUseCase()) {
+            when (val response = getTopRatedMoviesFirstPageUseCase()) {
                 is Response.Success -> {
                     _uiState.update {
-                        it.copy(popularMoviesState = MovieState.OnDataLoaded(response.data.movies))
+                        it.copy(topRatedMoviesState = MovieState.OnDataLoaded(response.data.movies))
                     }
                 }
 
                 is Response.Error -> {
                     _uiState.update {
-                        it.copy(popularMoviesState = MovieState.OnError(response.errorMessage))
+                        it.copy(topRatedMoviesState = MovieState.OnError(response.errorMessage))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getUpcomingMovies() {
+        viewModelScope.launch(ioDispatcher) {
+            when (val response = getUpcomingMoviesFirstPageUseCase()) {
+                is Response.Success -> {
+                    _uiState.update {
+                        it.copy(upcomingMoviesState = MovieState.OnDataLoaded(response.data.movies))
+                    }
+                }
+
+                is Response.Error -> {
+                    _uiState.update {
+                        it.copy(upcomingMoviesState = MovieState.OnError(response.errorMessage))
                     }
                 }
             }
@@ -69,8 +90,9 @@ class MoviesViewModel @Inject constructor(
 }
 
 data class MoviesUiState(
-    val nowPlayingMoviesState: MovieState = MovieState.Loading,
-    val popularMoviesState: MovieState = MovieState.Loading
+    val trendingMoviesState: MovieState = MovieState.Loading,
+    val topRatedMoviesState: MovieState = MovieState.Loading,
+    val upcomingMoviesState: MovieState = MovieState.Loading
 )
 
 sealed class MovieState {

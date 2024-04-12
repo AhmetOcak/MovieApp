@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="see_all_text">Hepsini Gör</string>
-    <string name="popular_movies">Popüler Filmler</string>
-    <string name="now_playing">Şu Anda Yayında</string>
 </resources>
