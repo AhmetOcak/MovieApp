@@ -1,7 +1,6 @@
 package com.ahmetocak.login
 
 import android.content.Intent
-import android.util.Log
 import androidx.activity.result.IntentSenderRequest
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -130,7 +129,7 @@ class LoginViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                errorMessages = listOf(errorMessage)
+                                userMessages = listOf(errorMessage)
                             )
                         }
                     }
@@ -140,7 +139,6 @@ class LoginViewModel @Inject constructor(
     }
 
     fun sendPasswordResetMail() {
-        Log.d("EMAIL", emailValue)
         if (passwordResetEmailValue.isValidEmail()) {
             viewModelScope.launch(ioDispatcher) {
                 _uiState.update {
@@ -158,7 +156,7 @@ class LoginViewModel @Inject constructor(
                     },
                     onTaskFailed = { errorMessage ->
                         _uiState.update {
-                            it.copy(errorMessages = listOf(errorMessage))
+                            it.copy(userMessages = listOf(errorMessage))
                         }
                     }
                 )
@@ -185,7 +183,7 @@ class LoginViewModel @Inject constructor(
                 } else {
                     _uiState.update {
                         it.copy(
-                            errorMessages = listOf(
+                            userMessages = listOf(
                                 handleTaskError(
                                     e = task.exception,
                                     defaultErrorMessage = UiText.StringResource(R.string.watch_list_get_error)
@@ -205,7 +203,7 @@ class LoginViewModel @Inject constructor(
 
                 is Response.Error -> {
                     _uiState.update {
-                        it.copy(errorMessages = listOf(response.errorMessage))
+                        it.copy(userMessages = listOf(response.errorMessage))
                     }
                 }
             }
@@ -218,7 +216,7 @@ class LoginViewModel @Inject constructor(
                 onTaskSuccess = onTaskSuccess,
                 onTaskFailed = { errorMessage ->
                     _uiState.update {
-                        it.copy(errorMessages = listOf(errorMessage))
+                        it.copy(userMessages = listOf(errorMessage))
                     }
                 }
             )
@@ -234,16 +232,10 @@ class LoginViewModel @Inject constructor(
                 },
                 onTaskFailed = { errorMessage ->
                     _uiState.update {
-                        it.copy(errorMessages = listOf(errorMessage))
+                        it.copy(userMessages = listOf(errorMessage))
                     }
                 }
             )
-        }
-    }
-
-    fun consumedErrorMessage() {
-        _uiState.update {
-            it.copy(errorMessages = emptyList())
         }
     }
 
@@ -256,7 +248,6 @@ class LoginViewModel @Inject constructor(
 
 data class LoginUiState(
     val isLoading: Boolean = false,
-    val errorMessages: List<UiText> = emptyList(),
     val userMessages: List<UiText> = emptyList(),
     val emailFieldErrorMessage: UiText? = null,
     val passwordFieldErrorMessage: UiText? = null,

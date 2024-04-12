@@ -1,7 +1,6 @@
 package com.ahmetocak.profile
 
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -66,6 +65,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.findActivity
 import com.ahmetocak.common.helpers.DialogUiEvent
 import com.ahmetocak.common.helpers.LocaleManager
+import com.ahmetocak.common.findActivity
+import com.ahmetocak.common.helpers.ShowUserMessage
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ButtonCircularProgressIndicator
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
@@ -133,12 +134,10 @@ fun ProfileScreen(
     }
 
     if (uiState.userMessages.isNotEmpty()) {
-        Toast.makeText(
-            context,
-            uiState.userMessages.first().asString(),
-            Toast.LENGTH_SHORT
-        ).show()
-        viewModel.userMessageConsumed()
+        ShowUserMessage(
+            message = uiState.userMessages.first().asString(),
+            consumedMessage = viewModel::consumedUserMessage
+        )
     }
 
     MovieScaffold(

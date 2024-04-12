@@ -1,7 +1,6 @@
 package com.ahmetocak.login
 
 import android.app.Activity.RESULT_OK
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -30,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.helpers.DialogUiEvent
 import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.helpers.isScreenPortrait
+import com.ahmetocak.common.helpers.ShowUserMessage
 import com.ahmetocak.designsystem.components.ButtonCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieButton
 import com.ahmetocak.designsystem.components.MovieDialog
@@ -77,22 +76,11 @@ fun LoginScreen(
         }
     )
 
-    if (uiState.errorMessages.isNotEmpty()) {
-        Toast.makeText(
-            LocalContext.current,
-            uiState.errorMessages.first().asString(),
-            Toast.LENGTH_LONG
-        ).show()
-        viewModel.consumedErrorMessage()
-    }
-
     if (uiState.userMessages.isNotEmpty()) {
-        Toast.makeText(
-            LocalContext.current,
-            uiState.userMessages.first().asString(),
-            Toast.LENGTH_LONG
-        ).show()
-        viewModel.consumedUserMessage()
+        ShowUserMessage(
+            message = uiState.userMessages.first().asString(),
+            consumedMessage = viewModel::consumedUserMessage
+        )
     }
 
     if (uiState.dialogUiEvent != DialogUiEvent.InActive) {

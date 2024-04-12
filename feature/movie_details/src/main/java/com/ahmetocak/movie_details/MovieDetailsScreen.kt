@@ -55,6 +55,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.convertToDurationTime
+import com.ahmetocak.common.helpers.ShowUserMessage
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.helpers.conditional
@@ -108,13 +109,12 @@ fun MovieDetailsScreen(
     val context = LocalContext.current
 
     if (uiState.userMessages.isNotEmpty()) {
-        Toast.makeText(
-            LocalContext.current,
-            uiState.userMessages.first().asString(),
-            Toast.LENGTH_SHORT
-        ).show()
-        viewModel.consumedUserMessage()
+        ShowUserMessage(
+            message = uiState.userMessages.first().asString(),
+            consumedMessage = viewModel::consumedUserMessage
+        )
     }
+
     MovieScaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         MovieDetailsScreenContent(
             modifier = Modifier.padding(paddingValues),
