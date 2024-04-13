@@ -9,6 +9,14 @@ On the profile screen you can change the app's language, theme and, if the devic
 the watchlist and profile picture are also deleted from Firebase.
 The application can work in both landscape and portrait mode. The Application also works compatible with tablets.
 
+
+
+
+
+
+
+
+
 ## Tech Stack 📚
 
 * [Android Architecture Components](https://developer.android.com/topic/architecture)
@@ -48,7 +56,7 @@ The application can work in both landscape and portrait mode. The Application al
 | WatchList Screen | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/65b51927-c45a-49c8-ae1a-84144fd7e727" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/bb1b8270-29fd-4db8-80d8-c237d67f093d" width="240" height="480"/>     |
 | Profile Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/075fe7c7-3215-4300-ae01-28fa74538acd" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/372af4a6-fb1e-4929-9bfd-4a410a80f7aa" width="240" height="480"/>     |
 | See All Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/7dc2f3e1-2e8e-44b8-9123-6845f5d8423f" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/47ca1f31-7689-4249-b1d7-0b94e1d1f1b8" width="240" height="480"/>     |
-| Movie Details Screen      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/75a5ea9c-4427-4b75-91b7-9d3f06cc0aa5" width="240" height="480"/>      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d4471a51-6b9d-4b11-b5fc-5bfce1c1108a" width="240" height="480"/> |
+| Movie Details Screen      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/0e139c8d-4c0c-421d-924a-931c56b0b76e" width="240" height="480"/>      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/2c2124e0-aa2f-418d-95d0-af451538b35f" width="240" height="480"/> |
 |  Actor Details Screen     |  <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/e23aae75-56e0-40d5-b3cc-80dec79ea34d" width="240" height="480" />       | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/8a686ad1-b45d-4cb5-968b-cc3ba9486813" width="240" height="480" />          |
 <!--
 |                  |              |
