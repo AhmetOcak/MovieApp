@@ -1,5 +1,8 @@
 package com.ahmetocak.model.movie
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class UserReviewResults(
     val id: String,
     val author: String,
@@ -9,6 +12,7 @@ data class UserReviewResults(
     val authorDetails: UserReviewAuthorDetails
 )
 
+@Immutable
 data class UserReviewAuthorDetails(
     val rating: Int? = null,
     val avatarPath: String? = null

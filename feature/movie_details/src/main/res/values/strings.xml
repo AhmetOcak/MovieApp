@@ -10,4 +10,5 @@
     <string name="user_reviews">User Reviews</string>
     <string name="recommendations_text">Recommendations</string>
     <string name="gemini_prompt">Can you tell me about %s movie ?</string>
+    <string name="movie_data_error">We are currently unable to display movie details due to some issues. Please try again later.</string>
 </resources>

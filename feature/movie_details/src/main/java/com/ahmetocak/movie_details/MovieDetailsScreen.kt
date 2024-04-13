@@ -59,7 +59,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.convertToDurationTime
 import com.ahmetocak.common.helpers.ShowUserMessage
-import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.helpers.isScreenPortrait
@@ -76,9 +75,9 @@ import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.firebase.WatchListMovie
 import com.ahmetocak.model.movie.RecommendedMovieContent
 import com.ahmetocak.model.movie.UserReviewResults
-import com.ahmetocak.model.movie_detail.MovieCredit
+import com.ahmetocak.model.movie_detail.Cast
 import com.ahmetocak.model.movie_detail.MovieDetail
-import com.ahmetocak.model.movie_detail.MovieTrailer
+import com.ahmetocak.model.movie_detail.Trailer
 import com.ahmetocak.movie_details.models.ActorItem
 import com.ahmetocak.movie_details.models.TopAppBar
 import com.ahmetocak.movie_details.models.TrailerItem
@@ -87,12 +86,6 @@ import com.ahmetocak.ui.MovieItem
 import com.ahmetocak.ui.TmdbLogo
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
-
-private val errorModifier = Modifier
-    .fillMaxWidth()
-    .padding(vertical = Dimens.fourLevelPadding)
-
-private val circularProgressIndicatorPadding = PaddingValues(Dimens.fourLevelPadding)
 
 @Composable
 fun MovieDetailsScreen(
@@ -121,40 +114,57 @@ fun MovieDetailsScreen(
     }
 
     MovieScaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
-        MovieDetailsScreenContent(
-            modifier = Modifier.padding(paddingValues),
-            upPress = upPress,
-            isMovieInWatchList = uiState.isMovieInWatchList,
-            onWatchListClick = remember { viewModel::handleWatchListAction },
-            detailUiState = uiState.detailUiState,
-            directorName = uiState.directorName,
-            castUiState = uiState.castUiState,
-            trailerUiState = uiState.trailersUiState,
-            isWatchlistButtonInProgress = uiState.isWatchlistButtonInProgress,
-            onActorClick = onActorClick,
-            reviews = userReviews,
-            recommendations = recommendations,
-            onMovieClick = onMovieClick,
-            onGeminiClick = remember {
-                {
-                    showBottomSheet = true
-                    viewModel.getGeminiResponse(context = context)
-                }
-            },
-            onImageLoaded = remember {
-                {
-                    if (!isScreenHeightCompact) {
-                        viewModel.generatePaletteFromImage(it.toBitmap())
-                    }
-                }
-            },
-            posterBackgroundColors = if (isScreenHeightCompact) listOf(
-                Color.Transparent,
-                Color.Transparent
-            ) else uiState.posterBackgroundColors,
-            isScreenHeightCompact = isScreenHeightCompact,
-            isScreenWidthExpanded = isScreenWidthExpanded
-        )
+        when (val status = uiState.movieDataStatus) {
+            is MovieDataStatus.Loading -> {
+                FullScreenCircularProgressIndicator(paddingValues = paddingValues)
+            }
+
+            is MovieDataStatus.Error -> {
+                ErrorView(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    errorMessage = status.message.asString()
+                )
+            }
+
+            is MovieDataStatus.Success -> {
+                MovieDetailsScreenContent(
+                    modifier = Modifier.padding(paddingValues),
+                    upPress = upPress,
+                    isMovieInWatchList = uiState.isMovieInWatchList,
+                    onWatchListClick = remember { viewModel::handleWatchListAction },
+                    movieDetail = uiState.movieDetails.first(),
+                    castList = uiState.movieCast,
+                    trailers = uiState.movieTrailers,
+                    directorName = uiState.directorName,
+                    isWatchlistButtonInProgress = uiState.isWatchlistButtonInProgress,
+                    onActorClick = onActorClick,
+                    reviews = userReviews,
+                    recommendations = recommendations,
+                    onMovieClick = onMovieClick,
+                    onGeminiClick = remember {
+                        {
+                            showBottomSheet = true
+                            viewModel.getGeminiResponse(context = context)
+                        }
+                    },
+                    onImageLoaded = remember {
+                        {
+                            if (!isScreenHeightCompact) {
+                                viewModel.generatePaletteFromImage(it.toBitmap())
+                            }
+                        }
+                    },
+                    posterBackgroundColors = if (isScreenHeightCompact) listOf(
+                        Color.Transparent,
+                        Color.Transparent
+                    ) else uiState.posterBackgroundColors,
+                    isScreenHeightCompact = isScreenHeightCompact,
+                    isScreenWidthExpanded = isScreenWidthExpanded
+                )
+            }
+        }
 
         if (showBottomSheet) {
             GeminiSection(
@@ -173,10 +183,10 @@ private fun MovieDetailsScreenContent(
     upPress: () -> Unit,
     isMovieInWatchList: Boolean,
     onWatchListClick: (WatchListMovie) -> Unit,
-    detailUiState: UiState<MovieDetail>,
+    movieDetail: MovieDetail,
     directorName: String,
-    castUiState: UiState<MovieCredit>,
-    trailerUiState: UiState<MovieTrailer>,
+    castList: List<Cast>,
+    trailers: List<Trailer>,
     isWatchlistButtonInProgress: Boolean,
     onActorClick: (Int) -> Unit,
     reviews: LazyPagingItems<UserReviewResults>,
@@ -196,7 +206,7 @@ private fun MovieDetailsScreenContent(
             upPress = upPress,
             isMovieInWatchList = isMovieInWatchList,
             onWatchListClick = onWatchListClick,
-            detailUiState = detailUiState,
+            movieDetail = movieDetail,
             directorName = directorName,
             isWatchlistButtonInProgress = isWatchlistButtonInProgress,
             onGeminiClick = onGeminiClick,
@@ -208,8 +218,8 @@ private fun MovieDetailsScreenContent(
         if (reviews.itemCount != 0) {
             UserReviewsSection(reviews = reviews, isScreenHeightCompact = isScreenHeightCompact)
         }
-        ActorListSection(castUiState = castUiState, onActorClick = onActorClick)
-        TrailerListSection(trailerUiState = trailerUiState)
+        ActorListSection(castList = castList, onActorClick = onActorClick)
+        TrailerListSection(trailers = trailers)
         if (recommendations.itemCount != 0) {
             MovieRecommendationsSection(
                 recommendations = recommendations,
@@ -223,9 +233,9 @@ private fun MovieDetailsScreenContent(
 @Composable
 private fun MovieSection(
     upPress: () -> Unit,
+    movieDetail: MovieDetail,
     isMovieInWatchList: Boolean,
     onWatchListClick: (WatchListMovie) -> Unit,
-    detailUiState: UiState<MovieDetail>,
     directorName: String,
     isWatchlistButtonInProgress: Boolean,
     onGeminiClick: () -> Unit,
@@ -234,68 +244,53 @@ private fun MovieSection(
     onImageLoaded: (Drawable) -> Unit,
     isScreenHeightCompact: Boolean
 ) {
-    when (detailUiState) {
-        is UiState.Loading -> {
-            FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
-        }
-
-        is UiState.OnDataLoaded -> {
-            detailUiState.data.apply {
-                Box(
-                    modifier = Modifier.drawBehind {
-                        drawRect(brush = Brush.verticalGradient(colors = posterBackgroundColors))
-                    }
-                ) {
-                    if (!isScreenHeightCompact) {
-                        AnimatedAsyncImage(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(LocalConfiguration.current.screenHeightDp.dp / 1.33f)
-                                .aspectRatio(2f / 3f, true),
-                            imageUrl = "${TMDB.IMAGE_URL}${posterImageUrlPath}",
-                            onImagePainterSuccess = onImageLoaded
-                        )
-                    }
-                    TopAppBar(
-                        upPress = upPress,
-                        isMovieInWatchList = isMovieInWatchList,
-                        onWatchListClick = {
-                            onWatchListClick(
-                                WatchListMovie(
-                                    id = id,
-                                    name = originalMovieName,
-                                    releaseYear = releaseDate,
-                                    voteAverage = voteAverage,
-                                    voteCount = voteCount,
-                                    imageUrlPath = posterImageUrlPath
-                                )
-                            )
-                        },
-                        isWatchlistButtonInProgress = isWatchlistButtonInProgress,
-                        onGeminiClick = onGeminiClick
-                    )
-                }
-                MovieDetails(
-                    voteAverage = voteAverage,
-                    voteCount = voteCount,
-                    categories = genres,
-                    releaseDate = releaseDate,
-                    movieDuration = duration.convertToDurationTime(),
-                    directorName = directorName,
-                    movieName = movieName,
-                    overview = overview,
-                    movieOriginalName = originalMovieName,
-                    isScreenWidthExpanded = isScreenWidthExpanded
+    movieDetail.apply {
+        Box(
+            modifier = Modifier.drawBehind {
+                drawRect(brush = Brush.verticalGradient(colors = posterBackgroundColors))
+            }
+        ) {
+            if (!isScreenHeightCompact) {
+                AnimatedAsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(LocalConfiguration.current.screenHeightDp.dp / 1.33f)
+                        .aspectRatio(2f / 3f, true),
+                    imageUrl = "${TMDB.IMAGE_URL}${posterImageUrlPath}",
+                    onImagePainterSuccess = onImageLoaded
                 )
             }
-        }
-
-        is UiState.OnError -> {
-            ErrorView(
-                modifier = errorModifier,
-                errorMessage = detailUiState.errorMessage.asString()
+            TopAppBar(
+                upPress = upPress,
+                isMovieInWatchList = isMovieInWatchList,
+                onWatchListClick = {
+                    onWatchListClick(
+                        WatchListMovie(
+                            id = id,
+                            name = originalMovieName,
+                            releaseYear = releaseDate,
+                            voteAverage = voteAverage,
+                            voteCount = voteCount,
+                            imageUrlPath = posterImageUrlPath
+                        )
+                    )
+                },
+                isWatchlistButtonInProgress = isWatchlistButtonInProgress,
+                onGeminiClick = onGeminiClick
             )
         }
+        MovieDetails(
+            voteAverage = voteAverage,
+            voteCount = voteCount,
+            categories = genres,
+            releaseDate = releaseDate,
+            movieDuration = duration.convertToDurationTime(),
+            directorName = directorName,
+            movieName = movieName,
+            overview = overview,
+            movieOriginalName = originalMovieName,
+            isScreenWidthExpanded = isScreenWidthExpanded
+        )
     }
 }
 
@@ -373,67 +368,37 @@ private fun MovieDetails(
 }
 
 @Composable
-private fun ActorListSection(castUiState: UiState<MovieCredit>, onActorClick: (Int) -> Unit) {
-    when (castUiState) {
-        is UiState.Loading -> {
-            FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
-        }
-
-        is UiState.OnDataLoaded -> {
-            Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
-                ContentSubTitle(titleId = R.string.actors_text)
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-                ) {
-                    items(castUiState.data.cast, key = { it.id }) { cast ->
-                        ActorItem(
-                            imageUrl = "${TMDB.IMAGE_URL}${cast.imageUrlPath}",
-                            actorName = cast.name,
-                            characterName = cast.characterName,
-                            actorId = cast.id,
-                            onClick = onActorClick
-                        )
-                    }
-                }
+private fun ActorListSection(castList: List<Cast>, onActorClick: (Int) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)) {
+        ContentSubTitle(titleId = R.string.actors_text)
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+        ) {
+            items(castList, key = { it.id }) { cast ->
+                ActorItem(
+                    imageUrl = "${TMDB.IMAGE_URL}${cast.imageUrlPath}",
+                    actorName = cast.name,
+                    characterName = cast.characterName,
+                    actorId = cast.id,
+                    onClick = onActorClick
+                )
             }
-        }
-
-        is UiState.OnError -> {
-            ErrorView(
-                modifier = errorModifier,
-                errorMessage = castUiState.errorMessage.asString()
-            )
         }
     }
 }
 
 @Composable
-private fun TrailerListSection(trailerUiState: UiState<MovieTrailer>) {
-    when (trailerUiState) {
-        is UiState.Loading -> {
-            FullScreenCircularProgressIndicator(paddingValues = circularProgressIndicatorPadding)
-        }
-
-        is UiState.OnDataLoaded -> {
-            if (trailerUiState.data.trailers.isNotEmpty()) {
-                ContentSubTitle(titleId = R.string.trailers_text)
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
-                ) {
-                    items(trailerUiState.data.trailers, key = { it.key }) { trailer ->
-                        TrailerItem(videoId = trailer.key)
-                    }
-                }
+private fun TrailerListSection(trailers: List<Trailer>) {
+    if (trailers.isNotEmpty()) {
+        ContentSubTitle(titleId = R.string.trailers_text)
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding)
+        ) {
+            items(trailers, key = { it.key }) { trailer ->
+                TrailerItem(videoId = trailer.key)
             }
-        }
-
-        is UiState.OnError -> {
-            ErrorView(
-                modifier = errorModifier,
-                errorMessage = trailerUiState.errorMessage.asString()
-            )
         }
     }
 }

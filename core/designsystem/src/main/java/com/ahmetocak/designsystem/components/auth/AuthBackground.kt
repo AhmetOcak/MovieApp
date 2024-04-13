@@ -28,6 +28,9 @@ import com.ahmetocak.designsystem.R
 fun AuthBackground() {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+
     val gradient = Brush.verticalGradient(
         colors = listOf(
             Color.Transparent,
@@ -42,16 +45,16 @@ fun AuthBackground() {
             modifier = Modifier
                 .height(
                     if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        LocalConfiguration.current.screenHeightDp.dp / 2
+                        screenHeight / 2
                     } else {
-                        LocalConfiguration.current.screenHeightDp.dp
+                        screenHeight
                     }
                 )
                 .width(
                     if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                        LocalConfiguration.current.screenWidthDp.dp
+                        screenWidth
                     } else {
-                        LocalConfiguration.current.screenWidthDp.dp / 2
+                        screenWidth / 2
                     }
                 )
                 .onGloballyPositioned { sizeImage = it.size }

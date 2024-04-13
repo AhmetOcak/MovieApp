@@ -2,6 +2,10 @@ package com.ahmetocak.model.firebase
 
 import androidx.compose.runtime.Immutable
 
+data class WatchList(
+    val watchList: List<WatchListMovie> = emptyList()
+)
+
 @Immutable
 data class WatchListMovie(
     val id: Int? = null,
@@ -10,9 +14,4 @@ data class WatchListMovie(
     val voteAverage: Float? = null,
     val voteCount: Int? = null,
     val imageUrlPath: String? = null
-)
-
-@Immutable
-data class WatchList(
-    val watchList: List<WatchListMovie> = emptyList()
 )

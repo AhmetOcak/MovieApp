@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.palette.graphics.Palette
 import com.ahmetocak.common.helpers.Response
-import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.common.helpers.handleTaskError
 import com.ahmetocak.domain.DeleteMovieFromWatchListUseCase
@@ -25,12 +24,13 @@ import com.ahmetocak.domain.movie.GetUserMovieReviewsUseCase
 import com.ahmetocak.model.firebase.WatchListMovie
 import com.ahmetocak.model.movie.RecommendedMovieContent
 import com.ahmetocak.model.movie.UserReviewResults
-import com.ahmetocak.model.movie_detail.MovieCredit
+import com.ahmetocak.model.movie_detail.Cast
 import com.ahmetocak.model.movie_detail.MovieDetail
-import com.ahmetocak.model.movie_detail.MovieTrailer
+import com.ahmetocak.model.movie_detail.Trailer
 import com.ahmetocak.navigation.MainDestinations
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,8 +51,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val getMovieTrailersUseCase: GetMovieTrailersUseCase,
     private val addMovieToWatchListUseCase: AddMovieToWatchListUseCase,
     private val addMovieToDbWatchListUseCase: AddMovieToDbWatchListUseCase,
-    getUserMovieReviewsUseCase: GetUserMovieReviewsUseCase,
-    getMovieRecommendationsUseCase: GetMovieRecommendationsUseCase,
+    private val getUserMovieReviewsUseCase: GetUserMovieReviewsUseCase,
+    private val getMovieRecommendationsUseCase: GetMovieRecommendationsUseCase,
     private val getGeminiResponseUseCase: GetGeminiResponseUseCase
 ) : ViewModel() {
 
@@ -65,73 +65,45 @@ class MovieDetailsViewModel @Inject constructor(
         val movieId = savedStateHandle.get<String>(MainDestinations.MOVIE_DETAILS_ID_KEY)
 
         movieId?.let { id ->
-            getMovieDetails(id.toInt())
-            getMovieCredits(id.toInt())
-            getMovieTrailers(id.toInt())
             isMovieInWatchList(id.toInt())
-
-            _uiState.update {
-                it.copy(
-                    userReviews = getUserMovieReviewsUseCase(id.toInt()),
-                    movieRecommendations = getMovieRecommendationsUseCase(id.toInt())
-                )
-            }
+            getAllDataAndUpdateUi(id.toInt())
         }
     }
 
-    private fun getMovieDetails(movieId: Int) {
+    private fun getAllDataAndUpdateUi(movieId: Int) {
         viewModelScope.launch(ioDispatcher) {
-            when (val response = getMovieDetailsUseCase(movieId)) {
-                is Response.Success -> {
-                    _uiState.update {
-                        it.copy(detailUiState = UiState.OnDataLoaded(response.data))
-                    }
-                    movieName = response.data.movieName
+            val movieDetailsDeferred = async { getMovieDetailsUseCase(movieId) }
+            val movieCreditsDeferred = async { getMovieCreditsUseCase(movieId) }
+            val movieTrailersDeferred = async { getMovieTrailersUseCase(movieId) }
+
+            val movieDetailsResponse = movieDetailsDeferred.await()
+            val movieCreditsResponse = movieCreditsDeferred.await()
+            val movieTrailersResponse = movieTrailersDeferred.await()
+
+            if (movieDetailsResponse is Response.Success &&
+                movieCreditsResponse is Response.Success &&
+                movieTrailersResponse is Response.Success
+            ) {
+                _uiState.update {
+                    it.copy(
+                        movieDetails = listOf(movieDetailsResponse.data),
+                        movieCast = movieCreditsResponse.data.cast,
+                        movieTrailers = movieTrailersResponse.data.trailers,
+                        userReviews = getUserMovieReviewsUseCase(movieId),
+                        movieRecommendations = getMovieRecommendationsUseCase(movieId),
+                        directorName = movieCreditsResponse.data.directorName,
+                        movieDataStatus = MovieDataStatus.Success
+                    )
                 }
 
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(detailUiState = UiState.OnError(response.errorMessage))
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getMovieCredits(movieId: Int) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = getMovieCreditsUseCase(movieId)) {
-                is Response.Success -> {
-                    _uiState.update {
-                        it.copy(
-                            directorName = response.data.directorName,
-                            castUiState = UiState.OnDataLoaded(response.data)
+                movieName = movieDetailsResponse.data.movieName
+            } else {
+                _uiState.update {
+                    it.copy(
+                        movieDataStatus = MovieDataStatus.Error(
+                            message = UiText.StringResource(R.string.movie_data_error)
                         )
-                    }
-                }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(castUiState = UiState.OnError(response.errorMessage))
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getMovieTrailers(movieId: Int) {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = getMovieTrailersUseCase(movieId)) {
-                is Response.Success -> {
-                    _uiState.update {
-                        it.copy(trailersUiState = UiState.OnDataLoaded(response.data))
-                    }
-                }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(trailersUiState = UiState.OnError(response.errorMessage))
-                    }
+                    )
                 }
             }
         }
@@ -254,7 +226,10 @@ class MovieDetailsViewModel @Inject constructor(
                 it.copy(gemini = Gemini(isLoading = true))
             }
             viewModelScope.launch(ioDispatcher) {
-                when(val response = getGeminiResponseUseCase(context.getString(R.string.gemini_prompt, movieName))) {
+                when (val response = getGeminiResponseUseCase(context.getString(
+                        R.string.gemini_prompt,
+                        movieName
+                    ))) {
                     is Response.Success -> {
                         _uiState.update {
                             it.copy(
@@ -316,21 +291,28 @@ class MovieDetailsViewModel @Inject constructor(
 }
 
 data class MovieDetailUiState(
-    val detailUiState: UiState<MovieDetail> = UiState.Loading,
-    val castUiState: UiState<MovieCredit> = UiState.Loading,
+    val movieDetails: List<MovieDetail> = emptyList(),
+    val movieTrailers: List<Trailer> = emptyList(),
+    val movieCast: List<Cast> = emptyList(),
+    val userReviews: Flow<PagingData<UserReviewResults>> = emptyFlow(),
+    val movieRecommendations: Flow<PagingData<RecommendedMovieContent>> = emptyFlow(),
+    val movieDataStatus: MovieDataStatus = MovieDataStatus.Loading,
     val directorName: String = "",
-    val trailersUiState: UiState<MovieTrailer> = UiState.Loading,
     val userMessages: List<UiText> = emptyList(),
     val isWatchlistButtonInProgress: Boolean = false,
     val isMovieInWatchList: Boolean = false,
-    val userReviews: Flow<PagingData<UserReviewResults>> = emptyFlow(),
-    val movieRecommendations: Flow<PagingData<RecommendedMovieContent>> = emptyFlow(),
     val gemini: Gemini = Gemini(),
     val posterBackgroundColors: List<Color> = listOf(
         Color.Transparent,
         Color.Transparent
     )
 )
+
+sealed interface MovieDataStatus {
+    data object Loading: MovieDataStatus
+    data object Success: MovieDataStatus
+    data class Error(val message: UiText): MovieDataStatus
+}
 
 data class Gemini(
     val isLoading: Boolean = false,

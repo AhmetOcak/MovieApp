@@ -150,43 +150,6 @@ private fun LoginScreenContent(
     isScreenPortrait: Boolean,
     isExpandedScreen : Boolean
 ) {
-    FlexLayout(
-        modifier = modifier,
-        emailValue = emailValue,
-        onEmailValueChange = onEmailValueChange,
-        emailFieldError = emailFieldError,
-        emailFieldLabel = emailFieldLabel,
-        passwordValue = passwordValue,
-        onPasswordValueChange = onPasswordValueChange,
-        passwordFieldError = passwordFieldError,
-        passwordFieldLabel = passwordFieldLabel,
-        onLoginClick = onLoginClick,
-        onCreateAccountClick = onCreateAccountClick,
-        onForgotPasswordClick = onForgotPasswordClick,
-        onGoogleSignInClick = onGoogleSignInClick,
-        isScreenPortrait = isScreenPortrait,
-        isExpandedScreen  = isExpandedScreen
-    )
-}
-
-@Composable
-private fun FlexLayout(
-    modifier: Modifier,
-    emailValue: String,
-    onEmailValueChange: (String) -> Unit,
-    emailFieldError: Boolean,
-    emailFieldLabel: String,
-    passwordValue: String,
-    onPasswordValueChange: (String) -> Unit,
-    passwordFieldError: Boolean,
-    passwordFieldLabel: String,
-    onLoginClick: () -> Unit,
-    onCreateAccountClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit,
-    onGoogleSignInClick: () -> Unit,
-    isScreenPortrait: Boolean,
-    isExpandedScreen : Boolean
-) {
     if (isScreenPortrait) {
         Column(
             modifier = modifier

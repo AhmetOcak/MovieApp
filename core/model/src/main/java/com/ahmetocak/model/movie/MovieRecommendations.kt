@@ -1,5 +1,8 @@
 package com.ahmetocak.model.movie
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class RecommendedMovieContent(
     val id: Int,
     val movieName: String,
