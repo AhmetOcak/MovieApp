@@ -61,6 +61,7 @@ internal fun ActorItem(
                 append("($characterName)")
             },
             maxLines = 4,
+            minLines = 4,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center
         )
