@@ -13,8 +13,8 @@ class WatchListLocalDataSourceImpl @Inject constructor(
     override suspend fun addMovieToWatchList(watchListEntity: WatchListEntity): Response<Unit> =
         dbCall { dao.addMovieToWatchList(watchListEntity) }
 
-    override suspend fun getWatchList(): Response<Flow<List<WatchListEntity>>> =
-        dbCall { dao.getWatchList() }
+    override suspend fun observeWatchList(): Response<Flow<List<WatchListEntity>>> =
+        dbCall { dao.observeWatchList() }
 
     override suspend fun removeMovieFromWatchList(movieId: Int) =
         dbCall { dao.removeMovieFromWatchList(movieId) }

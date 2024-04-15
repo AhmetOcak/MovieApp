@@ -20,7 +20,7 @@ class MovieAppPreferenceDataSourceImpl @Inject constructor(
         val DYNAMIC_COLOR = booleanPreferencesKey(DataStoreConstants.DYNAMIC_COLOR_KEY)
     }
 
-    override suspend fun getAppTheme(): Flow<Boolean> {
+    override suspend fun observeAppTheme(): Flow<Boolean> {
         return datastore.data.map { preferences ->
             preferences[APP_THEME] ?: true
         }
@@ -32,7 +32,7 @@ class MovieAppPreferenceDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDynamicColor(): Flow<Boolean> {
+    override suspend fun observeDynamicColor(): Flow<Boolean> {
         return datastore.data.map { preferences ->
             preferences[DYNAMIC_COLOR] ?: false
         }

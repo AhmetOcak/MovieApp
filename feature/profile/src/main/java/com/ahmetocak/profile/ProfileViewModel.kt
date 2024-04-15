@@ -14,8 +14,8 @@ import com.ahmetocak.domain.firebase.auth.GetUserEmailUseCase
 import com.ahmetocak.domain.firebase.auth.SignOutUseCase
 import com.ahmetocak.domain.firebase.storage.GetUserProfileImageUseCase
 import com.ahmetocak.domain.firebase.storage.UploadProfileImageUseCase
-import com.ahmetocak.domain.preferences.GetAppThemeUseCase
-import com.ahmetocak.domain.preferences.GetDynamicColorUseCase
+import com.ahmetocak.domain.preferences.ObserveAppThemeUseCase
+import com.ahmetocak.domain.preferences.ObserveDynamicColorUseCase
 import com.ahmetocak.domain.preferences.UpdateAppThemeUseCase
 import com.ahmetocak.domain.preferences.UpdateDynamicColorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,9 +33,9 @@ class ProfileViewModel @Inject constructor(
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val uploadProfileImageUseCase: UploadProfileImageUseCase,
     private val getProfileImageUseCase: GetUserProfileImageUseCase,
-    private val getAppThemeUseCase: GetAppThemeUseCase,
+    private val observeAppThemeUseCase: ObserveAppThemeUseCase,
     private val updateAppThemeUseCase: UpdateAppThemeUseCase,
-    private val getDynamicColorUseCase: GetDynamicColorUseCase,
+    private val observeDynamicColorUseCase: ObserveDynamicColorUseCase,
     private val updateDynamicColorUseCase: UpdateDynamicColorUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val getUserEmailUseCase: GetUserEmailUseCase
@@ -45,8 +45,8 @@ class ProfileViewModel @Inject constructor(
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     init {
-        getTheme()
-        getDynamicColor()
+        observeAppTheme()
+        observeDynamicColor()
         getUserProfileImage()
         _uiState.update {
             it.copy(userEmail = getUserEmailUseCase() ?: "")
@@ -142,9 +142,9 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun getTheme() {
+    private fun observeAppTheme() {
         viewModelScope.launch(ioDispatcher) {
-            getAppThemeUseCase().collect { darkMode ->
+            observeAppThemeUseCase().collect { darkMode ->
                 _uiState.update {
                     it.copy(isDarkModeOn = darkMode)
                 }
@@ -158,9 +158,9 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun getDynamicColor() {
+    private fun observeDynamicColor() {
         viewModelScope.launch(ioDispatcher) {
-            getDynamicColorUseCase().collect { dynamicColor ->
+            observeDynamicColorUseCase().collect { dynamicColor ->
                 _uiState.update {
                     it.copy(isDynamicColorOn = dynamicColor)
                 }

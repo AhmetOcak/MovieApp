@@ -39,7 +39,7 @@ interface MovieRepository {
 
     suspend fun addMovieToWatchList(watchListMovie: WatchListMovie): Response<Unit>
 
-    suspend fun getWatchList(): Response<Flow<List<WatchList>>>
+    suspend fun observeWatchList(): Response<Flow<List<WatchList>>>
 
     suspend fun removeMovieFromWatchList(movieId: Int): Response<Unit>
 

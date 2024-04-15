@@ -14,7 +14,7 @@ interface WatchListDao {
     suspend fun addMovieToWatchList(watchListEntity: WatchListEntity)
 
     @Query("SELECT * FROM WatchListEntity")
-    fun getWatchList(): Flow<List<WatchListEntity>>
+    fun observeWatchList(): Flow<List<WatchListEntity>>
 
     @Query("DELETE FROM WatchListEntity WHERE id == :movieId")
     suspend fun removeMovieFromWatchList(movieId: Int)

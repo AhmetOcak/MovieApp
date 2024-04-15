@@ -8,12 +8,12 @@ class DataStoreRepositoryImpl @Inject constructor(
     private val preferenceDataSource: MovieAppPreferenceDataSource
 ) : DataStoreRepository {
 
-    override suspend fun getAppTheme(): Flow<Boolean> = preferenceDataSource.getAppTheme()
+    override suspend fun observeAppTheme(): Flow<Boolean> = preferenceDataSource.observeAppTheme()
 
     override suspend fun updateAppTheme(isDarkMode: Boolean) =
         preferenceDataSource.updateAppTheme(isDarkMode)
 
-    override suspend fun getDynamicColor(): Flow<Boolean> = preferenceDataSource.getDynamicColor()
+    override suspend fun observeDynamicColor(): Flow<Boolean> = preferenceDataSource.observeDynamicColor()
 
     override suspend fun updateDynamicColor(dynamicColor: Boolean) =
         preferenceDataSource.updateDynamicColor(dynamicColor)

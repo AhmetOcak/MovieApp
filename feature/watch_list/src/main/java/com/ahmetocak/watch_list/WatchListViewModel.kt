@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.domain.DeleteMovieFromWatchListUseCase
-import com.ahmetocak.domain.movie.GetWatchListUseCase
+import com.ahmetocak.domain.movie.ObserveWatchListUseCase
 import com.ahmetocak.model.firebase.WatchListMovie
 import com.ahmetocak.model.watch_list.WatchList
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WatchListViewModel @Inject constructor(
-    private val getWatchListUseCase: GetWatchListUseCase,
+    private val observeWatchListUseCase: ObserveWatchListUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     private val deleteMovieFromWatchListUseCase: DeleteMovieFromWatchListUseCase
 ) : ViewModel() {
@@ -29,12 +29,12 @@ class WatchListViewModel @Inject constructor(
     val uiState: StateFlow<WatchListUiState> = _uiState.asStateFlow()
 
     init {
-        getWatchList()
+        observeWatchList()
     }
 
-    private fun getWatchList() {
+    private fun observeWatchList() {
         viewModelScope.launch(ioDispatcher) {
-            when (val response = getWatchListUseCase()) {
+            when (val response = observeWatchListUseCase()) {
                 is Response.Success -> {
                     response.data.flowOn(ioDispatcher).collect { watchList ->
                         _uiState.update {

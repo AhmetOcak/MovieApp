@@ -3,8 +3,8 @@ package com.ahmetocak.movieapp.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmetocak.common.helpers.UiText
-import com.ahmetocak.domain.preferences.GetAppThemeUseCase
-import com.ahmetocak.domain.preferences.GetDynamicColorUseCase
+import com.ahmetocak.domain.preferences.ObserveAppThemeUseCase
+import com.ahmetocak.domain.preferences.ObserveDynamicColorUseCase
 import com.ahmetocak.movieapp.R
 import com.ahmetocak.common.connectivity.ConnectivityObserver
 import com.ahmetocak.common.connectivity.NetworkConnectivityObserver
@@ -23,8 +23,8 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val networkConnectivityObserver: NetworkConnectivityObserver,
-    private val getAppThemeUseCase: GetAppThemeUseCase,
-    private val getDynamicColorUseCase: GetDynamicColorUseCase,
+    private val observeAppThemeUseCase: ObserveAppThemeUseCase,
+    private val observeDynamicColorUseCase: ObserveDynamicColorUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
@@ -41,8 +41,8 @@ class MainActivityViewModel @Inject constructor(
         runBlocking(ioDispatcher) {
             _uiState.update {
                 it.copy(
-                    isDarkModeOn = getAppThemeUseCase().first(),
-                    isDynamicColorOn = getDynamicColorUseCase().first()
+                    isDarkModeOn = observeAppThemeUseCase().first(),
+                    isDynamicColorOn = observeDynamicColorUseCase().first()
                 )
             }
         }
@@ -50,7 +50,7 @@ class MainActivityViewModel @Inject constructor(
 
     private fun observeTheme() {
         viewModelScope.launch(ioDispatcher) {
-            getAppThemeUseCase().collect { isDarkMode ->
+            observeAppThemeUseCase().collect { isDarkMode ->
                 _uiState.update {
                     it.copy(isDarkModeOn = isDarkMode)
                 }
@@ -60,7 +60,7 @@ class MainActivityViewModel @Inject constructor(
 
     private fun observeDynamicColor() {
         viewModelScope.launch(ioDispatcher) {
-            getDynamicColorUseCase().collect { isDynamicColorOn ->
+            observeDynamicColorUseCase().collect { isDynamicColorOn ->
                 _uiState.update {
                     it.copy(isDynamicColorOn = isDynamicColorOn)
                 }
