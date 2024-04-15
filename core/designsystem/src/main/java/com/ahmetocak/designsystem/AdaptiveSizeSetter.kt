@@ -1,9 +1,7 @@
-package com.ahmetocak.common.helpers
+package com.ahmetocak.designsystem
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
-import com.ahmetocak.designsystem.WindowSizeClasses
-import com.ahmetocak.designsystem.computeWindowHeightSize
 
 @Composable
 fun setSize(

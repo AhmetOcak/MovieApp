@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="see_all_text">See All</string>
+    <string name="movies_error">Something went wrong. Please try again later.</string>
 </resources>

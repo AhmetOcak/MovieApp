@@ -5,11 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.ahmetocak.common.helpers.Response
 import com.ahmetocak.common.helpers.UiText
 import com.ahmetocak.domain.movie.GetTopRatedMoviesFirstPageUseCase
-import com.ahmetocak.domain.movie.GetTrendingMoviesFirstPage
+import com.ahmetocak.domain.movie.GetTrendingMoviesFirstPageUseCase
 import com.ahmetocak.domain.movie.GetUpcomingMoviesFirstPageUseCase
 import com.ahmetocak.model.movie.MovieContent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,67 +23,45 @@ class MoviesViewModel @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
     private val getTopRatedMoviesFirstPageUseCase: GetTopRatedMoviesFirstPageUseCase,
     private val getUpcomingMoviesFirstPageUseCase: GetUpcomingMoviesFirstPageUseCase,
-    private val getTrendingMoviesFirstPage: GetTrendingMoviesFirstPage
+    private val getTrendingMoviesFirstPageUseCase: GetTrendingMoviesFirstPageUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MoviesUiState())
     val uiState: StateFlow<MoviesUiState> = _uiState.asStateFlow()
 
     init {
-        getTrendingMovies()
-        getTopRatedMovies()
-        getUpcomingMovies()
+        getAllDataAndUpdateUi()
     }
 
-    private fun getTrendingMovies() {
+    private fun getAllDataAndUpdateUi() {
         viewModelScope.launch(ioDispatcher) {
-            when (val response = getTrendingMoviesFirstPage()) {
-                is Response.Success -> {
-                    _uiState.update {
-                        it.copy(trendingMoviesState = MovieState.OnDataLoaded(response.data.movies))
-                    }
-                }
+            val trendingMoviesDeferred = async { getTrendingMoviesFirstPageUseCase() }
+            val topRatedMoviesDeferred = async { getTopRatedMoviesFirstPageUseCase() }
+            val upcomingMoviesDeferred = async { getUpcomingMoviesFirstPageUseCase() }
 
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(trendingMoviesState = MovieState.OnError(response.errorMessage))
-                    }
-                }
-            }
-        }
-    }
+            val trendingMoviesResponse = trendingMoviesDeferred.await()
+            val topRatedMoviesResponse = topRatedMoviesDeferred.await()
+            val upcomingMoviesResponse = upcomingMoviesDeferred.await()
 
-    private fun getTopRatedMovies() {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = getTopRatedMoviesFirstPageUseCase()) {
-                is Response.Success -> {
-                    _uiState.update {
-                        it.copy(topRatedMoviesState = MovieState.OnDataLoaded(response.data.movies))
-                    }
+            if (trendingMoviesResponse is Response.Success &&
+                topRatedMoviesResponse is Response.Success &&
+                upcomingMoviesResponse is Response.Success
+            ) {
+                _uiState.update {
+                    it.copy(
+                        trendingMovies = trendingMoviesResponse.data.movies,
+                        topRatedMovies = topRatedMoviesResponse.data.movies,
+                        upcomingMovies = upcomingMoviesResponse.data.movies,
+                        movieDataStatus = MovieDataStatus.Success
+                    )
                 }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(topRatedMoviesState = MovieState.OnError(response.errorMessage))
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getUpcomingMovies() {
-        viewModelScope.launch(ioDispatcher) {
-            when (val response = getUpcomingMoviesFirstPageUseCase()) {
-                is Response.Success -> {
-                    _uiState.update {
-                        it.copy(upcomingMoviesState = MovieState.OnDataLoaded(response.data.movies))
-                    }
-                }
-
-                is Response.Error -> {
-                    _uiState.update {
-                        it.copy(upcomingMoviesState = MovieState.OnError(response.errorMessage))
-                    }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        movieDataStatus = MovieDataStatus.Error(
+                            message = UiText.StringResource(R.string.movies_error)
+                        )
+                    )
                 }
             }
         }
@@ -90,13 +69,14 @@ class MoviesViewModel @Inject constructor(
 }
 
 data class MoviesUiState(
-    val trendingMoviesState: MovieState = MovieState.Loading,
-    val topRatedMoviesState: MovieState = MovieState.Loading,
-    val upcomingMoviesState: MovieState = MovieState.Loading
+    val movieDataStatus: MovieDataStatus = MovieDataStatus.Loading,
+    val trendingMovies: List<MovieContent> = emptyList(),
+    val topRatedMovies: List<MovieContent> = emptyList(),
+    val upcomingMovies: List<MovieContent> = emptyList()
 )
 
-sealed class MovieState {
-    data object Loading : MovieState()
-    data class OnDataLoaded(val movieList: List<MovieContent>) : MovieState()
-    data class OnError(val errorMessage: UiText) : MovieState()
+sealed interface MovieDataStatus {
+    data object Loading : MovieDataStatus
+    data object Success : MovieDataStatus
+    data class Error(val message: UiText) : MovieDataStatus
 }

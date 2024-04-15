@@ -23,10 +23,10 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.isScreenPortrait
-import com.ahmetocak.common.utils.onLoadStateAppend
-import com.ahmetocak.common.utils.onLoadStateRefresh
 import com.ahmetocak.designsystem.WindowSizeClasses
 import com.ahmetocak.designsystem.components.MovieScaffold
+import com.ahmetocak.designsystem.components.onLoadStateAppend
+import com.ahmetocak.designsystem.components.onLoadStateRefresh
 import com.ahmetocak.designsystem.dimens.Dimens
 import com.ahmetocak.model.movie.MovieContent
 import com.ahmetocak.ui.MovieItem

@@ -7,11 +7,12 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.ahmetocak.common.findActivity
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-fun computeWindowWidthSize(activity: Activity = LocalContext.current as Activity): WindowSizeClasses? {
-    return when (calculateWindowSizeClass(activity = activity).widthSizeClass) {
+fun computeWindowWidthSize(activity: Activity? = LocalContext.current.findActivity()): WindowSizeClasses? {
+    return when (activity?.let { calculateWindowSizeClass(activity = it).widthSizeClass }) {
         WindowWidthSizeClass.Compact -> WindowSizeClasses.COMPACT
 
         WindowWidthSizeClass.Medium -> WindowSizeClasses.MEDIUM
@@ -24,8 +25,8 @@ fun computeWindowWidthSize(activity: Activity = LocalContext.current as Activity
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
-fun computeWindowHeightSize(activity: Activity = LocalContext.current as Activity): WindowSizeClasses? {
-    return when (calculateWindowSizeClass(activity = activity).heightSizeClass) {
+fun computeWindowHeightSize(activity: Activity? = LocalContext.current.findActivity()): WindowSizeClasses? {
+    return when (activity?.let { calculateWindowSizeClass(activity = it).heightSizeClass }) {
         WindowHeightSizeClass.Compact -> WindowSizeClasses.COMPACT
 
         WindowHeightSizeClass.Medium -> WindowSizeClasses.MEDIUM

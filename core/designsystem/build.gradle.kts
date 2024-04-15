@@ -66,5 +66,9 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
 
+    // Paging 3
+    implementation(libs.androidx.paging.runtime.ktx)
+
     implementation(project(":core:navigation"))
+    implementation(project(":core:common"))
 }

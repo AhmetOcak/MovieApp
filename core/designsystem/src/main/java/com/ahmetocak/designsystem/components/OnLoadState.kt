@@ -1,4 +1,4 @@
-package com.ahmetocak.common.utils
+package com.ahmetocak.designsystem.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -20,8 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.paging.LoadState
 import com.ahmetocak.common.R
 import com.ahmetocak.common.helpers.UiText
-import com.ahmetocak.designsystem.components.ErrorView
-import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.dimens.ComponentDimens
 import com.ahmetocak.designsystem.dimens.Dimens
 

@@ -65,7 +65,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.findActivity
 import com.ahmetocak.common.helpers.DialogUiEvent
 import com.ahmetocak.common.helpers.LocaleManager
-import com.ahmetocak.common.findActivity
 import com.ahmetocak.common.helpers.ShowUserMessage
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ButtonCircularProgressIndicator

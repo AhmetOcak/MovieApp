@@ -46,7 +46,7 @@ import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.UiState
 import com.ahmetocak.common.helpers.conditional
 import com.ahmetocak.common.helpers.isScreenPortrait
-import com.ahmetocak.common.helpers.setSize
+import com.ahmetocak.designsystem.setSize
 import com.ahmetocak.designsystem.components.AnimatedAsyncImage
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator

@@ -33,13 +33,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahmetocak.common.constants.SeeAllType
 import com.ahmetocak.common.constants.TMDB
 import com.ahmetocak.common.helpers.isScreenPortrait
-import com.ahmetocak.common.helpers.setSize
+import com.ahmetocak.designsystem.setSize
 import com.ahmetocak.designsystem.components.ErrorView
 import com.ahmetocak.designsystem.components.FullScreenCircularProgressIndicator
 import com.ahmetocak.designsystem.components.MovieButton
 import com.ahmetocak.designsystem.components.MovieScaffold
 import com.ahmetocak.designsystem.components.navigation.MovieNavigationBar
 import com.ahmetocak.designsystem.dimens.Dimens
+import com.ahmetocak.model.movie.MovieContent
 import com.ahmetocak.navigation.HomeSections
 import com.ahmetocak.ui.MovieItem
 import com.ahmetocak.common.R as CommonR
@@ -69,26 +70,41 @@ fun MoviesScreen(
             }
         }
     ) { paddingValues ->
-        MoviesScreenContent(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(start = if (showNavigationRail) 80.dp else 0.dp),
-            onMovieClick = onMovieClick,
-            onSeeAllClick = onSeeAllClick,
-            trendingMoviesState = uiState.trendingMoviesState,
-            topRatedMoviesState = uiState.topRatedMoviesState,
-            upcomingMoviesState = uiState.upcomingMoviesState,
-            topMovieSectionImageSize = setSize(
-                onCompact = screenHeight - Dimens.twoLevelPadding,
-                onMedium = if (isScreenPortrait()) screenHeight / 2 else screenHeight / 1.75f,
-                onExpanded = screenHeight / 1.5f
-            ),
-            movieSectionImageSize = setSize(
-                onCompact = screenHeight - Dimens.twoLevelPadding,
-                onMedium = if (isScreenPortrait()) screenHeight / 2.5f else screenHeight / 2,
-                onExpanded = screenHeight / 1.75f
-            )
-        )
+        when (val status = uiState.movieDataStatus) {
+            is MovieDataStatus.Loading -> {
+                FullScreenCircularProgressIndicator(paddingValues = paddingValues)
+            }
+
+            is MovieDataStatus.Error -> {
+                ErrorView(
+                    modifier = Modifier.fillMaxSize().padding(paddingValues),
+                    errorMessage = status.message.asString()
+                )
+            }
+
+            is MovieDataStatus.Success -> {
+                MoviesScreenContent(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(start = if (showNavigationRail) 80.dp else 0.dp),
+                    onMovieClick = onMovieClick,
+                    onSeeAllClick = onSeeAllClick,
+                    topMovieSectionImageSize = setSize(
+                        onCompact = screenHeight - Dimens.twoLevelPadding,
+                        onMedium = if (isScreenPortrait()) screenHeight / 2 else screenHeight / 1.75f,
+                        onExpanded = screenHeight / 1.5f
+                    ),
+                    movieSectionImageSize = setSize(
+                        onCompact = screenHeight - Dimens.twoLevelPadding,
+                        onMedium = if (isScreenPortrait()) screenHeight / 2.5f else screenHeight / 2,
+                        onExpanded = screenHeight / 1.75f
+                    ),
+                    trendingMoviesList = uiState.trendingMovies,
+                    topRatedMoviesList = uiState.topRatedMovies,
+                    upcomingMoviesList = uiState.upcomingMovies
+                )
+            }
+        }
     }
 }
 
@@ -97,11 +113,11 @@ private fun MoviesScreenContent(
     modifier: Modifier,
     onMovieClick: (Int) -> Unit,
     onSeeAllClick: (SeeAllType) -> Unit,
-    trendingMoviesState: MovieState,
-    topRatedMoviesState: MovieState,
-    upcomingMoviesState: MovieState,
     topMovieSectionImageSize: Dp,
-    movieSectionImageSize: Dp
+    movieSectionImageSize: Dp,
+    trendingMoviesList: List<MovieContent>,
+    topRatedMoviesList: List<MovieContent>,
+    upcomingMoviesList: List<MovieContent>
 ) {
     Column(
         modifier = modifier
@@ -114,25 +130,25 @@ private fun MoviesScreenContent(
             sectionHeight = topMovieSectionImageSize,
             onSeeAllClick = onSeeAllClick,
             onMovieClick = onMovieClick,
-            movieState = trendingMoviesState,
             seeAllType = SeeAllType.TRENDING,
-            title = stringResource(id = CommonR.string.trending)
+            title = stringResource(id = CommonR.string.trending),
+            movieList = trendingMoviesList
         )
         MovieSection(
             sectionHeight = movieSectionImageSize,
             onSeeAllClick = onSeeAllClick,
             onMovieClick = onMovieClick,
-            movieState = topRatedMoviesState,
             seeAllType = SeeAllType.TOP_RATED,
-            title = stringResource(id = CommonR.string.top_rated)
+            title = stringResource(id = CommonR.string.top_rated),
+            movieList = topRatedMoviesList
         )
         MovieSection(
             sectionHeight = movieSectionImageSize,
             onSeeAllClick = onSeeAllClick,
             onMovieClick = onMovieClick,
-            movieState = upcomingMoviesState,
             seeAllType = SeeAllType.UPCOMING,
-            title = stringResource(id = CommonR.string.upcoming)
+            title = stringResource(id = CommonR.string.upcoming),
+            movieList = upcomingMoviesList
         )
     }
 }
@@ -144,7 +160,7 @@ private fun MovieSection(
     movieImageRatio: Float = 2f / 3f,
     onSeeAllClick: (SeeAllType) -> Unit,
     onMovieClick: (Int) -> Unit,
-    movieState: MovieState,
+    movieList: List<MovieContent>,
     seeAllType: SeeAllType,
     title: String
 ) {
@@ -157,45 +173,29 @@ private fun MovieSection(
             onSeeAllClick = onSeeAllClick,
             type = seeAllType
         )
-        when (movieState) {
-            is MovieState.Loading -> {
-                FullScreenCircularProgressIndicator()
-            }
+        val state = rememberLazyListState()
 
-            is MovieState.OnDataLoaded -> {
-                val state = rememberLazyListState()
-
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
-                    horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
-                    state = state,
-                    flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
-                ) {
-                    items(movieState.movieList, key = { movie -> movie.id }) { movie ->
-                        MovieItem(
-                            modifier = Modifier.aspectRatio(movieImageRatio),
-                            id = movie.id,
-                            name = movie.movieName,
-                            releaseDate = movie.releaseDate,
-                            imageUrl = "${TMDB.IMAGE_URL}${movie.posterImagePath}",
-                            voteAverage = movie.voteAverage,
-                            voteCount = movie.voteCount ?: 0,
-                            onClick = onMovieClick
-                        )
-                    }
-                }
-            }
-
-            is MovieState.OnError -> {
-                ErrorView(
-                    modifier = Modifier.fillMaxSize(),
-                    errorMessage = movieState.errorMessage.asString()
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = Dimens.twoLevelPadding),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.twoLevelPadding),
+            state = state,
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = state)
+        ) {
+            items(movieList, key = { movie -> movie.id }) { movie ->
+                MovieItem(
+                    modifier = Modifier.aspectRatio(movieImageRatio),
+                    id = movie.id,
+                    name = movie.movieName,
+                    releaseDate = movie.releaseDate,
+                    imageUrl = "${TMDB.IMAGE_URL}${movie.posterImagePath}",
+                    voteAverage = movie.voteAverage,
+                    voteCount = movie.voteCount ?: 0,
+                    onClick = onMovieClick
                 )
             }
         }
     }
 }
-
 
 @Composable
 private fun ContentTitleSection(
