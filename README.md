@@ -208,6 +208,10 @@ The app uses MVVM [Model-View-ViewModel] architecture to have a unidirectional f
 
 ![mvvm](https://user-images.githubusercontent.com/73544434/197416569-d42a6bbe-126e-4776-9c8f-2791925f738c.png)
 
+## Dependency Graph
+
+<img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/5508bf18-c956-4df5-9dd5-b5c7dff1fe02" />
+
 ## API 📦
 [TMDB Movie API](https://developer.themoviedb.org/reference/intro/getting-started)
 
