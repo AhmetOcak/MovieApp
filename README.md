@@ -33,11 +33,9 @@ The application can work in both landscape and portrait mode. The Application al
 
 ## Outputs 🖼
 
-<!--
-|                  |              |
-|------------------|--------------|
-| Video from app   | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/694f560a-e6d3-46b5-a67e-d3e8ccf104df" width="240" height="480" /> |
--->
+## Preview
+
+https://github.com/AhmetOcak/MovieApp/assets/73544434/39259474-378a-43ad-bb35-e783132c0714
 
 |                  | Light | Dark |
 |------------------|-------|------|
@@ -50,12 +48,6 @@ The application can work in both landscape and portrait mode. The Application al
 | See All Screen   | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/7dc2f3e1-2e8e-44b8-9123-6845f5d8423f" width="240" height="480"/>      | <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/47ca1f31-7689-4249-b1d7-0b94e1d1f1b8" width="240" height="480"/>     |
 | Movie Details Screen      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/0e139c8d-4c0c-421d-924a-931c56b0b76e" width="240" height="480"/>      | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/2c2124e0-aa2f-418d-95d0-af451538b35f" width="240" height="480"/> |
 |  Actor Details Screen     |  <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/8b7b67ad-9978-49d7-b7da-2b8aa2431ba4" width="240" height="480" />       | <video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/158a6218-c9b1-4b40-ac77-d7c9c3859560" width="240" height="480" />          |
-<!--
-|                  |              |
-|------------------|--------------|
-| Video from app   | <video src="<video src="https://github.com/AhmetOcak/MovieApp/assets/73544434/694f560a-e6d3-46b5-a67e-d3e8ccf104df" />" width="240" height="480" /> |
-
--->
 
 ### Tablet Preview
 
