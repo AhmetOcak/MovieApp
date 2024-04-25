@@ -4,7 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
@@ -12,7 +11,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.ahmetocak.actor_details.ActorDetailsScreen
@@ -22,8 +20,8 @@ import com.ahmetocak.designsystem.components.navigation.MovieNavigationRail
 import com.ahmetocak.login.LoginScreen
 import com.ahmetocak.movie_details.MovieDetailsScreen
 import com.ahmetocak.movieapp.presentation.home.addHomeGraph
-import com.ahmetocak.movieapp.presentation.navigation.rememberMovieAppNavController
 import com.ahmetocak.designsystem.theme.MovieAppTheme
+import com.ahmetocak.movieapp.presentation.navigation.MovieAppNavController
 import com.ahmetocak.navigation.HomeSections
 import com.ahmetocak.navigation.MainDestinations
 import com.ahmetocak.see_all.SeeAllScreen
@@ -35,17 +33,14 @@ fun MovieApp(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     windowWidthSizeClass: WindowSizeClasses,
-    windowHeightSizeClass: WindowSizeClasses
+    windowHeightSizeClass: WindowSizeClasses,
+    currentRoute: String,
+    movieAppNavController: MovieAppNavController
 ) {
+    val showNavigationRail =
+        windowWidthSizeClass != WindowSizeClasses.COMPACT && isScreenHasNavRail(currentRoute)
+
     MovieAppTheme(darkTheme = darkTheme, dynamicColor = dynamicColor) {
-        val movieAppNavController = rememberMovieAppNavController()
-
-        val navBackStackEntry by movieAppNavController.navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route ?: HomeSections.MOVIES.route
-
-        val showNavigationRail =
-            windowWidthSizeClass != WindowSizeClasses.COMPACT && isScreenHasNavRail(currentRoute)
-
         Surface {
             NavHost(
                 modifier = Modifier.fillMaxSize(),
