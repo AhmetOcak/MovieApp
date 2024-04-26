@@ -55,7 +55,13 @@ https://github.com/AhmetOcak/MovieApp/assets/73544434/39259474-378a-43ad-bb35-e7
    <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d3d55f52-ff40-4b6b-9584-085321b70494" width="45%"/>
    &nbsp; &nbsp; &nbsp; &nbsp;
    <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ace4700c-623c-4bec-967b-b69c92e878fb" width="45%" />
+   &nbsp; &nbsp; &nbsp; &nbsp;
+   <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/cb97d643-00ce-4565-9bf7-0220031d7e07" width="45%" />
 </p>
+
+### Landscape Preview
+
+<img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/a6d611eb-785b-48ea-b015-8c1e9ea3d015" width="45%" />
 
 ## Modularization 📦
 ![movie_app_modular_graph](https://github.com/AhmetOcak/MovieApp/assets/73544434/b71a185e-0af4-4b39-95ae-14ca219fa1e0)
