@@ -85,7 +85,7 @@ https://github.com/AhmetOcak/MovieApp/assets/73544434/39259474-378a-43ad-bb35-e7
    <td>Functionality associated with a specific feature or user journey. Typically contains UI components and ViewModels which read data from other modules.<br>
    Examples include:<br>
    <ul>
-      <li><a href="https://github.com/AhmetOcak/MovieApp/tree/master/feature/movie_details"><code>feature:movie_details</code></a> Movie details provide comprehensive information about a film, including its title, genre, release date, cast, and plot summary.</li>
+      <li><a href="https://github.com/AhmetOcak/MovieApp/tree/master/feature/movie_details"><code>feature:movie_details</code></a> Movie details provide comprehensive information about a film, including its title, release date, cast, and plot summary.</li>
       </ul>
    </td>
    <td><code>MovieDetailsScreen</code><br>
