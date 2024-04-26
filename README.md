@@ -54,9 +54,9 @@ https://github.com/AhmetOcak/MovieApp/assets/73544434/39259474-378a-43ad-bb35-e7
 <p float="left">
    <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/d3d55f52-ff40-4b6b-9584-085321b70494" width="45%"/>
    &nbsp; &nbsp; &nbsp; &nbsp;
-   <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ace4700c-623c-4bec-967b-b69c92e878fb" width="45%" />
-   &nbsp; &nbsp; &nbsp; &nbsp;
    <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/cb97d643-00ce-4565-9bf7-0220031d7e07" width="45%" />
+   &nbsp; &nbsp; &nbsp; &nbsp;
+   <img src="https://github.com/AhmetOcak/MovieApp/assets/73544434/ace4700c-623c-4bec-967b-b69c92e878fb" width="45%" />
 </p>
 
 ### Landscape Preview
